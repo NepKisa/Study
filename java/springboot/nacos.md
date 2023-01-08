@@ -79,8 +79,23 @@ startup.cmd -m standalone启动（不需要修改脚本）
 ```bash
 tar -zxvf nacos-server-2.2.0.tar.gz -C /opt/
 cd /opt/nacos/
-vim bin/startup.sh
 vim conf/application.properties
+```
+
+```properties
+### If use MySQL as datasource:
+ spring.datasource.platform=mysql
+
+### Count of DB:
+ db.num=1
+
+### Connect URL of DB:
+ db.url.0=jdbc:mysql://192.168.10.130:3306/nacos?characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useUnicode=true&useSSL=false&serverTimezone=UTC
+ db.user.0=root
+ db.password.0=123456
+```
+
+```perl
 mysql -uroot -p123456
 ```
 
@@ -91,7 +106,7 @@ source /opt/nacos/conf/mysql-schema.sql
 ```
 
 ```perl
-bin/startup.sh
+bin/startup.sh -m standalone
 ```
 
 访问 http://192.168.10.130:8848/nacos
@@ -1033,5 +1048,402 @@ Service就是微服务；一个Service可以包含多个Cluster（集群），Na
 
 ![image-20230108020037543](../../images/image-20230108020037543.png)
 
-# 5 Nacos集群和持久化配置（重要）
+# ==5 Nacos集群和持久化配置（重要）==
 
+## 5.1 官网说明
+
+https://nacos.io/zh-cn/docs/deployment.html
+
+https://nacos.io/zh-cn/docs/cluster-mode-quick-start.html
+
+### 5.1.1 官网架构图
+
+![image-20230108174130762](../../images/image-20230108174130762.png)
+
+### 5.1.2 实际情况
+
+![graphic](../../images/Sun, 08 Jan 2023 174156.png)
+
+### 5.1.3 说明
+
+默认Nacos使用嵌入式数据库实现数据的存储。所以，如果启动多个默认配置下的Nacos节点，数据存储是存在一致性问题的。
+
+为了解决这个问题，Nacos采用了==集中式存储的方式来支持集群化部署，目前只支持MySQL的存储==。
+
+![image-20230108175708055](../../images/image-20230108175708055.png)
+
+![image-20230108175747222](../../images/image-20230108175747222.png)
+
+![image-20230108175952338](../../images/image-20230108175952338.png)
+
+## 5.2 Nacos持久化配置
+
+Nacos默认自带的是嵌入式数据库derby
+
+derby到mysql切换配置步骤
+
+执行nacos/conf目录下的mysql-schema.sql脚本
+
+```perl
+mysql -uroot -p123456
+```
+
+```sql
+create database nacos;
+use nacos;
+source mysql-schema.sql;
+```
+
+修改nacos/conf目录下的application.properties配置文件
+
+```properties
+#修改部分
+### If use MySQL as datasource:
+ spring.datasource.platform=mysql
+
+### Count of DB:
+ db.num=1
+
+### Connect URL of DB:
+ db.url.0=jdbc:mysql://192.168.10.130:3306/nacos?characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useUnicode=true&useSSL=false&serverTimezone=UTC
+ db.user.0=root
+ db.password.0=123456
+```
+
+## 5.3 生产环境配置
+
+### 5.3.1 环境规划
+
+| Nginx | Nacos | MySQL |
+| ----- | ----- | ----- |
+| 1     | 3     | 1     |
+
+### 5.3.2 配置MySQL
+
+```sql
+mysql -uroot -p123456
+create database nacos;
+use nacos;
+source /opt/nacos/conf/mysql-schema.sql
+```
+
+```perl
+vim conf/application.properties
+```
+
+```properties
+### If use MySQL as datasource:
+ spring.datasource.platform=mysql
+
+### Count of DB:
+ db.num=1
+
+### Connect URL of DB:
+ db.url.0=jdbc:mysql://192.168.10.130:3306/nacos?characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useUnicode=true&useSSL=false&serverTimezone=UTC
+ db.user.0=root
+ db.password.0=123456
+```
+
+### 5.3.3 配置Nacos
+
+#### 5.3.3.1 修改启动脚本
+
+![image-20230108200032475](../../images/image-20230108200032475.png)
+
+![image-20230108200112122](../../images/image-20230108200112122.png)
+
+```perl
+cd /opt/nacos/conf
+cp cluster.conf.example cluster.conf
+
+#获取IP，必须是hostname -i能识别的
+hostname -i 
+
+vim cluster.conf
+
+#内容为：
+192.168.10.130:3333
+192.168.10.130:4444
+192.168.10.130:5555
+```
+
+![image-20230108191600207](../../images/image-20230108191600207.png)
+
+#### 5.3.3.2 将nacos复制三份
+
+```perl
+cp -r nacos nacos-3333
+cp -r nacos nacos-4444
+cp -r nacos nacos-5555
+```
+
+分别修改`application.properties`的`server.port`
+
+```perl
+vim nacos-3333/conf/application.properties
+vim nacos-4444/conf/application.properties
+vim nacos-5555/conf/application.properties
+```
+
+![image-20230108200432284](../../images/image-20230108200432284.png)
+
+![image-20230108200516882](../../images/image-20230108200516882.png)
+
+![image-20230108200542445](../../images/image-20230108200542445.png)
+
+#### 5.3.3.3 启动nacos集群
+
+```perl
+nacos-3333/bin/startup.sh
+nacos-4444/bin/startup.sh
+nacos-5555/bin/startup.sh
+```
+
+### 5.3.4 配置Nginx
+
+Nginx做负载均衡器（VIP）
+
+#### 5.3.4.1 安装Nginx
+
+下载地址：http://nginx.org/en/download.html
+
+选择Linux 稳定版
+
+![image-20230108182142646](../../images/image-20230108182142646.png)
+
+```perl
+#安装依赖
+yum install -y gcc-c++
+yum install -y pcre pcre-devel
+yum install -y zlib zlib-devel
+yum install -y openssl openssl-devel
+
+#解压改名
+tar -zxvf nginx-1.22.1.tar.gz -C /opt
+cd /opt/
+mv nginx-1.22.1 nginx
+cd nginx
+
+#可指定参数修改配置
+./configure 
+#编译
+make
+#安装
+make install
+
+cd /usr/local/nginx/sbin/
+#启动
+nginx -c /usr/local/nginx/conf/nginx.conf
+#停止
+nginx -s stop
+#安全停止
+nginx -s quit
+#重新加载配置文件（nginx.conf）
+nginx -s reload
+```
+
+#### 5.3.4.2 修改nginx.conf
+
+```perl
+vim /usr/local/nginx/conf/nginx.conf
+```
+
+```perl
+    #gzip  on;
+
+    upstream cluster{
+        server 127.0.0.1:3333;
+        server 127.0.0.1:4444;
+        server 127.0.0.1:5555;
+    }
+
+    server {
+        listen       1111;
+        server_name  localhost;
+
+        #charset koi8-r;
+
+        #access_log  logs/host.access.log  main;
+
+        location / {
+            #root   html;
+            #index  index.html index.htm;
+            proxy_pass http://cluster;
+        }
+
+        #error_page  404              /404.html;
+
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+.......
+}
+```
+
+
+
+![image-20230108184922975](../../images/image-20230108184922975.png)
+
+#### 5.3.4.3 启动nginx
+
+```perl
+/usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf
+```
+
+### 5.3.5 访问集群
+
+##### 5.3.5.1 通过nginx访问nacos
+
+```perl
+http://192.168.10.130:1111/nacos/
+```
+
+![image-20230108200812274](../../images/image-20230108200812274.png)
+
+![image-20230108203056240](../../images/image-20230108203056240.png)
+
+#### 5.3.5.2 **新增一个配置文件**
+
+![image-20230108201612078](../../images/image-20230108201612078.png)
+
+![image-20230108201634329](../../images/image-20230108201634329.png)
+
+## 5.4 Nacos2.x问题
+
+以上配置nacos页面可正常访问，但nacos 2.x无法注册微服务
+
+会报错`Client not connected，current status:STARTING`
+
+一个nacos启动默认端口是8848,那么nacos同时也会启动9848这个grpc端口。 
+
+`grpc端口 （9848）= 启动端口（8848） + 1000`
+
+* 如果nacos集群启动了三个nacos 端口分别为3333，4444，5555，那么这三个nacos也会启动 4333，5444，6555。因为已经用nginx代理服务器的1111反向代理三个nacos 端口分别为3333，4444，5555。但还没有代理三个nacos端口4333，5444，6555。
+* 解决办法是，用nginx代理grpc端口，但是因为Nginx对于gRPC不适合长连接的操作。所以更好的解决方法为：用nginx来带来nacos的3333端口，用haproxy来代理4333的grpc端口。此处仅演示nginx
+
+官网：https://nacos.io/zh-cn/docs/faq.html
+
+![image-20230108212916610](../../images/image-20230108212916610.png)
+
+<font color=blue>**连续端口问题**</font>
+
+由于偏移量的存在，尽量将端口间距放大如2222，3333
+
+![image-20230108221004824](../../images/image-20230108221004824.png)
+
+## 5.5 问题解决
+
+nginx安装stream模块，启用gRPC代理
+
+### 5.5.1 nginx重新编译
+
+```perl
+#检查依赖
+yum install -y perl-ExtUtils-Embed readline-devel zlib-devel pam-devel libxml2-devel libxslt-devel openldap-devel python-devel gcc-c++   openssl-devel cmakepcre-develnanowget  gcc gcc-c++ ncurses-devel per redhat-rpm-config.noarch
+
+#备份原nginx
+mv /usr/local/nginx /usr/local/nginx.bak
+
+cd /opt/nginx/
+./configure --with-stream
+make
+make install
+```
+
+### 5.5.2 新增nginx配置
+
+```perl
+vim /usr/local/nginx/conf/nginx.conf
+```
+
+```perl
+stream {
+    upstream nacos-server-grpc {
+        server 127.0.0.1:34333;
+        server 127.0.0.1:5444;
+        server 127.0.0.1:6555;
+  }
+  server {
+    listen 2111;
+    proxy_pass nacos-server-grpc;
+  }
+}
+
+.........
+    #gzip  on;
+    upstream cluster{
+        server 127.0.0.1:33333;
+        server 127.0.0.1:4444;
+        server 127.0.0.1:5555;
+    }
+
+    server {
+        listen       1111;
+        server_name  localhost;
+
+        #charset koi8-r;
+
+        #access_log  logs/host.access.log  main;
+
+        location / {
+            #root   html;
+            #index  index.html index.htm;
+            proxy_pass http://cluster;
+        }
+.......
+}
+```
+
+![image-20230108214451768](../../images/image-20230108214451768.png)
+
+![image-20230108214520646](../../images/image-20230108214520646.png)
+
+### 5.4.3 启动集群
+
+```perl
+nginx -c /usr/local/nginx/conf/nginx.conf
+
+cd /opt
+nacos-3333/bin/startup.sh
+nacos-4444/bin/startup.sh
+nacos-5555/bin/startup.sh
+```
+
+![image-20230108214957585](../../images/image-20230108214957585.png)
+
+## 5.4 测试
+
+==nacos 1.x集群可直接注册，不需要额外代理==
+
+修改nacos注册地址为`192.168.10.130:1111`
+
+```yaml
+server:
+  port: 8001
+spring:
+  application:
+    name: nacos-payment-provider #注册到Nacos的服务名
+  cloud:
+    nacos: # 客户端注册的地址
+#      server-addr: localhost:8848
+      server-addr: 192.168.10.130:2111 #使用nginx的2111端口，nacos2.x集群
+      username: nacos
+      password: nacos
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+```
+
+![image-20230108215142987](../../images/image-20230108215142987.png)
+
+![image-20230108215202823](../../images/image-20230108215202823.png)
+
+## 5.5 总结
+
+![image-20230108221854437](../../images/image-20230108221854437.png)
