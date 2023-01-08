@@ -55,6 +55,8 @@ Content-Type: application/json
 
 ## GitHub
 
+==密码是token==
+
 ```shell
 Failed to connect to github.com port 443 after 21074 ms: Timed out
 
@@ -81,6 +83,32 @@ git config --global https.proxy http://127.0.0.1:1080
 
 稍微检查一下，就可以了
 git config --global -l
+
+
+
+
+==============================================
+Github多用户
+一个公钥只能绑定一个账号
+ssh-keygen 时指定第二个公钥，将第二个公钥添加给第二个Github账号
+
+清除本地缓存（如windows里缓存的凭据)
+git config -l|grep credential.helper
+git config --system --unset credential.helper
+git config --system --unset credential.helperselector.selected
+
+ssh -T git@github.com 验证当前用户
+
+ssh-add -l报错：Could not open a connection to your authentication agent.
+
+ssh-agent bash
+eval `ssh-agent -s`
+ssh-add -l
+ssh-add -d ~/.ssh/id_rsa
+ssh-add ~/.ssh/id_rsa_neptune
+ssh -T git@github.com
+
+切换用户成功~
 ```
 
 ## BiliBili N倍速
