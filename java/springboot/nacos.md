@@ -121,7 +121,7 @@ bin/startup.sh -m standalone
 
 https://spring-cloud-alibaba-group.github.io/github-pages/greenwich/spring-cloud-alibaba.html
 
-nacos：https://spring-cloud-alibaba-group.github.io/github-pages/greenwich/spring-cloud-alibaba.html#_spring_cloud_alibaba_nacos_config
+官网：https://github.com/alibaba/spring-cloud-alibaba/wiki/Nacos-discovery
 
 springboot和springcloud版本对应关系：https://spring.io/projects/spring-cloud#overvie
 
@@ -680,6 +680,14 @@ https://github.com/alibaba/spring-cloud-alibaba/wiki/Nacos-discovery
 
 # 4 Nacos作为服务配置中心
 
+https://spring-cloud-alibaba-group.github.io/github-pages/greenwich/spring-cloud-alibaba.html#_spring_cloud_alibaba_nacos_config
+
+官网：https://github.com/alibaba/spring-cloud-alibaba/wiki/Nacos-config
+
+本地的 bootstrap.yml(应用名称，配置文件中心（注册中心地址），读取的配置文件名称信息)
+
+远端的配置文件(端口，数据源，redis，mq，mybatis，Swagger...)
+
 ## 4.1 基础配置
 
 ### 4.1.1 新建Module
@@ -1047,6 +1055,23 @@ Service就是微服务；一个Service可以包含多个Cluster（集群），Na
 重启服务，测试接口
 
 ![image-20230108020037543](../../images/image-20230108020037543.png)
+
+## 4.3 常用配置
+
+| 配置项                    | key                                       | 默认值                  | 说明                                               |
+| ------------------------- | ----------------------------------------- | ----------------------- | -------------------------------------------------- |
+| 服务端地址                | spring.cloud.nacos.config.server-addr     |                         |                                                    |
+| DataId 前缀               | spring.cloud.nacos.config.prefix          | spring.application.name |                                                    |
+| Group                     | spring.cloud.nacos.config.group           | DEFAULT_GROUP           |                                                    |
+| dataID 后缀及配置文件格式 | spring.cloud.nacos.config.file-extension  | properties              |                                                    |
+| 配置内容的编码方式        | spring.cloud.nacos.config.encode          | UTF-8                   |                                                    |
+| 获取配置的超时时间        | spring.cloud.nacos.config.timeout         | 3000                    | 单位ms                                             |
+| 配置的命名空间            | spring.cloud.nacos.config.namespace       |                         | 用于区分不同环境                                   |
+| AccessKey                 | spring.cloud.nacos.config.access-key      |                         |                                                    |
+| SecretKey                 | spring.cloud.nacos.config.secret-key      |                         |                                                    |
+| 相对路径                  | spring.cloud.nacos.config.context-path    |                         | 服务端 API 的相对路径                              |
+| 接入点                    | spring.cloud.nacos.config.endpoint        |                         | 地域的某个服务的入口域名，通过此域名可以动态地拿到 |
+| 是否开启监听和自动刷新    | spring.cloud.nacos.config.refresh.enabled |                         |                                                    |
 
 # ==5 Nacos集群和持久化配置（重要）==
 
