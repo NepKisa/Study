@@ -2426,15 +2426,13 @@ protected void exposeModelAsRequestAttributes(Map<String, Object> model,
 	}
 ```
 
-# 4、数据响应与内容协商
+## 6.4 数据响应与内容协商
 
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606043749073-2573e24a-9ea9-459e-ad94-a433e1082624.png)
+![img](../../images/lake_card_mindmap.png)
 
+### 6.4.1 响应JSON
 
-
-## 1、响应JSON
-
-### 1.1、jackson.jar+@ResponseBody
+#### 6.4.1.1 jackson.jar+@ResponseBody
 
 ```xml
         <dependency>
@@ -2450,25 +2448,34 @@ web场景自动引入了json场景
     </dependency>
 ```
 
-### ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605151090728-f7c60e6f-d0c0-4541-bfa3-8cc805dfd5d6.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_21%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+`spring-boot-starter-json`，给前端自动返回json数据；
 
+![image-20230109194431138](../../images/image-20230109194431138.png)
 
+##### 6.4.1.1.1 返回值解析器
 
-给前端自动返回json数据；
+![image-20230109200826819](../../images/image-20230109200826819.png)
 
+![image-20230109202849508](../../images/image-20230109202849508.png)
 
+![image-20230109204046899](../../images/image-20230109204046899.png)
 
+![image-20230114151119486](../../images/image-20230114151119486.png)
 
+![image-20230114151552705](../../images/image-20230114151552705.png)
 
-#### 1、返回值解析器
+![image-20230114151858637](../../images/image-20230114151858637.png)
 
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605151359370-01cd1fbe-628a-4eea-9430-d79a78f59125.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_25%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+![image-20230115180040306](../../images/image-20230115180040306.png)
 
 ```java
 try {
 			this.returnValueHandlers.handleReturnValue(
 					returnValue, getReturnValueType(returnValue), mavContainer, webRequest);
 		}
+```
+```java
+
 	@Override
 	public void handleReturnValue(@Nullable Object returnValue, MethodParameter returnType,
 			ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
@@ -2480,6 +2487,9 @@ try {
 		handler.handleReturnValue(returnValue, returnType, mavContainer, webRequest);
 	}
 RequestResponseBodyMethodProcessor  	
+```
+
+```java
 @Override
 	public void handleReturnValue(@Nullable Object returnValue, MethodParameter returnType,
 			ModelAndViewContainer mavContainer, NativeWebRequest webRequest)
@@ -2495,50 +2505,24 @@ RequestResponseBodyMethodProcessor
 	}
 ```
 
+##### 6.4.1.1.2 返回值解析器原理
+
+![image-20230109204015060](../../images/image-20230109204015060.png)
+
+- 返回值处理器判断是否支持这种类型返回值 supportsReturnType
+- 返回值处理器调用 handleReturnValue 进行处理
+- RequestResponseBodyMethodProcessor 可以处理返回值标了@ResponseBody 注解的。
+  * 利用 MessageConverters 进行处理 将数据写为json
+    * 内容协商（浏览器默认会以请求头的方式告诉服务器他能接受什么样的内容类型）
+    * 服务器最终根据自己自身的能力，决定服务器能生产出什么样内容类型的数据，
+    * SpringMVC会挨个遍历所有容器底层的 HttpMessageConverter ，看谁能处理？
+      * 得到MappingJackson2HttpMessageConverter可以将对象写为json
+      * 利用MappingJackson2HttpMessageConverter将对象转为json再写出去
 
 
+![image-20230110142730503](../../images/image-20230110142730503.png)
 
-
-
-
-#### 2、返回值解析器原理
-
-### ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605151728659-68c8ce8a-1b2b-4ab0-b86d-c3a875184672.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_23%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-
-
-
-- 1、返回值处理器判断是否支持这种类型返回值 supportsReturnType
-- 2、返回值处理器调用 handleReturnValue 进行处理
-- 3、RequestResponseBodyMethodProcessor 可以处理返回值标了@ResponseBody 注解的。
-
-- - \1.  利用 MessageConverters 进行处理 将数据写为json
-
-- - - 1、内容协商（浏览器默认会以请求头的方式告诉服务器他能接受什么样的内容类型）
-    - 2、服务器最终根据自己自身的能力，决定服务器能生产出什么样内容类型的数据，
-    - 3、SpringMVC会挨个遍历所有容器底层的 HttpMessageConverter ，看谁能处理？
-
-- - - - 1、得到MappingJackson2HttpMessageConverter可以将对象写为json
-      - 2、利用MappingJackson2HttpMessageConverter将对象转为json再写出去。
-
-
-
-
-
-
-
-
-
-
-
-
-
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605163005521-a20d1d8e-0494-43d0-8135-308e7a22e896.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_32%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-
-
-
-
-
-### 1.2、SpringMVC到底支持哪些返回值
+#### 6.4.1.2 SpringMVC到底支持哪些返回值
 
 ```java
 ModelAndView
@@ -2549,66 +2533,56 @@ ResponseBodyEmitter
 StreamingResponseBody
 HttpEntity
 HttpHeaders
+//异步
 Callable
 DeferredResult
 ListenableFuture
 CompletionStage
 WebAsyncTask
-有 @ModelAttribute 且为对象类型的
-@ResponseBody 注解 ---> RequestResponseBodyMethodProcessor；
+有 @ModelAttribute注解 且为对象类型的 ---> ServletModelAttributeMethodProcessor
+@ResponseBody 注解 ---> RequestResponseBodyMethodProcessor
 ```
 
-### 1.3、HTTPMessageConverter原理
+#### 6.4.1.3HTTPMessageConverter原理
 
+##### 6.4.1.3.1 MessageConverter规范
 
+![image-20230114144103632](../../images/image-20230114144103632.png)
 
-#### 1、MessageConverter规范
-
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605163447900-e2748217-0f31-4abb-9cce-546b4d790d0b.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_19%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-
-HttpMessageConverter: 看是否支持将 此 Class类型的对象，转为MediaType类型的数据。
+HttpMessageConverter: 看是否支持将此Class类型的对象，转为MediaType类型的数据。
 
 例子：Person对象转为JSON。或者 JSON转为Person
 
+##### 6.4.1.3.2 默认的MessageConverter
 
+![image-20230114151847350](../../images/image-20230114151847350.png)
 
-#### 2、默认的MessageConverter
+![image-20230114152223590](../../images/image-20230114152223590.png)
 
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605163584708-e19770d6-6b35-4caa-bf21-266b73cb1ef1.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_17%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+![image-20230114153104951](../../images/image-20230114153104951.png)
 
+```perl
 0 - 只支持Byte类型的
-
-1 - String
-
-2 - String
-
+1 - String (UTF-8)
+2 - String (IOS-859-1)
 3 - Resource
-
 4 - ResourceRegion
-
-5 - DOMSource.**class \** SAXSource.**class**) \ StAXSource.**class \**StreamSource.**class \**Source.**class**
-
-**6 -** MultiValueMap
-
-7 - **true** 
-
-**8 - true**
-
-**9 - 支持注解方式xml处理的。**
-
-
+5 - DOMSource.class \SAXSource.class) \ StAXSource.class \StreamSource.class \Source.class
+6 - MultiValueMap
+7 - true 直接返回true
+8 - true 直接返回true
+9 - 支持注解方式xml处理的。
+```
 
 最终 MappingJackson2HttpMessageConverter  把对象转为JSON（利用底层的jackson的objectMapper转换的）
 
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605164243168-1a31e9af-54a4-463e-b65a-c28ca7a8a2fa.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_34%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+![image-20230115180735262](../../images/image-20230115180735262.png)
 
-
-
-## 2、内容协商
+### 6.4.2 内容协商
 
 根据客户端接收能力不同，返回不同媒体类型的数据。
 
-### 1、引入xml依赖
+#### 6.4.2.1 引入xml依赖
 
 ```xml
  <dependency>
@@ -2617,15 +2591,13 @@ HttpMessageConverter: 看是否支持将 此 Class类型的对象，转为MediaT
 </dependency>
 ```
 
-### 2、postman分别测试返回json和xml
+#### 6.4.2.2 客户端分别测试返回json和xml
 
 只需要改变请求头中Accept字段。Http协议中规定的，告诉服务器本客户端可以接收的数据类型。
 
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605173127653-8a06cd0f-b8e1-4e22-9728-069b942eba3f.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_33%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+![image-20230115185747127](../../images/image-20230115185747127.png)
 
-
-
-### 3、开启浏览器参数方式内容协商功能
+#### 6.4.2.3 开启浏览器参数方式内容协商功能
 
 为了方便内容协商，开启基于请求参数的内容协商功能。
 
@@ -2635,52 +2607,79 @@ spring:
       favor-parameter: true  #开启请求参数内容协商模式
 ```
 
-发请求： http://localhost:8080/test/person?format=json
+发请求： http://localhost:8080/newuser?format=json
 
 [http://localhost:8080/test/person?format=](http://localhost:8080/test/person?format=json)xml
 
-
-
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605230907471-b0ed34bc-6782-40e7-84b7-615726312f01.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_22%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-
 确定客户端接收什么样的内容类型；
+
+
+
+![image-20230115212114880](../../images/image-20230115212114880.png)![image-20230115212329257](../../images/image-20230115212329257.png)
 
 1、Parameter策略优先确定是要返回json数据（获取请求头中的format的值）
 
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605231074299-25f5b062-2de1-4a09-91bf-11e018d6ec0e.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_18%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+![image-20230115212358503](../../images/image-20230115212358503.png)
+
+![image-20230115212605640](../../images/image-20230115212605640.png)
 
 2、最终进行内容协商返回给客户端json即可。
 
-### 4、内容协商原理
+![image-20230115212809951](../../images/image-20230115212809951.png)
 
-- 1、判断当前响应头中是否已经有确定的媒体类型。MediaType
-- **2、获取客户端（PostMan、浏览器）支持接收的内容类型。（获取客户端Accept请求头字段）【application/xml】**
+#### 6.4.2.4 内容协商原理
 
-- - **contentNegotiationManager 内容协商管理器 默认使用基于请求头的策略**
-  - ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605230462280-ef98de47-6717-4e27-b4ec-3eb0690b55d0.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_15%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+![image-20230115203630402](../../images/image-20230115203630402.png)
+
+![image-20230115203902557](../../images/image-20230115203902557.png)
+
+![image-20230115204115199](../../images/image-20230115204115199.png)
+
+![image-20230115210314342](../../images/image-20230115210314342.png)
+
+![image-20230115210437271](../../images/image-20230115210437271.png)
+
+- 判断当前响应头中是否已经有确定的媒体类型。MediaType
+
+- **获取客户端（PostMan、浏览器）支持接收的内容类型。（获取客户端Accept请求头字段）【application/xml】**
+
+  * **contentNegotiationManager 内容协商管理器 默认使用基于请求头的策略**
+
+    ![image-20230115211250389](../../images/image-20230115211250389.png)
+
   - **HeaderContentNegotiationStrategy  确定客户端可以接收的内容类型** 
-  - ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605230546376-65dcf657-7653-4a58-837a-f5657778201a.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_28%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+
+    ![image-20230115211401124](../../images/image-20230115211401124.png)
 
 - 3、遍历循环所有当前系统的 **MessageConverter**，看谁支持操作这个对象（Person）
+
 - 4、找到支持操作Person的converter，把converter支持的媒体类型统计出来。
+
 - 5、客户端需要【application/xml】。服务端能力【10种、json、xml】
--   ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605173876646-f63575e2-50c8-44d5-9603-c2d11a78adae.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_20%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+
+  ![image-20230115205627383](../../images/image-20230115205627383.png)
+
 - 6、进行内容协商的最佳匹配媒体类型
+
 - 7、用 支持 将对象转为 最佳匹配媒体类型 的converter。调用它进行转化 。
 
-
-
-
-
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605173657818-73331882-6086-490c-973b-af46ccf07b32.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_18%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+![image-20230115205353564](../../images/image-20230115205353564.png)
 
 导入了jackson处理xml的包，xml的converter就会自动进来
 
+静态判断，导入了xml类就会加载进来
+
+![image-20230115214053064](../../images/image-20230115214053064.png)
+
+![image-20230115214122885](../../images/image-20230115214122885.png)
+
 ```java
-WebMvcConfigurationSupport
+WebMvcConfigurationSupport类
 jackson2XmlPresent = ClassUtils.isPresent("com.fasterxml.jackson.dataformat.xml.XmlMapper", classLoader);
 
-if (jackson2XmlPresent) {
+=================================================================
+WebMvcConfigurationSupport类
+    if (jackson2XmlPresent) {
 			Jackson2ObjectMapperBuilder builder = Jackson2ObjectMapperBuilder.xml();
 			if (this.applicationContext != null) {
 				builder.applicationContext(this.applicationContext);
@@ -2689,15 +2688,9 @@ if (jackson2XmlPresent) {
 		}
 ```
 
+#### 6.4.2.5 自定义 MessageConverter
 
-
-
-
-
-
-### 5、自定义 MessageConverter
-
-**实现多协议数据兼容。json、xml、x-guigu**
+**实现多协议数据兼容。json、xml、neptune**
 
 **0、**@ResponseBody 响应数据出去 调用 **RequestResponseBodyMethodProcessor** 处理
 
@@ -2707,7 +2700,7 @@ if (jackson2XmlPresent) {
 
 3、内容协商找到最终的 **messageConverter**；
 
-
+##### 6.4.2.3.1 请求头指定
 
 SpringMVC的什么功能。一个入口给容器中添加一个  WebMvcConfigurer
 
@@ -2718,405 +2711,115 @@ SpringMVC的什么功能。一个入口给容器中添加一个  WebMvcConfigure
 
             @Override
             public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-
+                converters.add(new NeptuneMessageConverter());
             }
         }
     }
 ```
 
-
-
-
-
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605260623995-8b1f7cec-9713-4f94-9cf1-8dbc496bd245.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_18%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-
-
-
-
-
-
-
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605261062877-0a27cc41-51cb-4018-a9af-4e0338a247cd.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_27%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-
-
-
-
-
-**有可能我们添加的自定义的功能会覆盖默认很多功能，导致一些默认的功能失效。**
-
-**大家考虑，上述功能除了我们完全自定义外？SpringBoot有没有为我们提供基于配置文件的快速修改媒体类型功能？怎么配置呢？【提示：参照SpringBoot官方文档web开发内容协商章节】**
-
-
-
-# 5、视图解析与模板引擎
-
-视图解析：**SpringBoot默认不支持 JSP，需要引入第三方模板引擎技术实现页面渲染。**
-
-## 1、视图解析
-
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606043749039-cefbf687-4feb-441d-bad8-c6d933248d3c.png)
-
-### 1、视图解析原理流程
-
-1、目标方法处理的过程中，所有数据都会被放在 **ModelAndViewContainer 里面。包括数据和视图地址**
-
-**2、方法的参数是一个自定义类型对象（从请求参数中确定的），把他重新放在** **ModelAndViewContainer** 
-
-**3、任何目标方法执行完成以后都会返回 ModelAndView（****数据和视图地址****）。**
-
-**4、****processDispatchResult  处理派发结果（页面改如何响应）**
-
-- 1、**render**(**mv**, request, response); 进行页面渲染逻辑
-
-- - 1、根据方法的String返回值得到 **View** 对象【定义了页面的渲染逻辑】
-
-- - - 1、所有的视图解析器尝试是否能根据当前返回值得到**View**对象
-    - 2、得到了  **redirect:/main.html** --> Thymeleaf new **RedirectView**()
-    - 3、ContentNegotiationViewResolver 里面包含了下面所有的视图解析器，内部还是利用下面所有视图解析器得到视图对象。
-    - 4、view.render(mv.getModelInternal(), request, response);   视图对象调用自定义的render进行页面渲染工作
-
-- - - - **RedirectView 如何渲染【重定向到一个页面】**
-      - **1、获取目标url地址**
-      - **2、****response.sendRedirect(encodedURL);**
-
-
-
-
-
-**视图解析：**
-
-- - **返回值以 forward: 开始： new InternalResourceView(forwardUrl); -->  转发****request.getRequestDispatcher(path).forward(request, response);** 
-  - **返回值以** **redirect: 开始：** **new RedirectView() --》 render就是重定向** 
-  - **返回值是普通字符串： new ThymeleafView（）--->** 
-
-
-
-
-
-自定义视图解析器+自定义视图； **大厂学院。**
-
-
-
-
-
-
-
-
-
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605680247945-088b0f17-185c-490b-8889-103e8b4d8c07.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_16%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605679959020-54b96fe7-f2fc-4b4d-a392-426e1d5413de.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_23%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-
-
-
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605679471537-7db702dc-b165-4dc6-b64a-26459ee5fd6c.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_17%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-
-
-
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605679913592-151a616a-c754-4da3-a2c1-91dc0230a48d.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_22%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-
-## 2、模板引擎-Thymeleaf
-
-### 1、thymeleaf简介
-
-Thymeleaf is a modern server-side Java template engine for both web and standalone environments, capable of processing HTML, XML, JavaScript, CSS and even plain text.
-
-**现代化、服务端Java模板引擎**
-
-
-
-### 2、基本语法
-
-#### 1、表达式
-
-| 表达式名字 | 语法   | 用途                               |
-| ---------- | ------ | ---------------------------------- |
-| 变量取值   | ${...} | 获取请求域、session域、对象等值    |
-| 选择变量   | *{...} | 获取上下文对象值                   |
-| 消息       | #{...} | 获取国际化等值                     |
-| 链接       | @{...} | 生成链接                           |
-| 片段表达式 | ~{...} | jsp:include 作用，引入公共页面片段 |
-
-
-
-#### 2、字面量
-
-文本值: **'one text'** **,** **'Another one!'** **,…**数字: **0** **,** **34** **,** **3.0** **,** **12.3** **,…**布尔值: **true** **,** **false**
-
-空值: **null**
-
-变量： one，two，.... 变量不能有空格
-
-#### 3、文本操作
-
-字符串拼接: **+**
-
-变量替换: **|The name is ${name}|** 
-
-
-
-#### 4、数学运算
-
-运算符: + , - , * , / , %
-
-
-
-#### 5、布尔运算
-
-运算符:  **and** **,** **or**
-
-一元运算: **!** **,** **not** 
-
-
-
-
-
-#### 6、比较运算
-
-比较: **>** **,** **<** **,** **>=** **,** **<=** **(** **gt** **,** **lt** **,** **ge** **,** **le** **)**等式: **==** **,** **!=** **(** **eq** **,** **ne** **)** 
-
-
-
-#### 7、条件运算
-
-If-then: **(if) ? (then)**
-
-If-then-else: **(if) ? (then) : (else)**
-
-Default: (value) **?: (defaultvalue)** 
-
-
-
-#### 8、特殊操作
-
-无操作： _
-
-
-
-
-
-### 3、设置属性值-th:attr
-
-设置单个值
-
-```html
-<form action="subscribe.html" th:attr="action=@{/subscribe}">
-  <fieldset>
-    <input type="text" name="email" />
-    <input type="submit" value="Subscribe!" th:attr="value=#{subscribe.submit}"/>
-  </fieldset>
-</form>
-```
-
-设置多个值
-
-```html
-<img src="../../images/gtvglogo.png"  th:attr="src=@{/images/gtvglogo.png},title=#{logo},alt=#{logo}" />
-```
-
-
-
-以上两个的代替写法 th:xxxx
-
-```html
-<input type="submit" value="Subscribe!" th:value="#{subscribe.submit}"/>
-<form action="subscribe.html" th:action="@{/subscribe}">
-```
-
-
-
-所有h5兼容的标签写法
-
-https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#setting-value-to-specific-attributes
-
-
-
-### 4、迭代
-
-```html
-<tr th:each="prod : ${prods}">
-        <td th:text="${prod.name}">Onions</td>
-        <td th:text="${prod.price}">2.41</td>
-        <td th:text="${prod.inStock}? #{true} : #{false}">yes</td>
-</tr>
-```
-
-
-
-```html
-<tr th:each="prod,iterStat : ${prods}" th:class="${iterStat.odd}? 'odd'">
-  <td th:text="${prod.name}">Onions</td>
-  <td th:text="${prod.price}">2.41</td>
-  <td th:text="${prod.inStock}? #{true} : #{false}">yes</td>
-</tr>
-```
-
-
-
-### 5、条件运算
-
-```html
-<a href="comments.html"
-th:href="@{/product/comments(prodId=${prod.id})}"
-th:if="${not #lists.isEmpty(prod.comments)}">view</a>
-```
-
-
-
-```html
-<div th:switch="${user.role}">
-  <p th:case="'admin'">User is an administrator</p>
-  <p th:case="#{roles.manager}">User is a manager</p>
-  <p th:case="*">User is some other thing</p>
-</div>
-```
-
-# 
-
-### 6、属性优先级
-
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605498132699-4fae6085-a207-456c-89fa-e571ff1663da.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_44%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-
-# 
-
-## 3、thymeleaf使用
-
-#### 1、引入Starter
-
 ```java
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-```
+import com.neptune.springboot.pojo.User;
+import org.springframework.http.HttpInputMessage;
+import org.springframework.http.HttpOutputMessage;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 
-#### 2、自动配置好了thymeleaf
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
 
-```java
-@Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(ThymeleafProperties.class)
-@ConditionalOnClass({ TemplateMode.class, SpringTemplateEngine.class })
-@AutoConfigureAfter({ WebMvcAutoConfiguration.class, WebFluxAutoConfiguration.class })
-public class ThymeleafAutoConfiguration { }
-```
-
-# 
-
-自动配好的策略
-
-- 1、所有thymeleaf的配置值都在 ThymeleafProperties
-- 2、配置好了 **SpringTemplateEngine** 
-- **3、配好了** **ThymeleafViewResolver** 
-- 4、我们只需要直接开发页面
-
-```java
-	public static final String DEFAULT_PREFIX = "classpath:/templates/";
-
-	public static final String DEFAULT_SUFFIX = ".html";  //xxx.html
-```
-
-#### 3、页面开发
-
-```java
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1 th:text="${msg}">哈哈</h1>
-<h2>
-    <a href="www.atguigu.com" th:href="${link}">去百度</a>  <br/>
-    <a href="www.atguigu.com" th:href="@{link}">去百度2</a>
-</h2>
-</body>
-</html>
-```
-
-## 4、构建后台管理系统
-
-### 1、项目创建
-
-thymeleaf、web-starter、devtools、lombok
-
-
-
-### 2、静态资源处理
-
-自动配置好，我们只需要把所有静态资源放到 static 文件夹下
-
-### 3、路径构建
-
-th:action="@{/login}"
-
-
-
-### 4、模板抽取
-
-th:insert/replace/include
-
-
-
-### 5、页面跳转
-
-```java
-    @PostMapping("/login")
-    public String main(User user, HttpSession session, Model model){
-
-        if(StringUtils.hasLength(user.getUserName()) && "123456".equals(user.getPassword())){
-            //把登陆成功的用户保存起来
-            session.setAttribute("loginUser",user);
-            //登录成功重定向到main.html;  重定向防止表单重复提交
-            return "redirect:/main.html";
-        }else {
-            model.addAttribute("msg","账号密码错误");
-            //回到登录页面
-            return "login";
-        }
-
+public class NeptuneMessageConverter implements HttpMessageConverter<User> {
+    @Override
+    public boolean canRead(Class<?> clazz, MediaType mediaType) {
+        return false;
     }
+
+    @Override
+    public boolean canWrite(Class<?> clazz, MediaType mediaType) {
+        return true;
+    }
+
+    /**
+     * 服务器要统计所有Messageconverter都能写出哪些内容类型
+     *
+     * application/neptune
+     * @return
+     */
+    @Override
+    public List<MediaType> getSupportedMediaTypes() {
+       return MediaType.parseMediaTypes("application/neptune");
+    }
+
+    @Override
+    public User read(Class<? extends User> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+        return null;
+    }
+
+    @Override
+    public void write(User user, MediaType contentType, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+
+        //自定义协议的数据的写出
+        String format = String.format("%s;%s", user.getName(), user.getAge());
+
+        //写出
+        OutputStream body = outputMessage.getBody();
+        body.write(format.getBytes());
+    }
+}
+
 ```
 
 
 
-### 6、数据渲染
+![image-20230115220934981](../../images/image-20230115220934981.png)
+
+![image-20230115220747426](../../images/image-20230115220747426.png)
+
+![image-20230115220717325](../../images/image-20230115220717325.png)
+
+##### 6.4.2.3.2 请求参数format指定
 
 ```java
-    @GetMapping("/dynamic_table")
-    public String dynamic_table(Model model){
-        //表格内容的遍历
-        List<User> users = Arrays.asList(new User("zhangsan", "123456"),
-                new User("lisi", "123444"),
-                new User("haha", "aaaaa"),
-                new User("hehe ", "aaddd"));
-        model.addAttribute("users",users);
+/**
+             * 自定义内容协商策略
+             * @param configurer
+             */
+            @Override
+            public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+                HashMap<String, MediaType> mediaTypes = new HashMap<>();
+                mediaTypes.put("json",MediaType.APPLICATION_JSON);
+                mediaTypes.put("xml",MediaType.APPLICATION_XML);
+                mediaTypes.put("uranus",MediaType.parseMediaType("application/neptune"));
 
-        return "table/dynamic_table";
-    }
-        <table class="display table table-bordered" id="hidden-table-info">
-        <thead>
-        <tr>
-            <th>#</th>
-            <th>用户名</th>
-            <th>密码</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="gradeX" th:each="user,stats:${users}">
-            <td th:text="${stats.count}">Trident</td>
-            <td th:text="${user.userName}">Internet</td>
-            <td >[[${user.password}]]</td>
-        </tr>
-        </tbody>
-        </table>
+                //指定支持解析哪些参数对应的哪些媒体类型
+                ParameterContentNegotiationStrategy parameterStrategy = new ParameterContentNegotiationStrategy(mediaTypes);
+                
+                //设置参数名称http://localhost:8080/newuser?star=json
+                //parameterStrategy.setParameterName("star");
+                
+                //添加请求头策略（否则请求头失效，默认*/*）
+                HeaderContentNegotiationStrategy headerStrategy = new HeaderContentNegotiationStrategy();
+                configurer.strategies(Arrays.asList(parameterStrategy,headerStrategy));
+                configurer.strategies(Arrays.asList(parameterContentNegotiationStrategy));
+            }
+
 ```
 
+![image-20230115225949979](../../images/image-20230115225949979.png)
 
+![image-20230115223723085](../../images/image-20230115223723085.png)
 
-# 6、拦截器
+![image-20230115225450821](../../images/image-20230115225450821.png)
 
-## 1、HandlerInterceptor 接口
+==有可能我们添加的自定义的功能会覆盖默认很多功能，导致一些默认的功能失效。debug源码获取失去了什么。==
+
+**上述功能除了我们完全自定义外？SpringBoot有没有为我们提供基于配置文件的快速修改媒体类型功能？怎么配置呢？【提示：参照SpringBoot官方文档web开发内容协商章节】**
+
+## 6.5 拦截器
+
+### 6.5.1 HandlerInterceptor 接口
 
 ```java
 /**
@@ -3186,9 +2889,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 }
 ```
 
-
-
-## 2、配置拦截器
+### 6.5.2配置拦截器
 
 ```java
 /**
@@ -3208,9 +2909,7 @@ public class AdminWebConfig implements WebMvcConfigurer {
 }
 ```
 
-
-
-## 3、拦截器原理
+### 6.5.3 拦截器原理
 
 1、根据当前请求，找到**HandlerExecutionChain【**可以处理请求的handler以及handler的所有 拦截器】
 
@@ -3237,11 +2936,9 @@ public class AdminWebConfig implements WebMvcConfigurer {
 
 ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605765121071-64cfc649-4892-49a3-ac08-88b52fb4286f.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_35%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
 
+## 6.6 文件上传
 
-
-# 7、文件上传
-
-## 1、页面表单
+### 6.6.1 页面表单
 
 ```html
 <form method="post" action="/upload" enctype="multipart/form-data">
@@ -3250,9 +2947,7 @@ public class AdminWebConfig implements WebMvcConfigurer {
 </form>
 ```
 
-
-
-## 2、文件上传代码
+### 6.6.2 文件上传代码
 
 
 
@@ -3294,7 +2989,7 @@ public class AdminWebConfig implements WebMvcConfigurer {
     }
 ```
 
-## 3、自动配置原理
+### 6.6.3 自动配置原理
 
 **文件上传自动配置类-MultipartAutoConfiguration-****MultipartProperties**
 
@@ -3317,11 +3012,11 @@ public class AdminWebConfig implements WebMvcConfigurer {
 
 ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605847414866-32b6cc9c-5191-4052-92eb-069d652dfbf9.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_23%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
 
-# 8、异常处理
+## 6.7 异常处理
 
-## 1、错误处理
+### 6.7.1 错误处理
 
-#### 1、默认规则
+#### 6.7.1.1 默认规则
 
 - 默认情况下，Spring Boot提供`/error`处理所有错误的映射
 - 对于机器客户端，它将生成JSON响应，其中包含错误，HTTP状态和异常消息的详细信息。对于浏览器客户端，响应一个“ whitelabel”错误视图，以HTML格式呈现相同的数据
@@ -3333,7 +3028,7 @@ public class AdminWebConfig implements WebMvcConfigurer {
 
 - - ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606024592756-d4ab8a6b-ec37-426b-8b39-010463603d57.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_15%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
 
-#### 2、定制错误处理逻辑
+#### 6.7.1.2 定制错误处理逻辑
 
 - 自定义错误页
 
@@ -3356,11 +3051,7 @@ public class AdminWebConfig implements WebMvcConfigurer {
   - 你的异常没有任何人能处理。tomcat底层 response.sendError。error请求就会转给controller
   - **basicErrorController 要去的页面地址是** **ErrorViewResolver**  ；
 
-
-
-
-
-#### 3、异常处理自动配置原理
+#### 6.7.1.3 异常处理自动配置原理
 
 - **ErrorMvcAutoConfiguration  自动配置异常处理规则**
 
@@ -3394,11 +3085,7 @@ public class AdminWebConfig implements WebMvcConfigurer {
 
 ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606043904074-50b7f088-2d2b-4da5-85e2-0a756da74dca.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_35%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10) 错误页
 
-
-
-
-
-#### 4、异常处理步骤流程
+#### 6.7.1.4 异常处理步骤流程
 
 1、执行目标方法，目标方法运行期间有任何异常都会被catch、而且标志当前请求结束；并且用 **dispatchException** 
 
@@ -3422,9 +3109,9 @@ processDispatchResult(processedRequest, response, mappedHandler, **mv**, **dispa
     - **3、默认的** **DefaultErrorViewResolver ,作用是把响应状态码作为错误页的地址，error/500.html** 
     - **4、模板引擎最终响应这个页面** **error/500.html** 
 
-# 9、Web原生组件注入（Servlet、Filter、Listener）
+## 6.8 Web原生组件注入（Servlet、Filter、Listener）
 
-## 1、使用Servlet API
+### 6.8.1 使用Servlet API
 
 @ServletComponentScan(basePackages = **"com.atguigu.admin"**) :指定原生Servlet组件都放在那里
 
@@ -3460,13 +3147,9 @@ A： /my/
 
 B： /my/1
 
+### 6.8.2 使用RegistrationBean
 
-
-
-
-## 2、使用RegistrationBean
-
-```
+```java
 ServletRegistrationBean`, `FilterRegistrationBean`, and `ServletListenerRegistrationBean
 @Configuration
 public class MyRegistConfig {
@@ -3497,11 +3180,9 @@ public class MyRegistConfig {
 }
 ```
 
+## 6.9 嵌入式Servlet容器
 
-
-# 10、嵌入式Servlet容器
-
-## 1、切换嵌入式Servlet容器
+### 6.9.1 切换嵌入式Servlet容器
 
 - 默认支持的webServer
 
@@ -3543,7 +3224,7 @@ public class MyRegistConfig {
 
 - ``
 
-## 2、定制Servlet容器
+### 6.9.2 定制Servlet容器
 
 - 实现  **WebServerFactoryCu**stomizer<ConfigurableServletWebServerFactory> 
 
@@ -3572,9 +3253,9 @@ public class CustomizationBean implements WebServerFactoryCustomizer<Configurabl
 }
 ```
 
-# 11、定制化原理
+## 6.10 定制化原理
 
-## 1、定制化的常见方式 
+### 6.10.1 定制化的常见方式 
 
 - 修改配置文件；
 - **xxxxxCustomizer；**
@@ -3602,8 +3283,6 @@ public class AdminWebConfig implements WebMvcConfigurer
 
 - ... ...
 
-
-
-## 2、原理分析套路
+### 6.10.2 原理分析套路
 
 **场景starter** **- xxxxAutoConfiguration - 导入xxx组件 - 绑定xxxProperties --** **绑定配置文件项**

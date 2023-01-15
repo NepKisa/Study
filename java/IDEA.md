@@ -173,6 +173,10 @@ debug时，选中表达式右键可计算出表达式的值
 
 ![image-20221224151738224](../images/image-20221224151738224.png)
 
+## 2.3 debug byte转string
+
+![image-20230115180855804](../images/image-20230115180855804.png)
+
 # 3 IDEA Service
 
 ## 3.1 Service 管理Springboot

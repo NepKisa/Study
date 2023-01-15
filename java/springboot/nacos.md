@@ -1087,7 +1087,7 @@ https://nacos.io/zh-cn/docs/cluster-mode-quick-start.html
 
 ### 5.1.2 实际情况
 
-![graphic](../../images/Sun, 08 Jan 2023 174156.png)
+![graphic](../../images/nacos架构图.png)
 
 ### 5.1.3 说明
 

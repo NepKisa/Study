@@ -2,6 +2,29 @@
 
 
 
+## 通过对win10注册表修改来关闭睿频（高性能/已禁用来回切换）
+
+睿频的关闭会使电脑的温度和功耗大大降低起到稳定的作用；但是并不是说关闭睿频就是好的，小伙伴们根据自身需求来选择是关闭还是开启睿频；下面介绍通过修改注册表后在电源选项中来回切换高性能和已禁用来开启和关闭睿频。
+
+1、桌面状态下同时按”Windows+R键“，打开“运行”窗口，输入regedit并按回车进入注册表编辑器；（也可以在”开始“菜单，找到“windows管理工具”并点开找到注册表编辑器点开进入）
+
+注册表编辑器
+2、在注册表左边框依次选择如下位置【HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\be337238-0d82-4146-a960-4f3749d470c7】
+
+找到注册表位置
+3、双击图中的Attributes并且把数值从1改成2，确定后退出重启（如果没有Attributes的情况话只需在左上角点编辑——新建——DWORD（32）后将名字改为Attributes，重复上面步骤，基数设为十六进即可）
+
+数值“1”，改为“2”
+4、重启电脑后，进入设置——系统——电源与睡眠——其他电源设置——选中你正在用的电源计划右边的更改计划设置——更改高级电源设置——处理器电源管理，你会发现多了一个处理器性能提升模式；点击加号设置为已禁用即可关闭睿频（在“控制面版”中选额“电源选项”也可到达更改计划设置）
+
+
+
+“高性能”为系统默认即开启睿频状态
+“已禁用”确定即可关闭睿频
+
+
+总结：可以根据自己的需要来选择禁用还是开启睿频，通过选择高性能/已禁用来开启/关闭睿频;（也可以在最大处理器状态处把设置100%改为99%来关闭睿频，重新调为100%来开启睿频，这样比较麻烦不如直接在高性能和已禁用来回切换便捷） 
+
 ## ElasticSearch
 
 ElasticSearch报错：
@@ -1293,8 +1316,6 @@ df -h查看已增加成功
 cat -v 文件名
 ```
 
-
-
 #### Linux分盘
 
 ```
@@ -1322,7 +1343,7 @@ mkdir roles/{httpd , mysq1, memcache} -pv
 2、fdisk -l
 3、pvs查看物理卷
 lvs查看逻辑卷
-vgs查看卷组
+vgs查看卷组（没有则创建）
 4、创建vg卷组
 vgcreate vgname /dev/sdb2
 5、创建逻辑卷
@@ -1335,6 +1356,17 @@ mount /disk信息 /目录
 7、开机启动挂载
 vi /etc/fstab
 /disk信息/目录xfs defaults 0 o
+
+
+
+======================
+lvcreate -n oracle -L 30G datavg
+mkfs.xfs /dev/mapper/datavg-oracle
+mkdir /oracle
+mount /dev/mapper/datavg-oracle /oracle
+cat << EOF >> /etc/fstab
+/dev/mapper/datavg-oracle	/oracle	xfs	defaults	0	0
+EOF
 ```
 
 #### 去除字符串中的空格
