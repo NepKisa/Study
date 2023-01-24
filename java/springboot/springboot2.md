@@ -1,5 +1,7 @@
 
 
+# 1 环境
+
 * Windows11
 * IDEA 2022.2.3
 * Java 8 
@@ -270,9 +272,9 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot
 
 - ......
 
-## 3.2 示例
+### 3.1.3 示例
 
-### 3.2.1 实体类
+#### 3.1.3.1 实体类
 
 ```java
 public class Pet {
@@ -354,7 +356,7 @@ public class User {
 }
 ```
 
-### 3.2.2 配置文件
+#### 3.1.3.2 配置文件
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -371,7 +373,7 @@ public class User {
 </beans>
 ```
 
-### 3.2.3 配置类
+#### 3.1.3.3 配置类
 
 ```java
 package com.neptune.springboot.config;
@@ -401,11 +403,11 @@ public class MyConfig {
 
 ![image-20221220202036696](../../images/image-20221220202036696.png)
 
-# 2 容器功能
+## 3.2 容器功能
 
-## 2.1 组件添加
+### 3.2.1 组件添加
 
-### 2.1.1 @Configuration
+#### 3.2.1.1 @Configuration
 
 - 基本使用
 - **Full模式与Lite模式**
@@ -505,7 +507,7 @@ public class MainApplication {
 }
 ```
 
-### 2.1.2 @Bean、@Component、@Controller、@Service、@Repository
+#### 3.2.1.2 @Bean、@Component、@Controller、@Service、@Repository
 
 ```java
 @Bean：放在方法的上面， 把方法的返回值对象，注入到spring容器中。
@@ -515,7 +517,7 @@ public class MainApplication {
 @Repository : 放在dao层的实现类上面，创建dao对象，放入到容器。 没有使用这个注解，是因为现在使用MyBatis框     架，  dao对象是MyBatis通过代理生成的。 不需要使用@Repository、 所以没有使用。
 ```
 
-### 2.1.3 @ComponentScan、@Import
+#### 3.2.1.3 @ComponentScan、@Import
 
 ```java
 //@SpringBootApplication
@@ -540,7 +542,7 @@ public class MyConfig {
 
 @Import 高级用法： https://www.bilibili.com/video/BV1gW411W7wy?p=8
 
-### 2.1.4 @Conditional
+#### 3.2.1.4 @Conditional
 
 条件装配：满足Conditional指定的条件，则进行组件注入
 
@@ -618,9 +620,9 @@ public class MainApplication {
 
 ![image-20221220215047646](../../images/image-20221220215047646.png)
 
-## 2.2 原生配置文件引入
+### 3.2.2 原生配置文件引入
 
-### 2.2.1 @ImportResource
+#### 3.2.2.1 @ImportResource
 
 ```java
 @ImportResource ： 加载其他的xml配置文件， 把文件中的对象注入到spring容器中
@@ -653,7 +655,7 @@ public class MyConfig {}
         System.out.println("hehe："+hehe);//true
 ```
 
-## 2.3、配置绑定 
+### 3.2.3 配置绑定 
 
 如何使用Java读取到properties文件中的内容，并且把它封装到JavaBean中，以供随时使用；
 
@@ -673,7 +675,7 @@ public class getProperties {
  }
 ```
 
-### 2.3.1 @Component + @ConfigurationProperties
+#### 3.2.3.1 @Component + @ConfigurationProperties
 
 ```java
 /**
@@ -712,7 +714,7 @@ public class Car {
 }
 ```
 
-### 2、@EnableConfigurationProperties + @ConfigurationProperties
+#### 3.2.3.1 @EnableConfigurationProperties + @ConfigurationProperties
 
 ```java
 @EnableConfigurationProperties(Car.class)
@@ -728,9 +730,9 @@ public class MyConfig {
 public class Car {
 ```
 
-# 3 自动配置原理入门
+## 3.3 自动配置原理入门
 
-## 3.1 引导加载自动配置类
+### 3.3.1 引导加载自动配置类
 
 ```java
 @SpringBootConfiguration
@@ -744,17 +746,17 @@ public @interface SpringBootApplication{}
     
 ```
 
-### 3.1.1 @SpringBootConfiguration
+#### 3.3.1.1 @SpringBootConfiguration
 
 @Configuration。代表当前是一个配置类
 
 ![image-20221224150716526](../../images/image-20221224150716526.png)
 
-### 3.1.2 @ComponentScan
+#### 3.3.1.2 @ComponentScan
 
 指定扫描哪些，Spring注解；
 
-### 3.1.3 @EnableAutoConfiguration
+#### 3.3.1.3 @EnableAutoConfiguration
 
 ```java
 @AutoConfigurationPackage
@@ -762,7 +764,7 @@ public @interface SpringBootApplication{}
 public @interface EnableAutoConfiguration {}
 ```
 
-#### 3.1.3.1 @AutoConfigurationPackage
+##### 3.3.1.3.1 @AutoConfigurationPackage
 
 自动配置包？指定了默认的包规则
 
@@ -776,7 +778,7 @@ public @interface AutoConfigurationPackage {}
 
 ![image-20221224151558866](../../images/image-20221224151558866.png)
 
-#### 3.1.3.2 @Import(AutoConfigurationImportSelector.class)
+##### 3.3.1.3.2 @Import(AutoConfigurationImportSelector.class)
 
 ```java
 1、利用getAutoConfigurationEntry(annotationMetadata);给容器中批量导入一些组件
@@ -951,7 +953,7 @@ org.springframework.boot.autoconfigure.webservices.WebServicesAutoConfiguration
 org.springframework.boot.autoconfigure.webservices.client.WebServiceTemplateAutoConfiguration
 ```
 
-## 3.2 按需开启自动配置项
+### 3.3.2 按需开启自动配置项
 
 ```java
 虽然我们144个场景的所有自动配置启动的时候默认全部加载。xxxxAutoConfiguration
@@ -960,7 +962,7 @@ org.springframework.boot.autoconfigure.webservices.client.WebServiceTemplateAuto
 
 ![image-20221224162948387](../../images/image-20221224162948387.png)
 
-## 3.3 修改默认配置
+### 3.3.3 修改默认配置
 
 **修改用户自己注册的组件名称（bean重命名）**
 
@@ -1010,7 +1012,7 @@ SpringBoot默认会在底层配好所有的组件。但是如果用户自己配�
 
 ==xxxxxAutoConfiguration ➡ 组件  ➡ xxxxProperties里面拿值  ➡ application.properties==
 
-## 3.4 最佳实践
+### 3.3.4 最佳实践
 
 - 引入场景依赖
 
@@ -1046,10 +1048,9 @@ SpringBoot默认会在底层配好所有的组件。但是如果用户自己配�
 
   * ......
 
+## 3.4 开发小技巧
 
-# 4 开发小技巧
-
-## 4.1 Lombok
+### 3.4.1 Lombok
 
 简化JavaBean开发
 
@@ -1095,7 +1096,7 @@ public class HelloController {
 }
 ```
 
-## 4.2 dev-tools
+### 3.4.2 dev-tools
 
 ```xml
         <dependency>
@@ -1109,29 +1110,29 @@ public class HelloController {
 
 ![image-20221224175005566](../../images/image-20221224175005566.png)
 
-## 4.3 Spring Initailizr（项目初始化向导）
+### 3.4.3 Spring Initailizr（项目初始化向导）
 
-# 5 配置文件
+# 4 配置文件
 
 ==*优先级：properties>yml>yaml*==
 
 ==使用yml文件可以避免中文乱码==
 
-## 5.1 文件类型
+## 4.1 文件类型
 
-### 5.1.1 properties
+### 4.1.1 properties
 
 同以前的properties用法
 
-### 5.1.2 yaml
+### 4.1.2 yaml
 
-#### 5.1.2.1 简介
+#### 4.1.2.1 简介
 
 YAML 是 "YAML Ain't Markup Language"（YAML 不是一种标记语言）的递归缩写。在开发的这种语言时，YAML 的意思其实是："Yet Another Markup Language"（仍是一种标记语言）。 
 
 非常适合用来做以数据为中心的配置文件
 
-#### 5.1.2.2 基本语法
+#### 4.1.2.2 基本语法
 
 - key: value；kv之间有空格
 - 大小写敏感
@@ -1141,7 +1142,7 @@ YAML 是 "YAML Ain't Markup Language"（YAML 不是一种标记语言）的递�
 - '#'表示注释
 - 字符串无需加引号，如果要加，''与""表示字符串内容 会被 转义/不转义
 
-#### 5.1.2.3 数据类型
+#### 4.1.2.3 数据类型
 
 - 字面量：单个的、不可再分的值。date、boolean、string、number、null
 
@@ -1171,7 +1172,7 @@ k:
  - v3
 ```
 
-#### 5.1.2.4 示例
+#### 4.1.2.4 示例
 
 ```java
 @Data
@@ -1225,7 +1226,7 @@ person:
     health: [{name: mario,weight: 47}]
 ```
 
-## 5.2 配置提示
+## 4.2 配置提示
 
 自定义的类和配置文件绑定一般没有提示。
 
@@ -1256,11 +1257,11 @@ person:
     </build>
 ```
 
-# 6 Web开发
+# 5 Web开发
 
 ![image-20221224185431320](../../images/image-20221224185431320.png)
 
-## 6.1 SpringMVC自动配置概览
+## 5.1 SpringMVC自动配置概览
 
 Spring Boot provides auto-configuration for Spring MVC that **works well with most applications.(大多场景我们都无需自定义配置)**
 
@@ -1314,15 +1315,15 @@ If you want to take complete control of Spring MVC, you can add your own `@Confi
 
 **使用** `@EnableWebMvc+@Configuration+DelegatingWebMvcConfiguration 全面接管SpringMVC`
 
-## 6.2 简单功能分析
+## 5.2 简单功能分析
 
 ![image-20221224190728798](../../images/image-20221224190728798.png)
 
 ![image-20221225201601302](../../images/image-20221225201601302.png)
 
-### 6.2.1 静态资源访问
+### 5.2.1 静态资源访问
 
-#### 6.2.1.1 静态资源目录
+#### 5.2.1.1 静态资源目录
 
 只要静态资源放在类路径下： called `/static` (or `/public` or `/resources` or `/META-INF/resources`
 
@@ -1353,7 +1354,7 @@ spring:
 
 ![image-20221225203855747](../../images/image-20221225203855747.png)
 
-#### 6.2.1.2 静态资源访问前缀
+#### 5.2.1.2 静态资源访问前缀
 
 默认无前缀
 
@@ -1365,7 +1366,7 @@ spring:
 
 当前项目 + static-path-pattern + 静态资源名 = 静态资源文件夹下找
 
-#### 6.2.1.3 webjar
+#### 5.2.1.3 webjar
 
 自动映射 /[webjars](http://localhost:8080/webjars/jquery/3.5.1/jquery.js)/**
 
@@ -1383,7 +1384,7 @@ https://www.webjars.org/
 
 ![image-20221225204837869](../../images/image-20221225204837869.png)
 
-### 6.2.2 欢迎页支持
+### 5.2.2 欢迎页支持
 
 - 静态资源路径下  index.html
 
@@ -1405,7 +1406,7 @@ spring:
 
 ![image-20221225205504236](../../images/image-20221225205504236.png)
 
-### 6.2.3 自定义 `Favicon`
+### 5.2.3 自定义 `Favicon`
 
 浏览器显示不出来时,由于缓存问题，按Ctrl+F5 强制刷新屏幕。（以后遇到很多浏览器问题，在代码没有问题的情况下，通过强制刷新浏览器都可能会很有效）
 
@@ -1419,7 +1420,7 @@ spring:
 
 ![image-20221225211351657](../../images/image-20221225211351657.png)
 
-### 6.2.4 静态资源配置原理
+### 5.2.4 静态资源配置原理
 
 - SpringBoot启动默认加载  xxxAutoConfiguration 类（自动配置类）
 - SpringMVC功能的自动配置类 WebMvcAutoConfiguration，生效
@@ -1456,7 +1457,7 @@ public class WebProperties {}
 
 - 配置文件的相关属性和xxx进行了绑定。WebMvcProperties **spring.mvc**、WebProperties **spring.web**
 
-#### 6.2.4.1 配置类只有一个有参构造器
+#### 5.2.4.1 配置类只有一个有参构造器
 
 ```java
 	//有参构造器所有参数的值都会从容器中确定
@@ -1483,7 +1484,7 @@ public class WebProperties {}
 		}
 ```
 
-#### 6.2.4.2 资源处理的默认规则
+#### 5.2.4.2 资源处理的默认规则
 
 ```java
 		@Override
@@ -1523,7 +1524,7 @@ spring:
 		private String[] staticLocations = CLASSPATH_RESOURCE_LOCATIONS;
 ```
 
-#### 6.2.4.3 欢迎页的处理规则
+#### 5.2.4.3 欢迎页的处理规则
 
 ```java
 	HandlerMapping：处理器映射。保存了每一个Handler能处理哪些请求。	
@@ -1563,15 +1564,15 @@ spring:
 	}
 ```
 
-#### 6.2.4.4 favicon
+#### 5.2.4.4 favicon
 
 浏览器会自动发送/favicon.ico请求获取到图标，整个session期间不再获取
 
-## 6.3 请求参数处理
+## 5.3 请求参数处理
 
-### 6.3.1 请求映射
+### 5.3.1 请求映射
 
-#### 6.3.1.1 rest使用与原理
+#### 5.3.1.1 rest使用与原理
 
 - @xxxMapping；
 - Rest风格支持（*使用**HTTP**请求方式动词来表示对资源的操作*）
@@ -1666,7 +1667,7 @@ spring:
         enabled: true   #开启页面表单的Rest功能
 ```
 
-#### 6.3.1.2 请求映射原理
+#### 5.3.1.2 请求映射原理
 
 SpringMVC的`DispatcherServlet`是处理所有请求的开始
 
@@ -1735,9 +1736,9 @@ protected void doDispatch(HttpServletRequest request, HttpServletResponse respon
 	}
 ```
 
-### 6.3.2 普通参数与基本注解
+### 5.3.2 普通参数与基本注解
 
-#### 6.3.2.1 注解
+#### 5.3.2.1 注解
 
 ```java
 @PathVariable：路径变量
@@ -1825,7 +1826,7 @@ public class ParameterTestController {
 
 
 
-##### 6.3.2.1.1 @RequestAttribute 
+##### 5.3.2.1.1 @RequestAttribute 
 
 **@Controller+@ResponseBody+return "forward:/success" 可实现转发请求**
 
@@ -1857,7 +1858,7 @@ public class RequestController {
 }
 ```
 
-##### 6.3.2.1.2 自定义组件，矩阵变量
+##### 5.3.2.1.2 自定义组件，矩阵变量
 
 ```java
 @Configuration(proxyBeanMethods = false)
@@ -1906,7 +1907,7 @@ public class WebConfig implements WebMvcConfigurer {
     }
 ```
 
-##### 6.3.2.1.3 自定义转换器
+##### 5.3.2.1.3 自定义转换器
 
 ```java
 @Override
@@ -1928,7 +1929,7 @@ public class WebConfig implements WebMvcConfigurer {
 
 ![image-20230103104903474](../../images/image-20230103104903474.png)
 
-#### 6.3.2.2 Servlet API
+#### 5.3.2.2 Servlet API
 
 WebRequest、ServletRequest、MultipartRequest、 HttpSession、javax.servlet.http.PushBuilder、Principal、InputStream、Reader、HttpMethod、Locale、TimeZone、ZoneId
 
@@ -1955,7 +1956,7 @@ WebRequest、ServletRequest、MultipartRequest、 HttpSession、javax.servlet.ht
 	}
 ```
 
-#### 6.3.2.3 复杂参数
+#### 5.3.2.3 复杂参数
 
 **Map**、**Model（map、model里面的数据会被放在request的请求域  request.setAttribute）、**Errors/BindingResult、**RedirectAttributes（ 重定向携带数据）**、**ServletResponse（response）**、SessionStatus、UriComponentsBuilder、ServletUriComponentsBuilder
 
@@ -1988,7 +1989,7 @@ mavContainer全称为ModelAndViewContainer
 
 ![image-20230102221040771](../../images/image-20230102221040771.png)
 
-#### 6.3.2.4 自定义对象参数
+#### 5.3.2.4 自定义对象参数
 
 可以自动类型转换与格式化，可以级联封装。
 
@@ -2021,7 +2022,7 @@ public class Pet {
 result
 ```
 
-### 6.3.3 POJO封装过程
+### 5.3.3 POJO封装过程
 
 - **ServletModelAttributeMethodProcessor** 
 
@@ -2067,13 +2068,13 @@ result
 
 ![image-20230103100011141](../../images/image-20230103100011141.png)
 
-### 6.3.4 参数处理原理
+### 5.3.4 参数处理原理
 
 - HandlerMapping中找到能处理请求的Handler（Controller.method()）
 - 为当前Handler 找一个适配器 HandlerAdapter； **RequestMappingHandlerAdapter**
 - 适配器执行目标方法并确定方法参数的每一个值
 
-#### 6.3.4.1 HandlerAdapter
+#### 5.3.4.1 HandlerAdapter
 
 ![image-20221228175431457](../../images/image-20221228175431457.png)
 
@@ -2083,7 +2084,7 @@ result
 
 * ......
 
-#### 6.3.4.2 执行目标方法
+#### 5.3.4.2 执行目标方法
 
 ```java
 // Actually invoke the handler.
@@ -2104,7 +2105,7 @@ Object returnValue = invokeForRequest(webRequest, mavContainer, providedArgs);
 Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs);
 ```
 
-#### 6.3.4.3 参解析器-HandlerMethodArgumentResolver
+#### 5.3.4.3 参解析器-HandlerMethodArgumentResolver
 
 确定将要执行的目标方法的每一个参数的值是什么;
 
@@ -2121,11 +2122,11 @@ SpringMC目标方法能写多少种参数类型。取决于参数解析器。
 - 当前解析器是否支持解析这种参数
 - 支持就调用 resolveArgument
 
-#### 6.3.4.4 返回值处理器
+#### 5.3.4.4 返回值处理器
 
 ![image-20221228183655257](../../images/image-20221228183655257.png)
 
-### 6.3.5 如何确定目标方法每一个参数的值
+### 5.3.5 如何确定目标方法每一个参数的值
 
 ```java
 ============InvocableHandlerMethod==========================
@@ -2168,7 +2169,7 @@ protected Object[] getMethodArgumentValues(NativeWebRequest request, @Nullable M
 
 ![image-20230102190108090](../../images/image-20230102190108090.png)
 
-#### 6.3.5.1 挨个判断所有参数解析器那个支持解析这个参数
+#### 5.3.5.1 挨个判断所有参数解析器哪个支持解析这个参数
 
 ```java
 	@Override
@@ -2194,13 +2195,13 @@ protected Object[] getMethodArgumentValues(NativeWebRequest request, @Nullable M
 	}
 ```
 
-#### 6.3.5.2 解析这个参数的值
+#### 5.3.5.2 解析这个参数的值
 
 ```java
 调用各自 HandlerMethodArgumentResolver 的 resolveArgument 方法即可
 ```
 
-#### 6.3.5.3 自定义类型参数 封装POJO
+#### 5.3.5.3 自定义类型参数 封装POJO
 
 **ServletModelAttributeMethodProcessor  这个参数处理器支持**
 
@@ -2346,13 +2347,13 @@ public static boolean isSimpleValueType(Class<?> type) {
     }
 ```
 
-### 6.3.6 目标方法执行完成
+### 5.3.6 目标方法执行完成
 
 将所有的数据都放在 **ModelAndViewContainer**；包含要去的页面地址View。还包含Model数据。
 
 ![image-20230102215902423](../../images/image-20230102215902423.png)
 
-### 6.3.7 处理派发结果
+### 5.3.7 处理派发结果
 
 **processDispatchResult**(processedRequest, response, mappedHandler, mv, dispatchException);
 
@@ -2426,13 +2427,13 @@ protected void exposeModelAsRequestAttributes(Map<String, Object> model,
 	}
 ```
 
-## 6.4 数据响应与内容协商
+## 5.4 数据响应与内容协商
 
 ![img](../../images/lake_card_mindmap.png)
 
-### 6.4.1 响应JSON
+### 5.4.1 响应JSON
 
-#### 6.4.1.1 jackson.jar+@ResponseBody
+#### 5.4.1.1 jackson.jar+@ResponseBody
 
 ```xml
         <dependency>
@@ -2452,7 +2453,7 @@ web场景自动引入了json场景
 
 ![image-20230109194431138](../../images/image-20230109194431138.png)
 
-##### 6.4.1.1.1 返回值解析器
+##### 5.4.1.1.1 返回值解析器
 
 ![image-20230109200826819](../../images/image-20230109200826819.png)
 
@@ -2505,7 +2506,7 @@ RequestResponseBodyMethodProcessor
 	}
 ```
 
-##### 6.4.1.1.2 返回值解析器原理
+##### 5.4.1.1.2 返回值解析器原理
 
 ![image-20230109204015060](../../images/image-20230109204015060.png)
 
@@ -2522,7 +2523,7 @@ RequestResponseBodyMethodProcessor
 
 ![image-20230110142730503](../../images/image-20230110142730503.png)
 
-#### 6.4.1.2 SpringMVC到底支持哪些返回值
+#### 5.4.1.2 SpringMVC到底支持哪些返回值
 
 ```java
 ModelAndView
@@ -2543,9 +2544,9 @@ WebAsyncTask
 @ResponseBody 注解 ---> RequestResponseBodyMethodProcessor
 ```
 
-#### 6.4.1.3HTTPMessageConverter原理
+#### 5.4.1.3HTTPMessageConverter原理
 
-##### 6.4.1.3.1 MessageConverter规范
+##### 5.4.1.3.1 MessageConverter规范
 
 ![image-20230114144103632](../../images/image-20230114144103632.png)
 
@@ -2553,7 +2554,7 @@ HttpMessageConverter: 看是否支持将此Class类型的对象，转为MediaTyp
 
 例子：Person对象转为JSON。或者 JSON转为Person
 
-##### 6.4.1.3.2 默认的MessageConverter
+##### 5.4.1.3.2 默认的MessageConverter
 
 ![image-20230114151847350](../../images/image-20230114151847350.png)
 
@@ -2578,11 +2579,11 @@ HttpMessageConverter: 看是否支持将此Class类型的对象，转为MediaTyp
 
 ![image-20230115180735262](../../images/image-20230115180735262.png)
 
-### 6.4.2 内容协商
+### 5.4.2 内容协商
 
 根据客户端接收能力不同，返回不同媒体类型的数据。
 
-#### 6.4.2.1 引入xml依赖
+#### 5.4.2.1 引入xml依赖
 
 ```xml
  <dependency>
@@ -2591,13 +2592,13 @@ HttpMessageConverter: 看是否支持将此Class类型的对象，转为MediaTyp
 </dependency>
 ```
 
-#### 6.4.2.2 客户端分别测试返回json和xml
+#### 5.4.2.2 客户端分别测试返回json和xml
 
 只需要改变请求头中Accept字段。Http协议中规定的，告诉服务器本客户端可以接收的数据类型。
 
 ![image-20230115185747127](../../images/image-20230115185747127.png)
 
-#### 6.4.2.3 开启浏览器参数方式内容协商功能
+#### 5.4.2.3 开启浏览器参数方式内容协商功能
 
 为了方便内容协商，开启基于请求参数的内容协商功能。
 
@@ -2627,7 +2628,7 @@ spring:
 
 ![image-20230115212809951](../../images/image-20230115212809951.png)
 
-#### 6.4.2.4 内容协商原理
+#### 5.4.2.4 内容协商原理
 
 ![image-20230115203630402](../../images/image-20230115203630402.png)
 
@@ -2688,7 +2689,7 @@ WebMvcConfigurationSupport类
 		}
 ```
 
-#### 6.4.2.5 自定义 MessageConverter
+#### 5.4.2.5 自定义 MessageConverter
 
 **实现多协议数据兼容。json、xml、neptune**
 
@@ -2700,7 +2701,7 @@ WebMvcConfigurationSupport类
 
 3、内容协商找到最终的 **messageConverter**；
 
-##### 6.4.2.3.1 请求头指定
+##### 5.4.2.3.1 请求头指定
 
 SpringMVC的什么功能。一个入口给容器中添加一个  WebMvcConfigurer
 
@@ -2779,7 +2780,7 @@ public class NeptuneMessageConverter implements HttpMessageConverter<User> {
 
 ![image-20230115220717325](../../images/image-20230115220717325.png)
 
-##### 6.4.2.3.2 请求参数format指定
+##### 5.4.2.3.2 请求参数format指定
 
 ```java
 /**
@@ -2817,9 +2818,11 @@ public class NeptuneMessageConverter implements HttpMessageConverter<User> {
 
 **上述功能除了我们完全自定义外？SpringBoot有没有为我们提供基于配置文件的快速修改媒体类型功能？怎么配置呢？【提示：参照SpringBoot官方文档web开发内容协商章节】**
 
-## 6.5 拦截器
+## 5.5 拦截器
 
-### 6.5.1 HandlerInterceptor 接口
+![image-20230116144111777](../../images/image-20230116144111777.png)
+
+### 5.5.1 HandlerInterceptor 接口
 
 ```java
 /**
@@ -2889,7 +2892,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 }
 ```
 
-### 6.5.2配置拦截器
+### 5.5.2配置拦截器
 
 ```java
 /**
@@ -2909,14 +2912,15 @@ public class AdminWebConfig implements WebMvcConfigurer {
 }
 ```
 
-### 6.5.3 拦截器原理
+### 5.5.3 拦截器原理
 
 1、根据当前请求，找到**HandlerExecutionChain【**可以处理请求的handler以及handler的所有 拦截器】
 
 2、先来**顺序执行** 所有拦截器的 preHandle方法
 
-- 1、如果当前拦截器prehandler返回为true。则执行下一个拦截器的preHandle
-- 2、如果当前拦截器返回为false。直接    倒序执行所有已经执行了的拦截器的  afterCompletion；
+* 如果当前拦截器prehandler返回为true。则执行下一个拦截器的preHandle
+
+* 如果当前拦截器返回为false。直接倒序执行所有已经执行了的拦截器的  afterCompletion；
 
 **3、如果任何一个拦截器返回false。直接跳出不执行目标方法**
 
@@ -2926,19 +2930,17 @@ public class AdminWebConfig implements WebMvcConfigurer {
 
 **6、前面的步骤有任何异常都会直接倒序触发** afterCompletion
 
-7、页面成功渲染完成以后，也会倒序触发 afterCompletion
+7、**页面成功渲染完成以后，倒序触发** afterCompletion
 
+![image-20230120204515279](../../images/image-20230120204515279.png)
 
+![image-20230120205159503](../../images/image-20230120205159503.png)
 
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605764129365-5b31a748-1541-4bee-9692-1917b3364bc6.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_44%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+![image-20230120220948908](../../images/image-20230120220948908.png)
 
+## 5.6 文件上传
 
-
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605765121071-64cfc649-4892-49a3-ac08-88b52fb4286f.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_35%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-
-## 6.6 文件上传
-
-### 6.6.1 页面表单
+### 5.6.1 页面表单
 
 ```html
 <form method="post" action="/upload" enctype="multipart/form-data">
@@ -2947,9 +2949,7 @@ public class AdminWebConfig implements WebMvcConfigurer {
 </form>
 ```
 
-### 6.6.2 文件上传代码
-
-
+### 5.6.2 文件上传代码
 
 ```java
     /**
@@ -2989,18 +2989,19 @@ public class AdminWebConfig implements WebMvcConfigurer {
     }
 ```
 
-### 6.6.3 自动配置原理
+### 5.6.3 自动配置原理
 
-**文件上传自动配置类-MultipartAutoConfiguration-****MultipartProperties**
+**文件上传自动配置类-MultipartAutoConfiguration-**MultipartProperties
 
 - 自动配置好了 **StandardServletMultipartResolver   【文件上传解析器】**
 - **原理步骤**
 
-- - **1、请求进来使用文件上传解析器判断（**isMultipart**）并封装（**resolveMultipart，**返回**MultipartHttpServletRequest**）文件上传请求**
+  * **1、请求进来使用文件上传解析器判断（**isMultipart**）并封装（**resolveMultipart，**返回**MultipartHttpServletRequest**）文件上传请求**
+
   - **2、参数解析器来解析请求中的文件内容封装成MultipartFile**
   - **3、将request中文件信息封装为一个Map；**MultiValueMap<String, MultipartFile>
 
-**FileCopyUtils**。实现文件流的拷贝
+* **FileCopyUtils：**实现文件流的拷贝
 
 ```java
     @PostMapping("/upload")
@@ -3010,126 +3011,217 @@ public class AdminWebConfig implements WebMvcConfigurer {
                          @RequestPart("photos") MultipartFile[] photos)
 ```
 
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1605847414866-32b6cc9c-5191-4052-92eb-069d652dfbf9.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_23%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+![image-20230122160156227](../../images/image-20230122160156227.png)
 
-## 6.7 异常处理
+## 5.7 异常处理
 
-### 6.7.1 错误处理
+### 5.7.1 错误处理
 
-#### 6.7.1.1 默认规则
+#### 5.7.1.1 默认规则
 
 - 默认情况下，Spring Boot提供`/error`处理所有错误的映射
 - 对于机器客户端，它将生成JSON响应，其中包含错误，HTTP状态和异常消息的详细信息。对于浏览器客户端，响应一个“ whitelabel”错误视图，以HTML格式呈现相同的数据
-- ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606024421363-77083c34-0b0e-4698-bb72-42da351d3944.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_14%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606024616835-bc491bf0-c3b1-4ac3-b886-d4ff3c9874ce.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_28%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-- **要对其进行自定义，添加**`**View**`**解析为**`**error**``**
-  **`
+
+```perl
+GET http://localhost:8080/123456
+Cookie: JSESSIONID=947FC0ECC28018456DE5ADD0724B33D9
+```
+
+
+
+![image-20230122162849347](../../images/image-20230122162849347.png)
+
+![image-20230122162832645](../../images/image-20230122162832645.png)
+
+- **要对其进行自定义，添加**`View`**解析为**`error`
 - 要完全替换默认行为，可以实现 `ErrorController `并注册该类型的Bean定义，或添加`ErrorAttributes类型的组件`以使用现有机制但替换其内容。
 - error/下的4xx，5xx页面会被自动解析；
 
-- - ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606024592756-d4ab8a6b-ec37-426b-8b39-010463603d57.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_15%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+![image-20230122163954134](../../images/image-20230122163954134.png)
 
-#### 6.7.1.2 定制错误处理逻辑
+#### 5.7.1.2 定制错误处理逻辑
 
 - 自定义错误页
 
-- - error/404.html   error/5xx.html；有精确的错误状态码页面就匹配精确，没有就找 4xx.html；如果都没有就触发白页
+  ![image-20230122193133349](../../images/image-20230122193133349.png)
+
+  * error/404.html   error/5xx.html；有精确的错误状态码页面就匹配精确，没有就找 4xx.html；如果都没有就触发白页
 
 - @ControllerAdvice+@ExceptionHandler处理全局异常；底层是 **ExceptionHandlerExceptionResolver 支持的**
+
 - @ResponseStatus+自定义异常 ；底层是 **ResponseStatusExceptionResolver ，把responsestatus注解的信息底层调用** **response.sendError(statusCode, resolvedReason)；tomcat发送的/error**
+
 - Spring底层的异常，如 参数类型转换异常；**DefaultHandlerExceptionResolver 处理框架底层的异常。**
 
-- - response.sendError(HttpServletResponse.**SC_BAD_REQUEST**, ex.getMessage()); 
-  - ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606114118010-f4aaf5ee-2747-4402-bc82-08321b2490ed.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_19%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+  * response.sendError(HttpServletResponse.**SC_BAD_REQUEST**, ex.getMessage()); 
 
-- 自定义实现 HandlerExceptionResolver 处理异常；可以作为默认的全局异常处理规则
+  ![image-20230123230415641](../../images/image-20230123230415641.png)
 
-- - ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606114688649-e6502134-88b3-48db-a463-04c23eddedc7.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_16%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+- 自定义实现 HandlerExceptionResolver 处理异常；优先级调高，可以作为默认的全局异常处理规则
+
+  ![image-20230123232549979](../../images/image-20230123232549979.png)
+
+  ```java
+  @Order(value = Ordered.HIGHEST_PRECEDENCE)//优先级，数字越小优先级越高
+  @Component
+  public class CustomerExceptionHandlerResolver implements HandlerExceptionResolver {
+  ```
+
+  ![image-20230123232747878](../../images/image-20230123232747878.png)
 
 - **ErrorViewResolver**  实现自定义处理异常；
 
-- - response.sendError 。error请求就会转给controller
-  - 你的异常没有任何人能处理。tomcat底层 response.sendError。error请求就会转给controller
-  - **basicErrorController 要去的页面地址是** **ErrorViewResolver**  ；
+  * response.sendError 。error请求就会转给controller
 
-#### 6.7.1.3 异常处理自动配置原理
+  - 你的异常没有任何人能处理。tomcat底层 response.sendError。error请求就会转给controller
+  - <font color=red>**basicErrorController 要去的页面地址是** </font>**ErrorViewResolver**  （没人能处理的异常都是basicErrorController处理）
+
+#### 5.7.1.3 异常处理自动配置原理
 
 - **ErrorMvcAutoConfiguration  自动配置异常处理规则**
 
-- - **容器中的组件：类型：DefaultErrorAttributes ->** **id：errorAttributes**
+  * **容器中的组件：类型：DefaultErrorAttributes ->** **id：errorAttributes**
+    * **public class** <font color=red>**DefaultErrorAttributes**</font> **implements** <font color=blue>**ErrorAttributes,HandlerExceptionResolver**</font>
+    * **DefaultErrorAttributes**：定义错误页面中可以包含哪些数据。
 
-- - - **public class** **DefaultErrorAttributes** **implements** **ErrorAttributes**, **HandlerExceptionResolver**
-    - **DefaultErrorAttributes**：定义错误页面中可以包含哪些数据。
-    - ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606044430037-8d599e30-1679-407c-96b7-4df345848fa4.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_28%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-    - ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606044487738-8cb1dcda-08c5-4104-a634-b2468512e60f.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_31%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+  ![image-20230122172557124](../../images/image-20230122172557124.png)
 
-- - **容器中的组件：类型：****BasicErrorController --> id：basicErrorController（json+白页 适配响应）**
+  ![image-20230122172808165](../../images/image-20230122172808165.png)
 
-- - - **处理默认** **/error 路径的请求；页面响应** **new** ModelAndView(**"error"**, model)；
-    - **容器中有组件 View**->**id是error**；（响应默认错误页）
-    - 容器中放组件 **BeanNameViewResolver（视图解析器）；按照返回的视图名作为组件的id去容器中找View对象。**
+  * <font color=red>**容器中的组件：类型：BasicErrorController --> id：basicErrorController（json+白页 适配响应）**</font>
+    * 处理默认 **/error 路径的请求；页面响应** **new** ModelAndView(**"error"**, model)；
+    * **容器中有组件 View**->**id是error**；（响应默认错误页）
+    * 容器中放组件 **BeanNameViewResolver（视图解析器）；按照返回的视图名作为组件的id去容器中找View对象。**
 
-- - **容器中的组件：**类型：**DefaultErrorViewResolver -> id：**conventionErrorViewResolver
+  * **容器中的组件：**类型：**DefaultErrorViewResolver -> id：**conventionErrorViewResolver
+    * 如果发生错误，会以HTTP的状态码 作为视图页地址（viewName），找到真正的页面
+    * error/4xx、5xx.html
 
-- - - 如果发生错误，会以HTTP的状态码 作为视图页地址（viewName），找到真正的页面
-    - error/404、5xx.html
+![image-20230122171759500](../../images/image-20230122171759500.png)
 
-
+![image-20230122171737343](../../images/image-20230122171737343.png)
 
 如果想要返回页面；就会找error视图【**StaticView**】。(默认是一个白页)
 
+![image-20230122170945282](../../images/image-20230122170945282.png)写出去json
 
+![image-20230122171037532](../../images/image-20230122171037532.png)错误页
 
-
-
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606043870164-3770e116-344f-448e-8bff-8f32438edc9a.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_29%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)写出去json
-
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606043904074-50b7f088-2d2b-4da5-85e2-0a756da74dca.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_35%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10) 错误页
-
-#### 6.7.1.4 异常处理步骤流程
+#### 5.7.1.4 异常处理步骤流程
 
 1、执行目标方法，目标方法运行期间有任何异常都会被catch、而且标志当前请求结束；并且用 **dispatchException** 
 
 2、进入视图解析流程（页面渲染？） 
 
-processDispatchResult(processedRequest, response, mappedHandler, **mv**, **dispatchException**);
+processDispatchResult(processedRequest, response, mappedHandler, **mv**, <font color=red>**dispatchException**</font>);
 
 3、**mv** = **processHandlerException**；处理handler发生的异常，处理完成返回ModelAndView；
 
-- 1、遍历所有的 **handlerExceptionResolvers，看谁能处理当前异常【****HandlerExceptionResolver处理器异常解析器****】**
-- ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606047252166-ce71c3a1-0e0e-4499-90f4-6d80014ca19f.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_28%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+- 1、遍历所有的 **handlerExceptionResolvers，看谁能处理当前异常【<font color=red>HandlerExceptionResolver处理器异常解析器】</font>**
+- ![image-20230122184514466](../../images/image-20230122184514466.png)
 - **2、系统默认的  异常解析器；**
-- ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606047109161-c68a46c1-202a-4db1-bbeb-23fcae49bbe9.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_17%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
 
-- - **1、DefaultErrorAttributes先来处理异常。把异常信息保存到rrequest域，并且返回null；**
-  - **2、默认没有任何人能处理异常，所以异常会被抛出**
+* ![image-20230122183625027](../../images/image-20230122183625027.png)
 
-- - - **1、如果没有任何人能处理最终底层就会发送 /error 请求。会被底层的BasicErrorController处理**
-    - **2、解析错误视图；遍历所有的**  **ErrorViewResolver  看谁能解析。**
-    - ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606047900473-e31c1dc3-7a5f-4f70-97de-5203429781fa.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_14%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-    - **3、默认的** **DefaultErrorViewResolver ,作用是把响应状态码作为错误页的地址，error/500.html** 
-    - **4、模板引擎最终响应这个页面** **error/500.html** 
+  * **1、DefaultErrorAttributes先来处理异常。把异常信息保存到request域，并且返回null；**
 
-## 6.8 Web原生组件注入（Servlet、Filter、Listener）
+  * **2、默认没有任何处理器能处理异常，所以异常会被抛出**
 
-### 6.8.1 使用Servlet API
+    * **1、如果没有任何处理器能处理最终底层就会发送 /error 请求。会被底层的BasicErrorController处理**
+
+    ![image-20230122191945253](../../images/image-20230122191945253.png)
+
+    * **2、解析错误视图；遍历所有的**  **ErrorViewResolver  看谁能解析。**
+    * ![image-20230122192021590](../../images/image-20230122192021590.png) 
+    * **3、默认的** **DefaultErrorViewResolver ,作用是把响应状态码作为错误页的地址，error/500.html** 
+    * **4、模板引擎最终响应这个页面** **error/500.html** 
+
+## 5.8 Web原生组件注入（Servlet、Filter、Listener）
+
+### 5.8.1 使用Servlet API
 
 @ServletComponentScan(basePackages = **"com.atguigu.admin"**) :指定原生Servlet组件都放在那里
-
 @WebServlet(urlPatterns = **"/my"**)：效果：直接响应，**没有经过Spring的拦截器？**
-
 @WebFilter(urlPatterns={**"/css/\*"**,**"/images/\*"**})
-
 @WebListener
 
+```java
+@ServletComponentScan
+@SpringBootApplication
+public class Springboot02WebAdminApplication {
+```
 
+```java
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
-推荐可以这种方式；
+@WebServlet(urlPatterns = "/my")
+public class MyWebServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.getWriter().write("77777");
+    }
+}
 
+```
 
+```java
+import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
+import java.io.IOException;
 
+//单星是servlet写法，双星是spring写法
+@WebFilter(urlPatterns = {"/css/*","/images/*"})
+@Slf4j
+public class MyFilter implements Filter {
 
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        log.info("MyFilter初始化完成");
+    }
 
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        log.info("MyFilter工作");
+        chain.doFilter(request,response);
+    }
+
+    @Override
+    public void destroy() {
+        log.info("MyFilter销毁");
+    }
+}
+```
+
+```java
+import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
+
+@Slf4j
+@WebListener
+public class MyServletContextListener implements ServletContextListener {
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        log.info("MyServletContextListener监听到项目初始化完成");
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        log.info("MyServletContextListener监听到项目销毁");
+    }
+}
+```
+
+推荐`RegistrationBean`这种方式；
 
 扩展：DispatchServlet 如何注册进来
 
@@ -3137,21 +3229,25 @@ processDispatchResult(processedRequest, response, mappedHandler, **mv**, **dispa
 - **通过** **ServletRegistrationBean**<DispatcherServlet> 把 DispatcherServlet  配置进来。
 - 默认映射的是 / 路径。
 
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606284869220-8b63d54b-39c4-40f6-b226-f5f095ef9304.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_32%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+![image-20230124094535446](../../images/image-20230124094535446.png)
+
+![image-20230124094245302](../../images/image-20230124094245302.png)
 
 Tomcat-Servlet；
 
-多个Servlet都能处理到同一层路径，精确优选原则
+多个Servlet都能处理到同一层路径，精确优先原则
+
+发送/my/1请求，会触发B
 
 A： /my/
 
 B： /my/1
 
-### 6.8.2 使用RegistrationBean
+### 5.8.2 使用RegistrationBean
 
 ```java
 ServletRegistrationBean`, `FilterRegistrationBean`, and `ServletListenerRegistrationBean
-@Configuration
+@Configuration//保证依赖的组件始终是单实例的
 public class MyRegistConfig {
 
     @Bean
@@ -3180,41 +3276,48 @@ public class MyRegistConfig {
 }
 ```
 
-## 6.9 嵌入式Servlet容器
+## 5.9 嵌入式Servlet容器
 
-### 6.9.1 切换嵌入式Servlet容器
+### 5.9.1 切换嵌入式Servlet容器
 
 - 默认支持的webServer
 
-- - `Tomcat`, `Jetty`, or `Undertow`
+  * `Tomcat`, `Jetty`, or `Undertow`
+
   - `ServletWebServerApplicationContext 容器启动寻找ServletWebServerFactory 并引导创建服务器`
 
 - 切换服务器
 
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606280937533-504d0889-b893-4a01-af68-2fc31ffce9fc.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_26%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+![image-20230124102855304](../../images/image-20230124102855304.png)
+
+![image-20230124102909712](../../images/image-20230124102909712.png)
+
+![image-20230124100951377](../../images/image-20230124100951377.png)
 
 ```xml
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId>
-    <exclusions>
-        <exclusion>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-        </exclusion>
-    </exclusions>
-</dependency>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
+        </dependency>
 ```
-
-
-
-
 
 - 原理
 
-- - SpringBoot应用启动发现当前是Web应用。web场景包-导入tomcat
+  * SpringBoot应用启动发现当前是Web应用。web场景包-导入tomcat
+
   - web应用会创建一个web版的ioc容器 `ServletWebServerApplicationContext` 
-  - `ServletWebServerApplicationContext` 启动的时候寻找 `**ServletWebServerFactory**``（Servlet 的web服务器工厂---> Servlet 的web服务器）` 
+  - `ServletWebServerApplicationContext` 启动的时候寻找 `ServletWebServerFactory（Servlet 的web服务器工厂---> Servlet 的web服务器）` 
   - SpringBoot底层默认有很多的WebServer工厂；`TomcatServletWebServerFactory`, `JettyServletWebServerFactory`, or `UndertowServletWebServerFactory`
   - `底层直接会有一个自动配置类。ServletWebServerFactoryAutoConfiguration`
   - `ServletWebServerFactoryAutoConfiguration导入了ServletWebServerFactoryConfiguration（配置类）`
@@ -3222,20 +3325,19 @@ public class MyRegistConfig {
   - `TomcatServletWebServerFactory 创建出Tomcat服务器并启动；TomcatWebServer 的构造器拥有初始化方法initialize---this.tomcat.start();`
   - `内嵌服务器，就是手动把启动服务器的代码调用（tomcat核心jar包存在）`
 
-- ``
+- ....
 
-### 6.9.2 定制Servlet容器
+### 5.9.2 定制Servlet容器
 
-- 实现  **WebServerFactoryCu**stomizer<ConfigurableServletWebServerFactory> 
-
-- - 把配置文件的值和`**ServletWebServerFactory 进行绑定**`
+- 实现  **WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> **
+  * 把配置文件的值和`ServletWebServerFactory 进行绑定`
 
 - 修改配置文件 **server.xxx**
 - 直接自定义 **ConfigurableServletWebServerFactory** 
 
 
 
-**xxxxx****Customizer****：定制化器，可以改变xxxx的默认规则**
+**xxxxxCustomizer：定制化器，可以改变xxxx的默认规则**
 
 ```java
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
@@ -3253,36 +3355,679 @@ public class CustomizationBean implements WebServerFactoryCustomizer<Configurabl
 }
 ```
 
-## 6.10 定制化原理
+## 5.10 定制化原理
 
-### 6.10.1 定制化的常见方式 
+### 5.10.1 定制化的常见方式 
 
 - 修改配置文件；
 - **xxxxxCustomizer；**
 - **编写自定义的配置类   xxxConfiguration；+** **@Bean替换、增加容器中默认组件；视图解析器** 
-- **Web应用 编写一个配置类实现** **WebMvcConfigurer 即可定制化web功能；+ @Bean给容器中再扩展一些组件**
+- <font color=red>**Web应用 编写一个配置类实现 WebMvcConfigurer 即可定制化web功能；**</font><font color=00BFFF>**+ @Bean给容器中再扩展一些组件**</font>
 
 ```java
 @Configuration
 public class AdminWebConfig implements WebMvcConfigurer
 ```
 
-- @EnableWebMvc + WebMvcConfigurer —— @Bean  可以全面接管SpringMVC，所有规则全部自己重新配置； 实现定制和扩展功能
+- @EnableWebMvc + WebMvcConfigurer + @Bean  可以全面接管SpringMVC，所有规则全部自己重新配置； 实现定制和扩展功能
 
-- - 原理
+  * 原理
+
   - 1、WebMvcAutoConfiguration  默认的SpringMVC的自动配置功能类。静态资源、欢迎页.....
-  - 2、一旦使用 @EnableWebMvc 、。会 @Import(DelegatingWebMvcConfiguration.**class**)
+  - 2、一旦使用 @EnableWebMvc 。会 @Import(DelegatingWebMvcConfiguration.**class**)
   - 3、**DelegatingWebMvcConfiguration** 的 作用，只保证SpringMVC最基本的使用
+    * 把所有系统中的 WebMvcConfigurer 拿过来。所有功能的定制都是这些 WebMvcConfigurer  合起来一起生效
+    * 自动配置了一些非常底层的组件。**RequestMappingHandlerMapping**、这些组件依赖的组件都是从容器中获取
+    * **public class** DelegatingWebMvcConfiguration **extends** **WebMvcConfigurationSupport**
 
-- - - 把所有系统中的 WebMvcConfigurer 拿过来。所有功能的定制都是这些 WebMvcConfigurer  合起来一起生效
-    - 自动配置了一些非常底层的组件。**RequestMappingHandlerMapping**、这些组件依赖的组件都是从容器中获取
-    - **public class** DelegatingWebMvcConfiguration **extends** **WebMvcConfigurationSupport**
+  * 4、**WebMvcAutoConfiguration** 里面的配置要能生效 必须  @ConditionalOnMissingBean(**WebMvcConfigurationSupport**.**class**)
 
-- - 4、**WebMvcAutoConfiguration** 里面的配置要能生效 必须  @ConditionalOnMissingBean(**WebMvcConfigurationSupport**.**class**)
   - 5、@EnableWebMvc  导致了 **WebMvcAutoConfiguration  没有生效。**
 
 - ... ...
 
-### 6.10.2 原理分析套路
+### 5.10.2 原理分析套路
 
-**场景starter** **- xxxxAutoConfiguration - 导入xxx组件 - 绑定xxxProperties --** **绑定配置文件项**
+<font color=red>**场景starter**</font> **- xxxxAutoConfiguration - 导入xxx组件 - 绑定xxxProperties --** <font color=red>**绑定配置文件项**</font>
+
+# 6 数据访问
+
+## 6.1 SQL	
+
+### 6.1 数据源的自动配置-**HikariDataSource**
+
+#### 6.1 导入JDBC场景
+
+```xml
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
+        </dependency>
+        
+```
+
+### ![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606366100317-5e0199fa-6709-4d32-bce3-bb262e2e5e6a.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_20%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+
+
+
+
+
+数据库驱动？
+
+为什么导入JDBC场景，官方不导入驱动？官方不知道我们接下要操作什么数据库。
+
+数据库版本和驱动版本对应
+
+```xml
+默认版本：<mysql.version>8.0.22</mysql.version>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+<!--            <version>5.1.49</version>-->
+        </dependency>
+想要修改版本
+1、直接依赖引入具体版本（maven的就近依赖原则）
+2、重新声明版本（maven的属性的就近优先原则）
+    <properties>
+        <java.version>1.8</java.version>
+        <mysql.version>5.1.49</mysql.version>
+    </properties>
+```
+
+
+
+
+
+#### 6.2 分析自动配置
+
+##### 6.1 自动配置的类
+
+- DataSourceAutoConfiguration ： 数据源的自动配置
+
+- - 修改数据源相关的配置：**spring.datasource**
+  - **数据库连接池的配置，是自己容器中没有DataSource才自动配置的**
+  - 底层配置好的连接池是：**HikariDataSource**
+
+```java
+	@Configuration(proxyBeanMethods = false)
+	@Conditional(PooledDataSourceCondition.class)
+	@ConditionalOnMissingBean({ DataSource.class, XADataSource.class })
+	@Import({ DataSourceConfiguration.Hikari.class, DataSourceConfiguration.Tomcat.class,
+			DataSourceConfiguration.Dbcp2.class, DataSourceConfiguration.OracleUcp.class,
+			DataSourceConfiguration.Generic.class, DataSourceJmxConfiguration.class })
+	protected static class PooledDataSourceConfiguration
+```
+
+
+
+- DataSourceTransactionManagerAutoConfiguration： 事务管理器的自动配置
+- JdbcTemplateAutoConfiguration： **JdbcTemplate的自动配置，可以来对数据库进行crud**
+
+- - 可以修改这个配置项@ConfigurationProperties(prefix = **"spring.jdbc"**) 来修改JdbcTemplate
+  - @Bean@Primary    JdbcTemplate；容器中有这个组件
+
+- JndiDataSourceAutoConfiguration： jndi的自动配置
+- XADataSourceAutoConfiguration： 分布式事务相关的
+
+
+
+
+
+#### 6.3 修改配置项
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/db_account
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+```
+
+
+
+
+
+#### 6.4 测试
+
+```java
+@Slf4j
+@SpringBootTest
+class Boot05WebAdminApplicationTests {
+
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
+
+    @Test
+    void contextLoads() {
+
+//        jdbcTemplate.queryForObject("select * from account_tbl")
+//        jdbcTemplate.queryForList("select * from account_tbl",)
+        Long aLong = jdbcTemplate.queryForObject("select count(*) from account_tbl", Long.class);
+        log.info("记录总数：{}",aLong);
+    }
+
+}
+```
+
+### 6.2 使用Druid数据源
+
+#### 6.1 druid官方github地址
+
+https://github.com/alibaba/druid
+
+
+
+整合第三方技术的两种方式
+
+- 自定义
+- 找starter
+
+
+
+#### 6.2 自定义方式
+
+##### 6.1 创建数据源
+
+
+
+```xml
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.1.17</version>
+        </dependency>
+
+<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close">
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="maxActive" value="20" />
+		<property name="initialSize" value="1" />
+		<property name="maxWait" value="60000" />
+		<property name="minIdle" value="1" />
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxOpenPreparedStatements" value="20" />
+```
+
+
+
+##### 6.2 StatViewServlet
+
+StatViewServlet的用途包括：
+
+- 提供监控信息展示的html页面
+- 提供监控信息的JSON API
+
+```xml
+	<servlet>
+		<servlet-name>DruidStatView</servlet-name>
+		<servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DruidStatView</servlet-name>
+		<url-pattern>/druid/*</url-pattern>
+	</servlet-mapping>
+```
+
+
+
+##### 6.3 StatFilter
+
+用于统计监控信息；如SQL监控、URI监控
+
+```xml
+需要给数据源中配置如下属性；可以允许多个filter，多个用，分割；如：
+
+<property name="filters" value="stat,slf4j" />
+```
+
+系统中所有filter：
+
+| 别名          | Filter类名                                              |
+| ------------- | ------------------------------------------------------- |
+| default       | com.alibaba.druid.filter.stat.StatFilter                |
+| stat          | com.alibaba.druid.filter.stat.StatFilter                |
+| mergeStat     | com.alibaba.druid.filter.stat.MergeStatFilter           |
+| encoding      | com.alibaba.druid.filter.encoding.EncodingConvertFilter |
+| log4j         | com.alibaba.druid.filter.logging.Log4jFilter            |
+| log4j2        | com.alibaba.druid.filter.logging.Log4j2Filter           |
+| slf4j         | com.alibaba.druid.filter.logging.Slf4jLogFilter         |
+| commonlogging | com.alibaba.druid.filter.logging.CommonsLogFilter       |
+
+**慢SQL记录配置**
+
+```xml
+<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+    <property name="slowSqlMillis" value="10000" />
+    <property name="logSlowSql" value="true" />
+</bean>
+
+使用 slowSqlMillis 定义慢SQL的时长
+```
+
+#### 6.3 使用官方starter方式
+
+##### 6.1 引入druid-starter
+
+```xml
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>1.1.17</version>
+        </dependency>
+```
+
+
+
+##### 6.2 分析自动配置
+
+- 扩展配置项 **spring.datasource.druid**
+- DruidSpringAopConfiguration.**class**,   监控SpringBean的；配置项：**spring.datasource.druid.aop-patterns**
+- DruidStatViewServletConfiguration.**class**, 监控页的配置：**spring.datasource.druid.stat-view-servlet；默认开启**
+-  DruidWebStatFilterConfiguration.**class**, web监控配置；**spring.datasource.druid.web-stat-filter；默认开启**
+- DruidFilterConfiguration.**class**}) 所有Druid自己filter的配置
+
+```java
+    private static final String FILTER_STAT_PREFIX = "spring.datasource.druid.filter.stat";
+    private static final String FILTER_CONFIG_PREFIX = "spring.datasource.druid.filter.config";
+    private static final String FILTER_ENCODING_PREFIX = "spring.datasource.druid.filter.encoding";
+    private static final String FILTER_SLF4J_PREFIX = "spring.datasource.druid.filter.slf4j";
+    private static final String FILTER_LOG4J_PREFIX = "spring.datasource.druid.filter.log4j";
+    private static final String FILTER_LOG4J2_PREFIX = "spring.datasource.druid.filter.log4j2";
+    private static final String FILTER_COMMONS_LOG_PREFIX = "spring.datasource.druid.filter.commons-log";
+    private static final String FILTER_WALL_PREFIX = "spring.datasource.druid.filter.wall";
+```
+
+
+
+##### 6.3 配置示例
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/db_account
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+
+    druid:
+      aop-patterns: com.atguigu.admin.*  #监控SpringBean
+      filters: stat,wall     # 底层开启功能，stat（sql监控），wall（防火墙）
+
+      stat-view-servlet:   # 配置监控页功能
+        enabled: true
+        login-username: admin
+        login-password: admin
+        resetEnable: false
+
+      web-stat-filter:  # 监控web
+        enabled: true
+        urlPattern: /*
+        exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
+
+
+      filter:
+        stat:    # 对上面filters里面的stat的详细配置
+          slow-sql-millis: 1000
+          logSlowSql: true
+          enabled: true
+        wall:
+          enabled: true
+          config:
+            drop-table-allow: false
+```
+
+SpringBoot配置示例
+
+https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter
+
+
+
+配置项列表[https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8](https://github.com/alibaba/druid/wiki/DruidDataSource配置属性列表)
+
+
+
+### 6.3 整合MyBatis操作
+
+https://github.com/mybatis
+
+starter
+
+SpringBoot官方的Starter：spring-boot-starter-*
+
+第三方的： *-spring-boot-starter
+
+```xml
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.1.4</version>
+        </dependency>
+```
+
+![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606704096118-53001250-a04a-4210-80ee-6de6a370be2e.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_20%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+
+#### 6.1 配置模式
+
+- 全局配置文件
+- SqlSessionFactory: 自动配置好了
+- SqlSession：自动配置了 **SqlSessionTemplate 组合了SqlSession**
+- @Import(**AutoConfiguredMapperScannerRegistrar**.**class**）；
+- Mapper： 只要我们写的操作MyBatis的接口标准了 **@Mapper 就会被自动扫描进来**
+
+```java
+@EnableConfigurationProperties(MybatisProperties.class) ： MyBatis配置项绑定类。
+@AutoConfigureAfter({ DataSourceAutoConfiguration.class, MybatisLanguageDriverAutoConfiguration.class })
+public class MybatisAutoConfiguration{}
+
+@ConfigurationProperties(prefix = "mybatis")
+public class MybatisProperties
+```
+
+可以修改配置文件中 mybatis 开始的所有；
+
+
+
+```yaml
+# 配置mybatis规则
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml  #全局配置文件位置
+  mapper-locations: classpath:mybatis/mapper/*.xml  #sql映射文件位置
+  
+Mapper接口--->绑定Xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.admin.mapper.AccountMapper">
+<!--    public Account getAcct(Long id); -->
+    <select id="getAcct" resultType="com.atguigu.admin.bean.Account">
+        select * from  account_tbl where  id=#{id}
+    </select>
+</mapper>
+```
+
+
+
+
+
+配置 **private** Configuration **configuration**; mybatis.**configuration下面的所有，就是相当于改mybatis全局配置文件中的值**
+
+
+
+```yaml
+# 配置mybatis规则
+mybatis:
+#  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    
+ 可以不写全局；配置文件，所有全局配置文件的配置都放在configuration配置项中即可
+```
+
+
+
+
+
+- 导入mybatis官方starter
+- 编写mapper接口。标准@Mapper注解
+- 编写sql映射文件并绑定mapper接口
+- 在application.yaml中指定Mapper配置文件的位置，以及指定全局配置文件的信息 （建议；**配置在mybatis.configuration**）
+
+
+
+
+
+#### 6.2 注解模式
+
+```java
+@Mapper
+public interface CityMapper {
+
+    @Select("select * from city where id=#{id}")
+    public City getById(Long id);
+
+    public void insert(City city);
+
+}
+```
+
+
+
+
+
+
+
+#### 6.3 混合模式
+
+```java
+@Mapper
+public interface CityMapper {
+
+    @Select("select * from city where id=#{id}")
+    public City getById(Long id);
+
+    public void insert(City city);
+
+}
+```
+
+
+
+**最佳实战：**
+
+- 引入mybatis-starter
+- **配置application.yaml中，指定mapper-location位置即可**
+- 编写Mapper接口并标注@Mapper注解
+- 简单方法直接注解方式
+- 复杂方法编写mapper.xml进行绑定映射
+- *@MapperScan("com.atguigu.admin.mapper") 简化，其他的接口就可以不用标注@Mapper注解*
+
+
+
+### 6.4 整合 MyBatis-Plus 完成CRUD
+
+#### 6.1 什么是MyBatis-Plus
+
+[MyBatis-Plus](https://github.com/baomidou/mybatis-plus)（简称 MP）是一个 [MyBatis](http://www.mybatis.org/mybatis-3/) 的增强工具，在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生。
+
+[mybatis plus 官网](https://baomidou.com/)
+
+建议安装 **MybatisX** 插件 
+
+
+
+#### 6.2 整合MyBatis-Plus
+
+```xml
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+```
+
+自动配置
+
+- MybatisPlusAutoConfiguration 配置类，MybatisPlusProperties 配置项绑定。**mybatis-plus：xxx 就是对****mybatis-plus的定制**
+- **SqlSessionFactory 自动配置好。底层是容器中默认的数据源**
+- **mapperLocations 自动配置好的。有默认值。****classpath\*:/mapper/\**/\*.xml；任意包的类路径下的所有mapper文件夹下任意路径下的所有xml都是sql映射文件。  建议以后sql映射文件，放在 mapper下**
+- **容器中也自动配置好了** **SqlSessionTemplate**
+- **@Mapper 标注的接口也会被自动扫描；建议直接** @MapperScan(**"com.atguigu.admin.mapper"**) 批量扫描就行
+
+
+
+
+
+**优点：**
+
+-  只需要我们的Mapper继承 **BaseMapper** 就可以拥有crud能力
+
+
+
+
+
+
+
+#### 6.3 CRUD功能
+
+```java
+    @GetMapping("/user/delete/{id}")
+    public String deleteUser(@PathVariable("id") Long id,
+                             @RequestParam(value = "pn",defaultValue = "1")Integer pn,
+                             RedirectAttributes ra){
+
+        userService.removeById(id);
+
+        ra.addAttribute("pn",pn);
+        return "redirect:/dynamic_table";
+    }
+
+
+    @GetMapping("/dynamic_table")
+    public String dynamic_table(@RequestParam(value="pn",defaultValue = "1") Integer pn,Model model){
+        //表格内容的遍历
+//        response.sendError
+//     List<User> users = Arrays.asList(new User("zhangsan", "123456"),
+//                new User("lisi", "123444"),
+//                new User("haha", "aaaaa"),
+//                new User("hehe ", "aaddd"));
+//        model.addAttribute("users",users);
+//
+//        if(users.size()>3){
+//            throw new UserTooManyException();
+//        }
+        //从数据库中查出user表中的用户进行展示
+
+        //构造分页参数
+        Page<User> page = new Page<>(pn, 2);
+        //调用page进行分页
+        Page<User> userPage = userService.page(page, null);
+
+
+//        userPage.getRecords()
+//        userPage.getCurrent()
+//        userPage.getPages()
+
+
+        model.addAttribute("users",userPage);
+
+        return "table/dynamic_table";
+    }
+```
+
+
+
+```java
+@Service
+public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements UserService {
+
+
+}
+
+public interface UserService extends IService<User> {
+
+}
+```
+
+## 6.2 NoSQL
+
+Redis 是一个开源（BSD许可）的，内存中的数据结构存储系统，它可以用作数据库、**缓存**和消息中间件。 它支持多种类型的数据结构，如 [字符串（strings）](http://www.redis.cn/topics/data-types-intro.html#strings)， [散列（hashes）](http://www.redis.cn/topics/data-types-intro.html#hashes)， [列表（lists）](http://www.redis.cn/topics/data-types-intro.html#lists)， [集合（sets）](http://www.redis.cn/topics/data-types-intro.html#sets)， [有序集合（sorted sets）](http://www.redis.cn/topics/data-types-intro.html#sorted-sets) 与范围查询， [bitmaps](http://www.redis.cn/topics/data-types-intro.html#bitmaps)， [hyperloglogs](http://www.redis.cn/topics/data-types-intro.html#hyperloglogs) 和 [地理空间（geospatial）](http://www.redis.cn/commands/geoadd.html) 索引半径查询。 Redis 内置了 [复制（replication）](http://www.redis.cn/topics/replication.html)，[LUA脚本（Lua scripting）](http://www.redis.cn/commands/eval.html)， [LRU驱动事件（LRU eviction）](http://www.redis.cn/topics/lru-cache.html)，[事务（transactions）](http://www.redis.cn/topics/transactions.html) 和不同级别的 [磁盘持久化（persistence）](http://www.redis.cn/topics/persistence.html)， 并通过 [Redis哨兵（Sentinel）](http://www.redis.cn/topics/sentinel.html)和自动 [分区（Cluster）](http://www.redis.cn/topics/cluster-tutorial.html)提供高可用性（high availability）。
+
+### 6.1 Redis自动配置
+
+```xml
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+```
+
+![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606745732785-17d1227a-75b9-4f00-a3f1-7fc4137b5113.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_17%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+
+
+
+自动配置：
+
+- RedisAutoConfiguration 自动配置类。RedisProperties 属性类 --> **spring.redis.xxx是对redis的配置**
+- 连接工厂是准备好的。**Lettuce**ConnectionConfiguration、**Jedis**ConnectionConfiguration
+- **自动注入了RedisTemplate**<**Object**, **Object**> ： xxxTemplate；
+- **自动注入了StringRedisTemplate；k：v都是String**
+- **key：value**
+- **底层只要我们使用** **StringRedisTemplate、****RedisTemplate就可以操作redis**
+
+
+
+
+
+**redis环境搭建**
+
+**1、阿里云按量付费redis。经典网络**
+
+**2、申请redis的公网连接地址**
+
+**3、修改白名单  允许0.0.0.0/0 访问**
+
+
+
+
+
+
+
+### 6.2 RedisTemplate与Lettuce
+
+
+
+```java
+    @Test
+    void testRedis(){
+        ValueOperations<String, String> operations = redisTemplate.opsForValue();
+
+        operations.set("hello","world");
+
+        String hello = operations.get("hello");
+        System.out.println(hello);
+    }
+```
+
+
+
+
+
+
+
+
+
+### 6.3 切换至jedis
+
+```xml
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+<!--        导入jedis-->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+        </dependency>
+spring:
+  redis:
+      host: r-bp1nc7reqesxisgxpipd.redis.rds.aliyuncs.com
+      port: 6379
+      password: lfy:Lfy123456
+      client-type: jedis
+      jedis:
+        pool:
+          max-active: 10
+```
