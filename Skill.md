@@ -139,6 +139,7 @@ ssh -T git@github.com
 ```javascript
 //F12 控制台输入
 document.querySelector('bwp-video').playbackRate = 4
+document.querySelector('video').playbackRate = 4
 ```
 
 ## Windows
