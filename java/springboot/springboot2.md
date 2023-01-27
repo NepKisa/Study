@@ -1,4 +1,4 @@
-# 1 环境
+1 环境
 
 * Windows11
 * IDEA 2022.2.3
@@ -1204,14 +1204,41 @@ public @interface AutoConfigurationPackage {}
 ##### 3.3.1.3.2 @Import(AutoConfigurationImportSelector.class)
 
 ```java
+	protected List<String> getCandidateConfigurations(AnnotationMetadata metadata, AnnotationAttributes attributes) {
+		List<String> configurations = new ArrayList<>(
+				SpringFactoriesLoader.loadFactoryNames(getSpringFactoriesLoaderFactoryClass(), getBeanClassLoader()));
+		ImportCandidates.load(AutoConfiguration.class, getBeanClassLoader()).forEach(configurations::add);
+		Assert.notEmpty(configurations,
+				"No auto configuration classes found in META-INF/spring.factories nor in META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports. If you "
+						+ "are using a custom packaging, make sure that file is correct.");
+		return configurations;
+	}
+```
+
+
+
+```java
 1、利用getAutoConfigurationEntry(annotationMetadata);给容器中批量导入一些组件
 2、调用List<String> configurations = getCandidateConfigurations(annotationMetadata, attributes)获取到所有需要导入到容器中的配置类
-3、利用静态方法public static ImportCandidates load(Class<?> annotation, ClassLoader classLoader)；得到所有的组件
-4、从META-INF/spring/%s.imports位置来加载一个文件。
+3、利用工厂加载 Map<String, List<String>> loadSpringFactories(@Nullable ClassLoader classLoader)；得到所有的组件，2.7版本后spring本身的自动配置类不从这里读，第三方的依旧在这里读
+    
+2.7版本后spring的类，新增静态方法public static ImportCandidates load(Class<?> annotation, ClassLoader classLoader)；
+4、从META-INF/spring.factories位置来加载一个文件。
+     默认扫描我们当前系统里面所有META-INF/spring.factories位置的文件
+    
+    2.7版本后spring本身的自动配置类
+    从META-INF/spring/%s.imports位置来加载一个文件。
 	默认扫描我们当前系统里面所有META-INF/spring/%s.imports位置的文件
     spring-boot-autoconfigure-2.7.6.jar包里面有
     META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
-    
+```
+
+*spring.factories*
+
+```properties
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.neptune.hello.auto.HelloServiceAutoConfiguration
 ```
 
 ![image-20221224153738378](../../images/image-20221224153738378.png)
@@ -1221,6 +1248,8 @@ public @interface AutoConfigurationPackage {}
 ![image-20221224160717353](../../images/image-20221224160717353.png)
 
 ![image-20221224160743287](../../images/image-20221224160743287.png)
+
+![image-20230127193722641](../../images/image-20230127193722641.png)
 
 ![image-20221224161039213](../../images/image-20221224161039213.png)
 
@@ -4636,7 +4665,7 @@ spring:
 
 ![image-20230126232946495](../../images/image-20230126232946495.png)
 
-注意：
+==注意：==
 
 **SpringBoot 2.4 以上版本移除了默认对** **Vintage 的依赖。如果需要兼容junit4需要自行引入（不能使用junit4的功能 @Test）**
 
@@ -4656,7 +4685,7 @@ spring:
 </dependency>
 ```
 
-![image.png](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606797616337-e73010e9-9cac-496d-a177-64b677af5a3d.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_18%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+**引入依赖**
 
 ```xml
 <dependency>
@@ -4665,6 +4694,8 @@ spring:
   <scope>test</scope>
 </dependency>
 ```
+
+![image-20230127122849497](../../images/image-20230127122849497.png)
 
 现在版本：
 
@@ -4686,7 +4717,7 @@ class Boot05WebAdminApplicationTests {
 
 
 
-SpringBoot整合Junit以后。
+*SpringBoot整合Junit以后：*
 
 - 编写测试方法：@Test标注（注意需要使用junit5版本的注解）
 - Junit类具有Spring的功能，@Autowired、比如 @Transactional 标注测试方法，测试完成后自动回滚
@@ -4723,6 +4754,72 @@ public class TestDemo {
   }
 ```
 
+```java
+@DisplayName("Junit5功能类测试")
+//@SpringBootTest
+public class Junit5Test {
+
+    @Disabled
+    @DisplayName("测试DisPlayName注解")
+    @Test
+    void testDisplayName(){
+        System.out.println(1);
+    }
+
+    @DisplayName("测试方法1")
+    @Test
+    void testDisplayName1(){
+        System.out.println("test1....");
+    }
+
+    @DisplayName("测试方法2")
+    @Test
+    void testDisplayName2(){
+        System.out.println("test2....");
+    }
+
+    /**
+     * 规定方法超时时间。超出时间测试出异常
+     * @throws InterruptedException
+     */
+    @Timeout(value = 500,unit = TimeUnit.MILLISECONDS)
+    @Test
+    void testTimeout() throws InterruptedException {
+        System.out.println(233);
+        Thread.sleep(6000);
+    }
+
+    @RepeatedTest(5)
+    @Test
+    void testRepeat(){
+        System.out.println(66666);
+    }
+
+    @BeforeEach
+    void testBeforeEach(){
+        System.out.println("测试开始了");
+    }
+
+    @AfterEach
+    void testAfterEach(){
+        System.out.println("测试结束了");
+    }
+
+    @BeforeAll
+    static void testBeforeAll(){
+        System.out.println("所有测试开始了....");
+    }
+
+    @AfterAll
+    static void testAfterAll(){
+        System.out.println("所有测试结束了....");
+    }
+
+}
+```
+
+![image-20230127124854977](../../images/image-20230127124854977.png)
+
 ## 7.3 断言（assertions）
 
 断言（assertions）是测试方法中的核心部分，用来对测试需要满足的条件进行验证。**这些断言方法都是 org.junit.jupiter.api.Assertions 的静态方法**。JUnit 5 内置的断言可以分成如下几个类别：
@@ -4747,22 +4844,27 @@ public class TestDemo {
 | assertNotNull   | 判断给定的对象引用是否不为 null      |
 
 ```java
-@Test
-@DisplayName("simple assertion")
-public void simple() {
-     assertEquals(3, 1 + 2, "simple math");
-     assertNotEquals(3, 1 + 1);
+   /**
+     * 断言:前面断言失败,后面的代码都不会执行
+     * 每个断言都可自定义错误信息
+     */
+    @Test
+    @DisplayName("simple assertion")
+    public void simple() {
+        assertEquals(3, 1 + 2, "业务逻辑计算失败");
+        assertNotEquals(3, 1 + 1);
 
-     assertNotSame(new Object(), new Object());
-     Object obj = new Object();
-     assertSame(obj, obj);
+        assertNotSame(new Object(), new Object());
+        Object obj = new Object();
+        assertSame(obj, obj,"两个对象不一样");
 
-     assertFalse(1 > 2);
-     assertTrue(1 < 2);
+        assertFalse(1 > 2);
+        assertTrue(1 < 2);
 
-     assertNull(null);
-     assertNotNull(new Object());
-}
+        assertNull(null);
+        assertNotNull(new Object());
+
+    }
 ```
 
 ### 7.3.2 数组断言
@@ -4770,28 +4872,26 @@ public void simple() {
 通过 assertArrayEquals 方法来判断两个对象或原始类型的数组是否相等
 
 ```java
-@Test
-@DisplayName("array assertion")
-public void array() {
- assertArrayEquals(new int[]{1, 2}, new int[] {1, 2});
-}
+    @Test
+    @DisplayName("array assertion")
+        public void array() {
+            assertArrayEquals(new int[]{1, 2}, new int[]{2, 1},"两数组不相等");
+        }
 ```
 
 ### 7.3.3 组合断言
 
-assertAll 方法接受多个 org.junit.jupiter.api.Executable 函数式接口的实例作为要验证的断言，可以通过 lambda 表达式很容易的提供这些断言
-
-
+assertAll 方法接受多个 org.junit.jupiter.api.Executable 函数式接口的实例作为要验证的断言，可以通过 lambda 表达式很容易的提供这些断言，**全部成功才算成功，有一个断言失败则失败**
 
 ```java
-@Test
-@DisplayName("assert all")
-public void all() {
- assertAll("Math",
-    () -> assertEquals(2, 1 + 1),
-    () -> assertTrue(1 > 0)
- );
-}
+    @Test
+    @DisplayName("assert all")
+    public void all() {
+        assertAll("Math",
+                () -> assertEquals(2, 1 + 1,"结果不为2"),
+                () -> assertTrue(1 > 0,"结果不是true")
+        );
+    }
 ```
 
 ### 7.3.4 异常断言
@@ -4799,14 +4899,14 @@ public void all() {
 在JUnit4时期，想要测试方法的异常情况时，需要用**@Rule**注解的ExpectedException变量还是比较麻烦的。而JUnit5提供了一种新的断言方式**Assertions.assertThrows()** ,配合函数式编程就可以进行使用。
 
 ```java
-@Test
-@DisplayName("异常测试")
-public void exceptionTest() {
-    ArithmeticException exception = Assertions.assertThrows(
-           //扔出断言异常
-            ArithmeticException.class, () -> System.out.println(1 % 0));
+    @Test
+    @DisplayName("异常测试")
+    public void exceptionTest() {
+        Assertions.assertThrows(ArithmeticException.class,
+                //断定业务逻辑一定会出现异常
+                () -> System.out.println(1 % 0), "业务逻辑竟然正常运行？");
 
-}
+    }
 ```
 
 ### 7.3.5 超时断言
@@ -4814,12 +4914,12 @@ public void exceptionTest() {
 Junit5还提供了**Assertions.assertTimeout()** 为测试方法设置了超时时间
 
 ```java
-@Test
-@DisplayName("超时测试")
-public void timeoutTest() {
-    //如果测试方法时间超过1s将会异常
-    Assertions.assertTimeout(Duration.ofMillis(1000), () -> Thread.sleep(500));
-}
+    @Test
+    @DisplayName("超时测试")
+    public void timeoutTest() {
+        //如果测试方法时间超过1s将会异常
+        Assertions.assertTimeout(Duration.ofMillis(1000), () -> Thread.sleep(500));
+    }
 ```
 
 ### 7.3.6 快速失败
@@ -4827,11 +4927,11 @@ public void timeoutTest() {
 通过 fail 方法直接使得测试失败
 
 ```java
-@Test
-@DisplayName("fail")
-public void shouldFail() {
- fail("This should fail");
-}
+    @Test
+    @DisplayName("fail")
+    public void shouldFail() {
+        fail("This should fail");
+    }
 ```
 
 ## 7.4 前置条件（assumptions）
@@ -4839,25 +4939,27 @@ public void shouldFail() {
 JUnit 5 中的前置条件（**assumptions【假设】**）类似于断言，不同之处在于**不满足的断言会使得测试方法失败**，而不满足的**前置条件只会使得测试方法的执行终止**。前置条件可以看成是测试方法执行的前提，当该前提不满足时，就没有继续执行的必要。
 
 ```java
+import static org.junit.jupiter.api.Assumptions.*;
+
 @DisplayName("前置条件")
 public class AssumptionsTest {
- private final String environment = "DEV";
- 
- @Test
- @DisplayName("simple")
- public void simpleAssume() {
-    assumeTrue(Objects.equals(this.environment, "DEV"));
-    assumeFalse(() -> Objects.equals(this.environment, "PROD"));
- }
- 
- @Test
- @DisplayName("assume then do")
- public void assumeThenDo() {
-    assumingThat(
-       Objects.equals(this.environment, "DEV"),
-       () -> System.out.println("In DEV")
-    );
- }
+    private final String environment = "DEV";
+
+    @Test
+    @DisplayName("simple")
+    public void simpleAssume() {
+        assumeTrue(Objects.equals(this.environment, "DEV"));
+        assumeFalse(() -> Objects.equals(this.environment, "PROD"));
+    }
+
+    @Test
+    @DisplayName("assume then do")
+    public void assumeThenDo() {
+        assumingThat(
+                Objects.equals(this.environment, "DEV"),
+                () -> System.out.println("In DEV")
+        );
+    }
 }
 ```
 
@@ -4865,11 +4967,19 @@ assumeTrue 和 assumFalse 确保给定的条件为 true 或 false，不满足条
 
 ## 7.5 嵌套测试
 
-JUnit 5 可以通过 Java 中的内部类和@Nested 注解实现嵌套测试，从而可以更好的把相关的测试方法组织在一起。在内部类中可以使用@BeforeEach 和@AfterEach 注解，而且嵌套的层次没有限制。
-
-
+JUnit 5 可以通过 Java 中的内部类和@Nested 注解实现嵌套测试，从而可以更好的把相关的测试方法组织在一起。在**内部类中可以使用外层的@BeforeEach 和@AfterEach 注解**，而且嵌套的层次没有限制。
 
 ```java
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import java.util.EmptyStackException;
+import java.util.Stack;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 @DisplayName("A stack")
 class TestingAStackDemo {
 
@@ -4879,6 +4989,8 @@ class TestingAStackDemo {
     @DisplayName("is instantiated with new Stack()")
     void isInstantiatedWithNew() {
         new Stack<>();
+        //嵌套测试情况下，外层的Test不能驱动内层的Before(After)Each/All之类的方法提前/之后
+        assertNull(stack);
     }
 
     @Nested
@@ -4888,6 +5000,7 @@ class TestingAStackDemo {
         @BeforeEach
         void createNewStack() {
             stack = new Stack<>();
+            System.out.println("新建对象");
         }
 
         @Test
@@ -4917,11 +5030,13 @@ class TestingAStackDemo {
             @BeforeEach
             void pushAnElement() {
                 stack.push(anElement);
+                System.out.println("插入元素");
             }
 
             @Test
             @DisplayName("it is no longer empty")
             void isNotEmpty() {
+                //内层的Test可以驱动外层的Before(After)Each/All之类的方法提前/之后
                 assertFalse(stack.isEmpty());
             }
 
@@ -4946,8 +5061,6 @@ class TestingAStackDemo {
 ## 7.6 参数化测试
 
 参数化测试是JUnit5很重要的一个新特性，它使得用不同的参数多次运行测试成为了可能，也为我们的单元测试带来许多便利。
-
-
 
 利用**@ValueSource**等注解，指定入参，我们将可以使用不同的参数进行多次单元测试，而不需要每新增一个参数就新增一个单元测试，省去了很多冗余代码。
 
@@ -5001,11 +5114,13 @@ static Stream<String> method() {
 - 把@Category 替换成@Tag。
 - 把@RunWith、@Rule 和@ClassRule 替换成@ExtendWith。
 
-# 08、指标监控
+# 8 指标监控
 
-# 1、SpringBoot Actuator
+## 8.1 SpringBoot Actuator
 
-## 1、简介
+https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator
+
+### 8.1.1 简介
 
 未来每一个微服务在云上部署以后，我们都需要对其进行监控、追踪、审计、控制等。SpringBoot就抽取了Actuator场景，使得我们每个微服务快速引用即可获得生产级别的应用监控、审计等功能。
 
@@ -5016,27 +5131,20 @@ static Stream<String> method() {
         </dependency>
 ```
 
-![image.png](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606886483335-697ee1c1-2f69-43ab-bddc-3a038382319c.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_19%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+![image-20230127134724870](../../images/image-20230127134724870.png)
 
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606886483335-697ee1c1-2f69-43ab-bddc-3a038382319c.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_19%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+### 8.1.2 1.x与2.x的不同
 
-## 2、1.x与2.x的不同
+![image-20230127134743727](../../images/image-20230127134743727.png)
 
-
-
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606884394162-ac7f2d8e-7abb-44df-9998-fb0f2705f238.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_30%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-
-
-
-
-
-## 3、如何使用
+### 8.1.3 如何使用
 
 - 引入场景
 - 访问 http://localhost:8080/actuator/**
 - 暴露所有监控信息为HTTP
 
 ```yaml
+# management是所有actuator的配置
 management:
   endpoints:
     enabled-by-default: true #暴露所有端点信息
@@ -5049,30 +5157,24 @@ management:
 
 http://localhost:8080/actuator/beans
 
+http://localhost:8080/actuator/conditions
+
 http://localhost:8080/actuator/configprops
 
 http://localhost:8080/actuator/metrics
 
 http://localhost:8080/actuator/metrics/jvm.gc.pause
 
-[http://localhost:8080/actuator/](http://localhost:8080/actuator/metrics)endpointName/detailPath
-。。。。。。
+语法：[http://localhost:8080/actuator/](http://localhost:8080/actuator/metrics)endpointName/detailPath
+.....
 
-
-
-
-
-## 4、可视化
+### 8.1.4 可视化
 
 https://github.com/codecentric/spring-boot-admin
 
+## 8.2 Actuator Endpoint
 
-
-# 2、Actuator Endpoint
-
-## 1、最常使用的端点
-
-
+### 8.2.1 最常使用的端点
 
 | ID                 | 描述                                                         |
 | ------------------ | ------------------------------------------------------------ |
@@ -5097,10 +5199,6 @@ https://github.com/codecentric/spring-boot-admin
 | `startup`          | 显示由`ApplicationStartup`收集的启动步骤数据。需要使用`SpringApplication`进行配置`BufferingApplicationStartup`。 |
 | `threaddump`       | 执行线程转储。                                               |
 
-
-
-
-
 如果您的应用程序是Web应用程序（Spring MVC，Spring WebFlux或Jersey），则可以使用以下附加端点：
 
 | ID           | 描述                                                         |
@@ -5110,21 +5208,13 @@ https://github.com/codecentric/spring-boot-admin
 | `logfile`    | 返回日志文件的内容（如果已设置`logging.file.name`或`logging.file.path`属性）。支持使用HTTP`Range`标头来检索部分日志文件的内容。 |
 | `prometheus` | 以Prometheus服务器可以抓取的格式公开指标。需要依赖`micrometer-registry-prometheus`。 |
 
-
-
-
-
 最常用的Endpoint
 
 - **Health：监控状况**
 - **Metrics：运行时指标**
 - **Loggers：日志记录**
 
-
-
-
-
-## 2、Health Endpoint
+### 8.2.2 Health Endpoint
 
 健康检查端点，我们一般用于在云平台，平台会定时的检查应用的健康状况，我们就需要Health Endpoint可以为平台返回当前应用的一系列组件健康状况的集合。
 
@@ -5134,9 +5224,21 @@ https://github.com/codecentric/spring-boot-admin
 - 很多的健康检查默认已经自动配置好了，比如：数据库、redis等
 - 可以很容易的添加自定义的健康检查机制
 
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606908975702-4f9a3208-15ca-4a78-9f76-939ef986db7e.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_12%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+![image-20230127142148830](../../images/image-20230127142148830.png)
 
-## 3、Metrics Endpoint
+```yaml
+# management.endpoint.端点名.xxx对某个端点的具体配置
+management:
+    endpoint:
+        health:
+            show-details: ALWAYS
+```
+
+http://localhost:8080/actuator/health
+
+![image-20230127142814847](../../images/image-20230127142814847.png)
+
+### 8.2.3 Metrics Endpoint
 
 提供详细的、层级的、空间指标信息，这些信息可以被pull（主动推送）或者push（被动获取）方式得到；
 
@@ -5144,22 +5246,18 @@ https://github.com/codecentric/spring-boot-admin
 - 简化核心Metrics开发
 - 添加自定义Metrics或者扩展已有Metrics
 
+http://localhost:8080/actuator/metrics
 
-
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606909073222-c6e77ca3-4b1c-4f38-a1c6-8614dec4f7bc.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_16%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
-
-
-
+![image-20230127143415057](../../images/image-20230127143415057.png)
 
 
 
+### 8.2.4 管理Endpoints
 
-## 4、管理Endpoints
-
-### 1、开启与禁用Endpoints
+#### 8.2.4.1 开启与禁用Endpoints
 
 - 默认所有的Endpoint除过shutdown都是开启的。
-- 需要开启或者禁用某个Endpoint。配置模式为  **management.endpoint.********.enabled = true**
+- 需要开启或者禁用某个Endpoint。配置模式为  **management.endpoint.\*.enabled = true**
 
 ```yaml
 management:
@@ -5181,11 +5279,7 @@ management:
       enabled: true
 ```
 
-
-
-
-
-### 2、暴露Endpoints
+#### 8.2.4.2 暴露Endpoints
 
 支持的暴露方式
 
@@ -5220,17 +5314,11 @@ management:
 | `startup`          | Yes  | No   |
 | `threaddump`       | Yes  | No   |
 
+## 8.3 定制 Endpoint
 
+### 8.3.1 定制 Health 信息
 
-
-
-
-
-
-
-# 3、定制 Endpoint
-
-## 1、定制 Health 信息
+**示例：**
 
 ```java
 import org.springframework.boot.actuate.health.Health;
@@ -5263,7 +5351,7 @@ management:
       show-details: always #总是显示详细信息。可显示每个模块的状态信息
 ```
 
-
+**实践：**
 
 ```java
 @Component
@@ -5299,15 +5387,11 @@ public class MyComHealthIndicator extends AbstractHealthIndicator {
 }
 ```
 
-
-
-### 
-
-## 2、定制info信息
+### 8.3.2 定制info信息
 
 常用两种方式
 
-#### 1、编写配置文件
+#### 8.3.2.1 编写配置文件
 
 ```yaml
 info:
@@ -5317,7 +5401,7 @@ info:
   mavenProjectVersion: @project.version@
 ```
 
-#### 2、编写InfoContributor
+#### 8.3.2.2 编写InfoContributor
 
 ```java
 import java.util.Collections;
@@ -5338,15 +5422,11 @@ public class ExampleInfoContributor implements InfoContributor {
 }
 ```
 
-
-
-
-
 http://localhost:8080/actuator/info 会输出以上方式返回的所有info信息
 
-## 3、定制Metrics信息
+### 8.3.3 定制Metrics信息
 
-#### 1、SpringBoot支持自动适配的Metrics
+#### 8.3.3.1 SpringBoot支持自动适配的Metrics
 
 - JVM metrics, report utilization of:
 
@@ -5364,9 +5444,7 @@ http://localhost:8080/actuator/info 会输出以上方式返回的所有info信�
 - Tomcat metrics (`server.tomcat.mbeanregistry.enabled` must be set to `true` for all Tomcat metrics to be registered)
 - [Spring Integration](https://docs.spring.io/spring-integration/docs/5.4.1/reference/html/system-management.html#micrometer-integration) metrics
 
-
-
-#### 2、增加定制Metrics
+#### 8.3.3.2 增加定制Metrics
 
 ```java
 class MyService{
@@ -5388,11 +5466,7 @@ MeterBinder queueSize(Queue queue) {
 }
 ```
 
-
-
-
-
-## 4、定制Endpoint
+### 8.3.4 定制Endpoint
 
 ```java
 @Component
@@ -5413,68 +5487,60 @@ public class DockerEndpoint {
 }
 ```
 
-场景：开发**ReadinessEndpoint**来管理程序是否就绪，或者**Liveness****Endpoint**来管理程序是否存活；
+场景：开发**ReadinessEndpoint**来管理程序是否就绪，或者**Liveness** **Endpoint**来管理程序是否存活；
 
 当然，这个也可以直接使用 https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html#production-ready-kubernetes-probes
 
+# 9 原理解析
 
-
-更多内容参照：大厂学院
-
-# 09、原理解析
-
-# 1、Profile功能
+## 9.1 Profile功能
 
 为了方便多环境适配，springboot简化了profile功能。
 
-## 1、application-profile功能
+### 9.1.1 application-profile功能
 
 - 默认配置文件  application.yaml；任何时候都会加载
 - 指定环境配置文件  application-{env}.yaml
 - 激活指定环境
 
-- - 配置文件激活
-  - 命令行激活：java -jar xxx.jar --**spring.profiles.active=prod  --person.name=haha**
+  * 配置文件激活
 
-- - - **修改配置文件的任意值，命令行优先**
+  - 命令行激活：java -jar xxx.jar --**spring.profiles.active=prod  --person.name=haha**
+    * **修改配置文件的任意值，命令行优先**
 
 - 默认配置与环境配置同时生效
 - 同名配置项，profile配置优先
 
+### 9.1.2 @Profile条件装配功能
 
-
-
-
-## 2、@Profile条件装配功能
+*可在生产环境和测试环境注入不同组件*
 
 ```java
 @Configuration(proxyBeanMethods = false)
 @Profile("production")
 public class ProductionConfiguration {
 
-    // ...
-
 }
 ```
 
-## 3、profile分组
+### 9.1.3 profile分组
 
-```plain
+`production`组有多个配置文件`application-proddb.yaml`，`application-prodmq.yaml`时
+
+命令行使用：**--spring.profiles.active=production**  激活
+
+*application.properties*
+
+```properties
+spring.profiles.active=production
+
 spring.profiles.group.production[0]=proddb
 spring.profiles.group.production[1]=prodmq
-
-使用：--spring.profiles.active=production  激活
 ```
 
-
-
-
-
-# 2、外部化配置
+## 9.2 外部化配置
 
 https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config
-
-## 
 
 1. Default properties (specified by setting `SpringApplication.setDefaultProperties`).
 2. `@PropertySource` annotations on your `@Configuration` classes. Please note that such property sources are not added to the `Environment` until the application context is being refreshed. This is too late to configure certain properties such as `logging.*` and `spring.main.*` which are read before refresh begins.
@@ -5491,15 +5557,11 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-featu
 13. `@TestPropertySource` annotations on your tests.
 14. [Devtools global settings properties](https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-devtools-globalsettings) in the `$HOME/.config/spring-boot` directory when devtools is active.
 
+### 9.2.1 外部配置源
 
+常用：**Java properties文件**、**YAML文件**、**环境变量**、**命令行参数**；
 
-## 1、外部配置源
-
-常用：**Java属性文件**、**YAML文件**、**环境变量**、**命令行参数**；
-
-
-
-## 2、配置文件查找位置
+### 9.2.2 配置文件查找位置
 
 (1) classpath 根路径
 
@@ -5511,168 +5573,381 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-featu
 
 (5) /config子目录的直接子目录
 
-## 3、配置文件加载顺序：
+### 9.2.3 配置文件加载顺序
 
 1. 　当前jar包内部的application.properties和application.yml
 2. 　当前jar包内部的application-{profile}.properties 和 application-{profile}.yml
 3. 　引用的外部jar包的application.properties和application.yml
 4. 　引用的外部jar包的application-{profile}.properties 和 application-{profile}.yml
 
-## 4、指定环境优先，外部优先，后面的可以覆盖前面的同名配置项
+### ==9.2.4 指定环境优先，外部优先，后面的可以覆盖前面的同名配置项==
 
+## 9.3 自定义starter
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-# 3、自定义starter
-
-## 1、starter启动原理
+### 9.3.1 starter启动原理
 
 - starter-pom引入 autoconfigurer 包
 
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1606995919308-b2c7ccaa-e720-4cc5-9801-2e170b3102e1.png)
+```mermaid
+graph LR;
+  starter-->autoconfigure
+  autoconfigure -->spring-boot-starter
+```
 
 - autoconfigure包中配置使用 **META-INF/spring.factories** 中 **EnableAutoConfiguration 的值，使得项目启动加载指定的自动配置类**
 - **编写自动配置类 xxxAutoConfiguration -> xxxxProperties**
 
-- - **@Configuration**
+  * **@Configuration**
+
   - **@Conditional**
   - **@EnableConfigurationProperties**
   - **@Bean**
   - ......
 
+
 **引入starter** **--- xxxAutoConfiguration --- 容器中放入组件 ---- 绑定xxxProperties ----** **配置项**
 
-## 2、自定义starter
+### 9.3.2 自定义starter
 
-**atguigu-hello-spring-boot-starter（启动器）**
+**neptune-hello-spring-boot-starter（启动器）**
 
-**atguigu-hello-spring-boot-starter-autoconfigure（自动配置包）**
-
-
+**neptune-hello-spring-boot-starter-autoconfigure（自动配置包）**
 
 
 
+新建一个空project（neptune01-springboot-starter）
+
+空project下建maven项目（neptune-hello-spring-boot-starter）和springboot项目（neptune-hello-spring-boot-starter-autoconfigure）
+
+目录结构
+
+![image-20230127194518155](../../images/image-20230127194518155.png)
 
 
-# 4、SpringBoot原理
+
+maven项目需在pom文件中导入springboot项目的依赖
+
+```xml
+    <dependency>
+      <groupId>com.neptune</groupId>
+      <artifactId>neptune-hello-spring-boot-starter-autoconfigure</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+```
+
+**springboot项目**
+
+pom文件移除无用内容（`build标签[不移除会打包失败，找不到主类]`、spring-boot-test-starter依赖等）
+
+移除test目录及application.properties配置文件
+
+`resource目录下新建META-INF/spring.factories文件`
+
+*pom.xml*
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.8</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.neptune</groupId>
+    <artifactId>neptune-hello-spring-boot-starter-autoconfigure</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>neptune-hello-spring-boot-starter-autoconfigure</name>
+    <description>neptune-hello-spring-boot-starter-autoconfigure</description>
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+    </dependencies>
+</project>
+```
+
+*配置类HelloProperties*
+
+```java
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+@ConfigurationProperties("neptune.hello")
+public class HelloProperties {
+
+    private String prefix;
+    private String suffix;
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
+}
+```
+
+*业务类HelloService，默认不要放在容器中*
+
+```java
+/**
+ * 默认不要放在容器中
+ */
+public class HelloService {
+
+    @Autowired
+    HelloProperties helloProperties;
+
+    public String sayHello(String userName){
+        return helloProperties.getPrefix() + "(>_<)："+userName+" => "+helloProperties.getSuffix();
+    }
+}
+```
+
+*自动配置类HelloServiceAutoConfiguration*
+
+```java
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@EnableConfigurationProperties(HelloProperties.class)  //默认HelloProperties放在容器中
+public class HelloServiceAutoConfiguration{
+
+    @ConditionalOnMissingBean(HelloService.class)
+    @Bean
+    public HelloService helloService(){
+        HelloService helloService = new HelloService();
+        return helloService;
+    }
+
+}
+```
+
+*自动装配文件spring.factories*
+
+```properties
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.neptune.hello.auto.HelloServiceAutoConfiguration
+```
+
+*目录结构*
+
+![image-20230127195946070](../../images/image-20230127195946070.png)
+
+使用maven插件`install`安装到本地仓库
+
+![image-20230127200038725](../../images/image-20230127200038725.png)
+
+`将maven项目也安装到本地仓库`
+
+**测试**
+
+*新建工程引入自定义starter依赖*
+
+```xml
+        <dependency>
+            <groupId>com.neptune</groupId>
+            <artifactId>neptune-hello-spring-boot-starter</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+```
+
+*测试类*
+
+```java
+import com.neptune.hello.service.HelloService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+
+@RestController
+public class HelloController {
+
+    @Autowired
+    HelloService helloService;
+
+    @RequestMapping("/hello")
+    public String hello(){
+        return helloService.sayHello("unicorn");
+    }
+}
+```
+
+![image-20230127200337949](../../images/image-20230127200337949.png)
+
+## 9.4 SpringBoot原理
 
 Spring原理【[Spring注解](https://www.bilibili.com/video/BV1gW411W7wy?p=1)】、**SpringMVC**原理、**自动配置原理**、SpringBoot原理
 
-## 1、SpringBoot启动过程
+### 9.4.1 SpringBoot启动过程
 
 - 创建 **SpringApplication**
 
-- - 保存一些信息。
-  - 判定当前应用的类型。ClassUtils。Servlet
-  - **bootstrappers****：初始启动引导器（**List<Bootstrapper>**）：去spring.factories文件中找** org.springframework.boot.**Bootstrapper**
-  - 找 **ApplicationContextInitializer**；去**spring.factories****找** **ApplicationContextInitializer**
+  * 保存一些信息。
 
-- - - List<ApplicationContextInitializer<?>> **initializers**
+  - 判定当前应用的类型。ClassUtils。**Servlet**
+  - **==bootstrapRegistryInitializers==**：**初始启动引导器**（List<BootstrapRegistryInitializers>）：**去spring.factories文件中找**org.springframework.boot.==**BootstrapRegistryInitializers**==
+  - 找 ==ApplicationContextInitializer==；去**spring.factories找**<font style="background:#f9eda6;color:red">**ApplicationContextInitializer**</font>
+    * List<ApplicationContextInitializer<?>> **initializers**
 
-- - **找** **ApplicationListener  ；应用监听器。**去**spring.factories****找** **ApplicationListener**
-
-- - - List<ApplicationListener<?>> **listeners**
+  * **找 ==ApplicationListener  ；应用监听器。==**去**spring.factories找** <font style="background:#f9eda6;color:red">**ApplicationListener**</font>
+    * List<ApplicationListener<?>> **listeners**
 
 - 运行 **SpringApplication**
 
-- - **StopWatch**
   - **记录应用的启动时间**
-  - **创建引导上下文（Context环境）****createBootstrapContext()**
+  - **创建引导上下文（Context环境）**createBootstrapContext()
+    * <font style="background:#98FB98;">获取到所有之前的 **<font color=red>bootstrapRegistryInitializers 挨个执行 intitialize()</font>** 来完成对引导启动器上下文环境设置</font>
 
-- - - 获取到所有之前的 **bootstrappers 挨个执行** intitialize() 来完成对引导启动器上下文环境设置
+  * 让当前应用进入**headless**模式。**java.awt.headless**
 
-- - 让当前应用进入**headless**模式。**java.awt.headless**
-  - **获取所有** **RunListener****（运行监听器）【为了方便所有Listener进行事件感知】**
+  - **获取所有** **RunListener** **（运行监听器）【为了方便所有Listener进行事件感知】**
+    * getSpringFactoriesInstances 去**spring.factories找**<font style="background:#f9eda6;color:red">**SpringApplicationRunListener**</font>
 
-- - - getSpringFactoriesInstances 去**spring.factories****找** **SpringApplicationRunListener**. 
+  * <font style="background:#98FB98;">遍历 **<font color=red>SpringApplicationRunListener 调用 starting 方法；</font>**</font>
+    * ==**相当于通知所有感兴趣系统正在启动过程的人，项目正在 starting。**==
 
-- - 遍历 **SpringApplicationRunListener 调用 starting 方法；**
+  * 保存命令行参数；ApplicationArguments
 
-- - - **相当于通知所有感兴趣系统正在启动过程的人，项目正在 starting。**
-
-- - 保存命令行参数；ApplicationArguments
   - 准备环境 prepareEnvironment（）;
-
-- - - 返回或者创建基础环境信息对象。**StandardServletEnvironment**
+    - 返回或者创建基础环境信息对象。**StandardServletEnvironment**
     - **配置环境信息对象。**
-
-- - - - **读取所有的配置源的配置属性值。**
-
-- - - 绑定环境信息
-    - 监听器调用 listener.environmentPrepared()；通知所有的监听器当前环境准备完成
-
-- - 创建IOC容器（createApplicationContext（））
-
-- - - 根据项目类型（Servlet）创建容器，
+      - **读取所有的配置源的配置属性值。**
+    - 绑定环境信息
+    - <font style="background:#98FB98;">监听器调用 *listener.environmentPrepared()*；通知所有的监听器当前环境准备完成</font>
+    
+  - 创建IOC容器（createApplicationContext（））
+    - 根据项目类型（Servlet）创建容器，
     - 当前会创建 **AnnotationConfigServletWebServerApplicationContext**
-
-- - **准备ApplicationContext IOC容器的基本信息**  **prepareContext()**
-
-- - - 保存环境信息
+    
+  - **准备ApplicationContext IOC容器的基本信息**  prepareContext()
+    
+    - 保存环境信息
     - IOC容器的后置处理流程。
     - 应用初始化器；applyInitializers；
+      - <font style="background:#98FB98;">遍历所有的 <font color=red>**ApplicationContextInitializer 。调用**</font>**initialize。来对ioc容器进行初始化扩展功能**</font>
+      - <font style="background:#98FB98;">遍历所有的 listener 调用 **contextPrepared。EventPublishRunListener；通知所有的监听器** **contextPrepared**</font>
+    - <font style="background:#98FB98;">**所有的监听器 调用** **contextLoaded。通知所有的监听器** **contextLoaded；**</font>
+    
+  - **刷新IOC容器。**refreshContext
+    
+    - 创建容器中的所有组件（Spring注解）
+    
+  - 容器刷新完成后工作？afterRefresh
 
-- - - - 遍历所有的 **ApplicationContextInitializer 。调用** **initialize.。来对ioc容器进行初始化扩展功能**
-      - 遍历所有的 listener 调用 **contextPrepared。EventPublishRunListenr；通知所有的监听器****contextPrepared**
+  - <font style="background:#98FB98;">所有监听器调用 listeners.**started**(context); **通知所有的监听器** **started**</font>
 
-- - - **所有的监听器 调用** **contextLoaded。通知所有的监听器** **contextLoaded；**
-
-- - **刷新IOC容器。**refreshContext
-
-- - - 创建容器中的所有组件（Spring注解）
-
-- - 容器刷新完成后工作？afterRefresh
-  - 所有监听 器 调用 listeners.**started**(context); **通知所有的监听器** **started**
   - **调用所有runners；**callRunners()
-
-- - - **获取容器中的** **ApplicationRunner** 
-    - **获取容器中的**  **CommandLineRunner**
+    
+    - **获取容器中的** <font style="background:#f9eda6;color:red">**ApplicationRunner**</font> 
+    - **获取容器中的 <font style="background:#f9eda6;color:red">CommandLineRunner</font>**
     - **合并所有runner并且按照@Order进行排序**
-    - **遍历所有的runner。调用 run** **方法**
+    - <font style="background:#98FB98;">**遍历所有的runner。调用 run** **方法**</font>
+    
+  - **如果以上有异常**
+    
+    - <font style="background:#98FB98;">**调用Listener 的 failed**</font>
+    
+  - <font style="background:#98FB98;">**调用所有监听器的 ready方法**  listeners.ready(context, timeTakenToReady); **通知所有的监听器** **running** </font>
 
-- - **如果以上有异常，**
+    2.7版本后running被ready封装了
 
-- - - **调用Listener 的 failed**
+    ```java
+    	default void ready(ConfigurableApplicationContext context, Duration timeTaken) {
+    		running(context);
+    	}
+    ```
 
-- - **调用所有监听器的 running 方法**  listeners.running(context); **通知所有的监听器** **running** 
-  - **running如果有问题。继续通知 failed 。****调用所有 Listener 的** **failed；****通知所有的监听器** **failed**
+  - <font style="background:#98FB98;">**running如果有问题。继续通知 failed 。** **调用所有 Listener 的** **failed；** **通知所有的监听器** **failed**</font>
 
+*SpringApplication*
 
+```java
+	public ConfigurableApplicationContext run(String... args) {
+		long startTime = System.nanoTime();
+		DefaultBootstrapContext bootstrapContext = createBootstrapContext();
+		ConfigurableApplicationContext context = null;
+		configureHeadlessProperty();
+		SpringApplicationRunListeners listeners = getRunListeners(args);
+		listeners.starting(bootstrapContext, this.mainApplicationClass);
+		try {
+			ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
+			ConfigurableEnvironment environment = prepareEnvironment(listeners, bootstrapContext, applicationArguments);
+			configureIgnoreBeanInfo(environment);
+			Banner printedBanner = printBanner(environment);
+			context = createApplicationContext();
+			context.setApplicationStartup(this.applicationStartup);
+			prepareContext(bootstrapContext, context, environment, listeners, applicationArguments, printedBanner);
+			refreshContext(context);
+			afterRefresh(context, applicationArguments);
+			Duration timeTakenToStartup = Duration.ofNanos(System.nanoTime() - startTime);
+			if (this.logStartupInfo) {
+				new StartupInfoLogger(this.mainApplicationClass).logStarted(getApplicationLog(), timeTakenToStartup);
+			}
+			listeners.started(context, timeTakenToStartup);
+			callRunners(context, applicationArguments);
+		}
+		catch (Throwable ex) {
+			handleRunFailure(context, ex, listeners);
+			throw new IllegalStateException(ex);
+		}
+		try {
+			Duration timeTakenToReady = Duration.ofNanos(System.nanoTime() - startTime);
+			listeners.ready(context, timeTakenToReady);
+		}
+		catch (Throwable ex) {
+			handleRunFailure(context, ex, null);
+			throw new IllegalStateException(ex);
+		}
+		return context;
+	}
 
+```
 
 
 
 
 ```java
-public interface Bootstrapper {
+@FunctionalInterface
+public interface BootstrapRegistryInitializer {
 
 	/**
 	 * Initialize the given {@link BootstrapRegistry} with any required registrations.
 	 * @param registry the registry to initialize
 	 */
-	void intitialize(BootstrapRegistry registry);
+	void initialize(BootstrapRegistry registry);
 
 }
+
 ```
 
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1607005958877-bf152e3e-4d2d-42b6-a08c-ceef9870f3b6.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_18%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+![image-20230127212351018](../../images/image-20230127212351018.png)
 
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1607004823889-8373cea4-6305-40c1-af3b-921b071a28a8.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_20%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+![image-20230127210102388](../../images/image-20230127210102388.png)
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2020/png/1354552/1607006112013-6ed5c0a0-3e02-4bf1-bdb7-423e0a0b3f3c.png?x-oss-process=image%2Fwatermark%2Ctype_d3F5LW1pY3JvaGVp%2Csize_18%2Ctext_YXRndWlndS5jb20g5bCa56GF6LC3%2Ccolor_FFFFFF%2Cshadow_50%2Ct_80%2Cg_se%2Cx_10%2Cy_10)
+![image-20230127212626828](../../images/image-20230127212626828.png)
 
 ```java
 @FunctionalInterface
@@ -5686,6 +5961,9 @@ public interface ApplicationRunner {
 	void run(ApplicationArguments args) throws Exception;
 
 }
+```
+
+```java
 @FunctionalInterface
 public interface CommandLineRunner {
 
@@ -5699,20 +5977,124 @@ public interface CommandLineRunner {
 }
 ```
 
-## 
-
-## 2、Application Events and Listeners
+### 9.4.2 Application Events and Listeners
 
 https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-application-events-and-listeners
 
+*spring.factories*
+
+```properties
+org.springframework.context.ApplicationContextInitializer=\
+  com.neptune.springboot02webadmin.listener.MyApplicationContextInitializer
+
+org.springframework.context.ApplicationListener=\
+  com.neptune.springboot02webadmin.listener.MyApplicationListener
+
+org.springframework.boot.SpringApplicationRunListener=\
+  com.neptune.springboot02webadmin.listener.MySpringApplicationRunListener
+```
+
 **ApplicationContextInitializer**
+
+```java
+public class MyApplicationContextInitializer implements ApplicationContextInitializer {
+    @Override
+    public void initialize(ConfigurableApplicationContext applicationContext) {
+        System.out.println("MyApplicationContextInitializer ....initialize.... ");
+    }
+}
+```
 
 **ApplicationListener**
 
+```java
+public class MyApplicationListener implements ApplicationListener {
+    @Override
+    public void onApplicationEvent(ApplicationEvent event) {
+        System.out.println("MyApplicationListener.....onApplicationEvent...");
+    }
+}
+```
+
 **SpringApplicationRunListener**
 
+```java
+public class MySpringApplicationRunListener implements SpringApplicationRunListener {
+
+    private SpringApplication application;
+    public MySpringApplicationRunListener(SpringApplication application, String[] args){
+        this.application = application;
+    }
+
+    @Override
+    public void starting(ConfigurableBootstrapContext bootstrapContext) {
+        System.out.println("MySpringApplicationRunListener....starting....");
+
+    }
 
 
-## 3、ApplicationRunner 与 CommandLineRunner
+    @Override
+    public void environmentPrepared(ConfigurableBootstrapContext bootstrapContext, ConfigurableEnvironment environment) {
+        System.out.println("MySpringApplicationRunListener....environmentPrepared....");
+    }
 
- 
+
+    @Override
+    public void contextPrepared(ConfigurableApplicationContext context) {
+        System.out.println("MySpringApplicationRunListener....contextPrepared....");
+
+    }
+
+    @Override
+    public void contextLoaded(ConfigurableApplicationContext context) {
+        System.out.println("MySpringApplicationRunListener....contextLoaded....");
+    }
+
+    @Override
+    public void started(ConfigurableApplicationContext context) {
+        System.out.println("MySpringApplicationRunListener....started....");
+    }
+
+    @Override
+    public void running(ConfigurableApplicationContext context) {
+        System.out.println("MySpringApplicationRunListener....running....");
+    }
+
+    @Override
+    public void failed(ConfigurableApplicationContext context, Throwable exception) {
+        System.out.println("MySpringApplicationRunListener....failed....");
+    }
+}
+```
+
+### 9.4.3 ApplicationRunner 与 CommandLineRunner
+
+*ApplicationRunner* 
+
+```java
+@Order(1)
+@Component
+public class MyApplicationRunner implements ApplicationRunner {
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        System.out.println("MyApplicationRunner...run...");
+    }
+}
+```
+
+*CommandLineRunner*
+
+```java
+/**
+ * 应用启动做一个一次性事情
+ */
+@Order(2)
+@Component
+public class MyCommandLineRunner implements CommandLineRunner {
+    @Override
+    public void run(String... args) throws Exception {
+        System.out.println("MyCommandLineRunner....run....");
+    }
+}
+```
+
