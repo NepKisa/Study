@@ -1,6 +1,64 @@
+## Typora无法支持mermaid新语法
+
+现象：显示空白页
+
+```perl
+​```mermaid
+info
+​```
+可查看mermaid版本信息
+```
+
+![image-20230129163853289](images/image-20230129163853289.png)
 
 
 
+### 处理办法（Windows）
+
+#### 下载Mermaid最新版本的js文件
+
+由于Typora本质是一个js实现的Markdown编辑器，Mermaid也是一个js实现的图表库，Typora通过js引用的方式集成了Mermaid。因此，为了集成最新版本的Mermaid，我们首先需要下载Mermaid最新版本的js文件：
+
+1. 寻找mermaid新版的CDN下载地址(https://www.bootcdn.cn/mermaid/)
+2. 下载最新版本的 `mermaid.min.js` 文件到本地（例如 `9.3.0` 版本地址：https://cdn.bootcdn.net/ajax/libs/mermaid/9.3.0/mermaid.min.js）
+
+除了官方提供的CDN下载方式，通过其他渠道下载也可以。
+
+#### 打开Typora的window.html文件
+
+假设我们Typora的安装目录在 `D:/Typora`，那么在其中的 `resources/app` 目录下可以找到一个 `window.html` 文件，打开这个文件。
+
+#### 引用Mermaid的js文件
+
+在 `window.html` 文件中的 </body> 前插入以下代码并保存：
+
+```javascript
+<script>
+	const interval = setInterval(() => {
+		console.log('check mermaid...');
+		if (window.editor &&
+			window.editor.diagrams &&
+			window.mermaidAPI) {
+			$.getScript('file:///G:/Typora/resources/app/mermaid.min.js')
+				.then(() => {
+					mermaidAPI = mermaid.mermaidAPI;
+					editor.diagrams.refreshDiagram(editor);
+					clearInterval(interval);
+				});
+		}
+	}, 100);
+</script>
+```
+
+上面代码会在Typora窗口打开后定时检查自带的Mermaid是否已集成，如果已集成，那么就通过jQuery从本地加载我们前面下载的js文件。
+
+#### 重新打开Typora
+
+修改并保存 `window.html` 文件后，重新打开Typora
+
+查看Mermaid的版本，也可以看到已经成功替换成了最新版：
+
+![image-20230129165306143](images/image-20230129165306143.png)
 
 ## 通过对win10注册表修改来关闭睿频（高性能/已禁用来回切换）
 
@@ -31,7 +89,6 @@ ElasticSearch报错：
 
 ```powershell
 [TOO_MANY_REQUESTS/12/index read-only / allow delete (api)]
-
 ```
 
 ==原因：磁盘空间不足，导致Elasticsearch触发磁盘保护，强制将所有索引设置成了只读状态。==

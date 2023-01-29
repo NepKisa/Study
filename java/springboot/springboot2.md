@@ -3501,7 +3501,35 @@ Cookie: JSESSIONID=947FC0ECC28018456DE5ADD0724B33D9
 
 - @ControllerAdvice+@ExceptionHandler处理全局异常；底层是 **ExceptionHandlerExceptionResolver 支持的**
 
+  ```java
+  /**
+   * 处理整个web controlLer的异常
+   */
+  @Slf4j
+  @ControllerAdvice
+  public class GlobalExceptionHandler {
+  
+      @ExceptionHandler({ArithmeticException.class, NullPointerException.class})//处理异常
+      public String handlerArithException(Exception e){
+          log.info("异常是：{}",e);
+          return "main";//视图地址
+      }
+  }
+  ```
+
 - @ResponseStatus+自定义异常 ；底层是 **ResponseStatusExceptionResolver ，把responsestatus注解的信息底层调用** **response.sendError(statusCode, resolvedReason)；tomcat发送的/error**
+
+  ```java
+  @ResponseStatus(value = HttpStatus.FORBIDDEN,reason = "用户数量太多")
+  public class UserTooManyException extends RuntimeException {
+  
+      public UserTooManyException() {}
+  
+      public UserTooManyException(String message) {
+          super(message);
+      }
+  }
+  ```
 
 - Spring底层的异常，如 参数类型转换异常；**DefaultHandlerExceptionResolver 处理框架底层的异常。**
 
@@ -3517,6 +3545,17 @@ Cookie: JSESSIONID=947FC0ECC28018456DE5ADD0724B33D9
   @Order(value = Ordered.HIGHEST_PRECEDENCE)//优先级，数字越小优先级越高
   @Component
   public class CustomerExceptionHandlerResolver implements HandlerExceptionResolver {
+      @Override
+      public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+          try {
+              ex.printStackTrace();
+              response.sendError(520,"我喜欢的错误");
+          } catch (IOException e) {
+              throw new RuntimeException(e);
+          }
+          return new ModelAndView();
+      }
+  }
   ```
 
   ![image-20230123232747878](../../images/image-20230123232747878.png)

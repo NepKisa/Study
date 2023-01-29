@@ -1,6 +1,6 @@
-1.**Elasticsearch** 概述
+# 1.Elasticsearch 概述
 
-## **1.1 Elasticsearch** 是什么
+## 1.1 Elasticsearch是什么
 
 The Elastic Stack, 包括 Elasticsearch、Kibana、Beats 和 Logstash（也称为 ELK Stack）。能够安全可靠地获取任何来源、任何格式的数据，然后实时地对数据进行搜索、分析和可视化。
 
@@ -34,7 +34,7 @@ Google，百度类的网站搜索，它们都是根据网页中的关键字生�
 
 ![image-20221210183308626](../../images/image-20221210183308626.png)
 
-## 1.4 **Elasticsearch** 应用案例
+## 1.4 Elasticsearch 应用案例
 
 * **GitHub**: 2013 年初，抛弃了 Solr，采取 Elasticsearch 来做 PB 级的搜索。“GitHub 使用Elasticsearch 搜索 20TB 的数据，包括 13 亿文件和 1300 亿行代码”。
 
@@ -50,9 +50,9 @@ Google，百度类的网站搜索，它们都是根据网页中的关键字生�
 
 * **Stack Overflow**：解决 Bug 问题的网站，全英文，编程人员交流的网站。
 
-# 2. **Elasticsearch** **入门**
+# 2. Elasticsearch 入门
 
-## **2.1 Elasticsearch** **安装**
+## 2.1 Elasticsearch 安装
 
 ### 2.1.1 Windows安装
 
@@ -185,9 +185,9 @@ systemctl disable firewalld.service #关闭防火墙，永久性生效，重启�
 
 ![image-20221209145144532](../../images/image-20221209145144532.png)
 
-## **2.2 Elasticsearch** **基本操作**
+## 2.2 Elasticsearch 基本操作
 
-### **2.2.1 RESTful**
+### 2.2.1 RESTful
 
 每一个URI代表1种资源
 
@@ -205,7 +205,7 @@ Web 应用程序最重要的 REST 原则是，客户端和服务器之间的交�
 
 在 REST 样式的 Web 服务中，每个资源都有一个地址。资源本身都是方法调用的目标，方法列表对所有资源都是一样的。这些方法都是标准方法，包括 HTTP GET、POST、PUT、DELETE，还可能包括 HEAD 和 OPTIONS。简单的理解就是，如果想要访问互联网上的资源，就必须向资源所在的服务器发出请求，请求体中必须包含资源的网络路径，以及对资源进行的操作(增删改查)。
 
-### 2.2.2 **数据格式**
+### 2.2.2 数据格式
 
 Elasticsearch 是面向文档型数据库，一条数据在这里就是一个文档。
 
@@ -250,13 +250,11 @@ new 0bject ()I
 | name    | 1001,1002 |
 | zhang   | 1001      |
 
+### 2.2.3 HTTP 操作
 
+#### 2.2.4.1 索引操作
 
-### **2.2.3 HTTP** **操作**
-
-#### **2.2.4.1** **索引操作**
-
-##### 2.2.4.1.1 **创建索引**
+##### 2.2.4.1.1 创建索引
 
 对比关系型数据库，创建索引就等同于创建数据库
 
@@ -279,7 +277,7 @@ PUT http://192.168.10.130:9200/shopping
 
 如果重复添加索引，会返回错误信息`already exists`
 
-##### 2.2.4.1.2 **查看所有索引**
+##### 2.2.4.1.2 查看所有索引
 
 向 ES 服务器发 ==GET== 请求 ：
 
@@ -323,7 +321,7 @@ Accept: application/json
 | store.size     | 主分片和副分片整体占空间大小                                 |
 | pri.store.size | 主分片占空间大小                                             |
 
-##### 2.2.4.1.3 **查看单个索引**
+##### 2.2.4.1.3 查看单个索引
 
 向 ES 服务器发 ==GET== 请求 ：
 
@@ -353,7 +351,7 @@ GET http://192.168.10.130:9200/shopping
 }
 ```
 
-##### 2.2.4.1.4 **删除索引**
+##### 2.2.4.1.4 删除索引
 
 向 ES 服务器发 ==DELETE== 请求：
 
@@ -393,13 +391,13 @@ GET http://192.168.10.130:9200/shopping
 }
 ```
 
-#### **2.2.4.2** **文档操作**
+#### 2.2.4.2 文档操作
 
 索引已经创建好了，接下来创建文档，并添加数据。
 
 这里的文档可以类比为关系型数据库中的表数据，添加的数据格式为 JSON 格式
 
-##### 2.2.4.2.1 **创建文档**
+##### 2.2.4.2.1 创建文档
 
 向 ES 服务器发 ==POST==请求，不可以用PUT，因为**ID是随机生成的，返回结果不具有幂等性不可用PUT**
 
@@ -469,7 +467,7 @@ Content-Type: application/json
 
 ==此处需要注意：如果增加数据时明确数据主键，那么请求方式也可以为 PUT==
 
-##### 2.2.4.2.2 **查看文档**
+##### 2.2.4.2.2 查看文档
 
 查看文档时，需要指明文档的唯一性标识，类似于 MySQL 中数据的**主键查询**
 
@@ -500,7 +498,7 @@ GET http://192.168.10.130:9200/shopping/_doc/1
 }
 ```
 
-###### 2.2.4.2.2.2 **查询所有**
+###### 2.2.4.2.2.2 查询所有
 
 ```perl
 ### 查看文档
@@ -560,7 +558,7 @@ GET http://192.168.10.130:9200/shopping/_search
 GET http://192.168.10.130:9200/shopping/_search?q=category:小米
 ```
 
-##### 2.2.4.2.3 **修改文档**
+##### 2.2.4.2.3 修改文档
 
 和新增文档一样，输入相同的 URL 地址请求，如果请求体变化，会将原有的数据内容覆盖。
 
@@ -596,7 +594,7 @@ Content-Type: application/json
 }
 ```
 
-##### 2.2.4.2.4 **修改字段**
+##### 2.2.4.2.4 修改字段
 
 修改数据时，也可以只修改某一给条数据的局部信息
 
@@ -654,7 +652,7 @@ GET http://192.168.10.130:9200/shopping/_doc/1
 }
 ```
 
-##### 2.2.4.2.5 **删除文档**
+##### 2.2.4.2.5 删除文档
 
 删除一个文档不会立即从磁盘上移除，它只是被标记成已删除（逻辑删除）。
 
@@ -718,7 +716,7 @@ DELETE http://192.168.10.130:9200/shopping/_doc/1
 }
 ```
 
-##### 2.2.4.2.6 **条件删除文档**
+##### 2.2.4.2.6 条件删除文档
 
 一般删除数据都是根据文档的唯一性标识进行删除，实际操作时，也可以根据条件对多条数据进行删除
 
@@ -783,7 +781,7 @@ Content-Type: application/json
 }
 ```
 
-#### **2.2.4.3** **映射操作**
+#### **2.2.4.3** 映射操作
 
 有了索引库，等于有了数据库中的 database。
 
@@ -791,7 +789,7 @@ Content-Type: application/json
 
 创建数据库表需要设置字段名称，类型，长度，约束等；索引库也一样，需要知道这个类型下有哪些字段，每个字段有哪些约束信息，这就叫做映射(mapping)。
 
-##### 2.2.4.3.1 **创建映射**
+##### 2.2.4.3.1 创建映射
 
 向 ES 服务器发 ==PUT==请求 ：
 
@@ -864,7 +862,7 @@ Content-Type: application/json
 
 * analyzer：分词器，这里的 ik_max_word 即使用 ik 分词器。
 
-##### 2.2.4.3.2 **查看映射**
+##### 2.2.4.3.2 查看映射
 
 向 ES 服务器发 ==GET==请求
 
@@ -895,7 +893,7 @@ GET http://192.168.10.130:9200/student/_mapping
 }
 ```
 
-##### 2.2.4.3.3 **创建索引时创建映射**
+##### 2.2.4.3.3 创建索引时创建映射
 
 向 ES 服务器发 ==PUT== 请求
 
@@ -933,7 +931,7 @@ Content-Type: application/json
 }
 ```
 
-#### **2.2.4.4** **高级查询**
+#### 2.2.4.4 高级查询
 
 Elasticsearch 提供了基于 JSON 提供完整的查询 DSL 来定义查询
 
@@ -1063,7 +1061,7 @@ Content-Type: application/json
 }
 ```
 
-##### 2.2.4.4.3 **匹配查询**
+##### 2.2.4.4.3 匹配查询
 
 match 匹配类型查询，会把查询条件进行分词，然后进行查询，多个词条之间是 or 的关系
 
@@ -1081,7 +1079,7 @@ Content-Type: application/json
 }
 ```
 
-##### 2.2.4.4.4 **字段匹配查询**
+##### 2.2.4.4.4 字段匹配查询
 
 multi_match 与 match 类似，不同的是它可以在多个字段中查询。
 
@@ -1100,7 +1098,7 @@ Content-Type: application/json
 }
 ```
 
-##### 2.2.4.4.5 **关键字精确查询**
+##### 2.2.4.4.5 关键字精确查询
 
 term 查询，精确的关键词匹配查询，不对查询条件进行分词。
 
@@ -1120,7 +1118,7 @@ Content-Type: application/json
 }
 ```
 
-##### 2.2.4.4.6 **多关键字精确查询**
+##### 2.2.4.4.6 多关键字精确查询
 
 erms 查询和 term 查询一样，但它允许你指定多值进行匹配。
 
@@ -1140,7 +1138,7 @@ Content-Type: application/json
 }
 ```
 
-##### 2.2.4.4.7 **指定查询字段**
+##### 2.2.4.4.7 指定查询字段
 
 默认情况下，Elasticsearch 在搜索的结果中，会把文档中保存在_source 的所有字段都返回。
 
@@ -1161,7 +1159,7 @@ Content-Type: application/json
 }
 ```
 
-##### 2.2.4.4.8 **过滤字段**
+##### 2.2.4.4.8 过滤字段
 
 * includes：指定想要显示的字段
 
@@ -1199,7 +1197,7 @@ Content-Type: application/json
 }
 ```
 
-##### 2.2.4.4.9 **组合查询**
+##### 2.2.4.4.9 组合查询
 
 `bool`把各种其它查询通过`must`（必须 ）、`must_not`（必须不）、`should`（应该）的方式进行组合
 
@@ -1237,7 +1235,7 @@ Content-Type: application/json
 }
 ```
 
-##### 2.2.4.4.10 **范围查询**
+##### 2.2.4.4.10 范围查询
 
 range 查询找出那些落在指定区间内的数字或者时间。range 查询允许以下字符
 
@@ -1265,7 +1263,7 @@ Content-Type: application/json
 }
 ```
 
-##### 2.2.4.4.11 **模糊查询**
+##### 2.2.4.4.11 模糊查询
 
 返回包含与搜索字词相似的字词的文档。
 
@@ -1314,7 +1312,7 @@ Content-Type: application/json
 }
 ```
 
-##### 2.2.4.4.12 **单字段排序**
+##### 2.2.4.4.12 单字段排序
 
 sort 可以按照不同的字段进行排序，并且通过 order 指定排序的方式。desc 降序，asc升序。
 
@@ -1337,7 +1335,7 @@ Content-Type: application/json
 }
 ```
 
-##### 2.2.4.4.13 **多字段排序**
+##### 2.2.4.4.13 多字段排序
 
 结合使用 age 和 _score 进行查询，并且匹配的结果首先按照年龄排序，然后按照相关性得分排序··
 
@@ -1365,7 +1363,7 @@ Content-Type: application/json
 }
 ```
 
-##### 2.2.4.4.14 **高亮查询**
+##### 2.2.4.4.14 高亮查询
 
 在进行关键字搜索时，搜索出的内容中的关键字会显示不同的颜色，称之为高亮。
 
@@ -1402,7 +1400,7 @@ Content-Type: application/json
 }
 ```
 
-##### 2.2.4.4.15 **分页查询**
+##### 2.2.4.4.15 分页查询
 
 from：当前页的起始索引，默认从 0 开始。 from = (pageNum - 1) * size
 
@@ -1429,7 +1427,7 @@ Content-Type: application/json
 }
 ```
 
-##### 2.2.4.4.16 **聚合查询**
+##### 2.2.4.4.16 聚合查询
 
 对 es 文档进行统计分析，类似关系型数据库中的 group by，还有很多其他的聚合，例如取最大值、平均值等等。
 
@@ -1557,7 +1555,7 @@ Content-Type: application/json
 }
 ```
 
-##### 2.2.4.4.17 **桶聚合查询**
+##### 2.2.4.4.17 桶聚合查询
 
 桶聚和相当于 sql 中的 group by 语句
 
@@ -1600,11 +1598,11 @@ Content-Type: application/json
 }
 ```
 
-### **2.2.5 Java API** **操作**
+### 2.2.5 Java API 操作
 
 Elasticsearch 软件是由 Java 语言开发的，所以也可以通过 Java API 的方式对 Elasticsearch服务进行访问
 
-#### **2.2.5.1** **创建** **Maven** **项目**
+#### 2.2.5.1 创建Maven项目
 
 ```xml
     <dependencies>
@@ -1644,7 +1642,7 @@ Elasticsearch 软件是由 Java 语言开发的，所以也可以通过 Java API
     </dependencies>
 ```
 
-#### **2.2.5.2** **客户端对象**
+#### 2.2.5.2 客户端对象
 
 ```java
 package org.example;
@@ -1669,7 +1667,7 @@ public class ElasticSearchClient01 {
 
 ```
 
-#### **2.2.5.3** **索引操作**
+#### 2.2.5.3 索引操作
 
 ##### 2.2.5.3.1 创建索引
 
@@ -1771,9 +1769,9 @@ public class IndexDelete {
 }
 ```
 
-#### 2.2.5.4 **文档操作**
+#### 2.2.5.4 文档操作
 
-##### 2.2.5.4.1 **新增文档**
+##### 2.2.5.4.1 新增文档
 
 创建数据模型
 
@@ -1860,7 +1858,7 @@ public class DocumentCreate {
 }
 ```
 
-##### 2.2.5.4.2 **修改文档**
+##### 2.2.5.4.2 修改文档
 
 ```java
 package org.example;
@@ -1897,7 +1895,7 @@ public class DocumentAlter {
 }
 ```
 
-##### 2.2.5.4.3 **查询文档**
+##### 2.2.5.4.3 查询文档
 
 ```java
 package org.example;
@@ -1930,7 +1928,7 @@ public class DocumentSearch {
 }
 ```
 
-##### 2.2.5.4.4 **删除文档**
+##### 2.2.5.4.4 删除文档
 
 ```java
 package org.example;
@@ -1960,7 +1958,7 @@ public class DocumentDelete {
 }
 ```
 
-##### 2.2.5.4.5 **批量操作**
+##### 2.2.5.4.5 批量操作
 
 ```java
 package org.example;
@@ -2019,9 +2017,9 @@ public class DocumentBulkOption {
 }
 ```
 
-##### **2.2.5.5** **高级查询**
+##### 2.2.5.5 高级查询
 
-##### 2.2.5.5.1 **请求体查询**
+##### 2.2.5.5.1 请求体查询
 
 ###### 2.2.5.5.1.1 查询所有
 
@@ -2498,7 +2496,7 @@ public class HighLightQuery {
 }
 ```
 
-##### 2.2.5.5.3 **聚合查询**
+##### 2.2.5.5.3 聚合查询
 
 ###### 2.2.5.5.3.1 max
 
@@ -2579,11 +2577,11 @@ public class AggregateGroup {
 }
 ```
 
-# 3 **Elasticsearch** **环境**
+# 3 Elasticsearch 环境
 
-## **3.1** **相关概念**
+## 3.1 相关概念
 
-### **3.1.1** **单机** **&** **集群**
+### 3.1.1 单机 & 集群
 
 单台 Elasticsearch 服务器提供服务，往往都有最大的负载能力，超过这个阈值，服务器性能就会大大降低甚至不可用，所以生产环境中，一般都是运行在指定服务器集群中。除了负载能力，单点服务器也存在其他问题：
 
@@ -2595,11 +2593,11 @@ public class AggregateGroup {
 
 配置服务器集群时，集群中节点数量没有限制，大于等于 2 个节点就可以看做是集群了。一般出于高性能及高可用方面来考虑集群中节点数量都是 3 个以上。
 
-### **3.1.2** **集群** **Cluster**
+### 3.1.2 集群 Cluster
 
 一个集群就是由一个或多个服务器节点组织在一起，共同持有整个的数据，并一起提供索引和搜索功能。一个 Elasticsearch 集群有一个唯一的名字标识，这个名字默认就是”elasticsearch”。这个名字是重要的，因为一个节点只能==通过指定某个集群的名字，来加入这个集群==。
 
-### **3.1.3** **节点** **Node**
+### 3.1.3 节点 Node
 
 集群中包含很多服务器，==一个节点就是其中的一个服务器==。作为集群的一部分，它存储数据，参与集群的索引和搜索功能。
 
@@ -2609,9 +2607,82 @@ public class AggregateGroup {
 
 在一个集群里，只要你想，可以拥有任意多个节点。而且，如果当前你的网络中没有运行任何 Elasticsearch 节点，这时启动一个节点，会默认创建并加入一个叫做“elasticsearch”的集群。
 
-## **3.2 Windows** **集群**
+#### 3.1.3.1 节点划分
 
-### **3.2.1** **部署集群**
+* 默认情况下，ES集群节点都是混合节点，即在`elasticsearch.yml`中默认`node.master: true`和`node.data: true`。
+* 当ES集群规模达到一定程度以后，就需要注意对集群节点进行角色划分。
+* ES集群节点可以划分为三种：主节点、数据节点和客户端节点。
+* 这是一种`分而治之`的思想，也是一种`术业专攻`的体现。
+
+#### 3.1.3.2 三类节点说明
+
+- `master - 主节点`
+
+  - `elasticsearch.yml`
+
+    ```yml
+    node.master: true
+    node.data: false
+    ```
+
+  - 主要功能：维护元数据，管理集群节点状态；不负责数据写入和查询。**创建或删除索引，跟踪哪些节点是群集的一部分，并决定哪些分片分配给相关的节点**
+
+  - 配置要点：内存可以相对小一些，但是机器==一定要稳定==，最好是独占的机器。
+
+* `data - 数据节点`：
+
+  * `elasticsearch.yml`
+
+    ```yaml
+    node.master: false
+    node.data: true
+    ```
+
+  * 主要功能：负责数据的写入与查询，压力大，**主要对文档进行增删改查操作，聚合操作**。
+
+  * 配置要点：大内存，最好是独占的机器，*对cpu，内存，io要求较高*
+
+* `client - 客户端节点`：
+
+  * `elasticsearch.yml`
+
+    ```yaml
+    node.master: false
+    node.data: false
+    ```
+
+  * 主要功能：负责任务分发和结果汇聚，不存储数据，**只处理用户请求，实现请求转发，负载均衡等功能**
+
+  * 配置要点：大内存，最好是独占的机器
+
+* **`mixed- 混合节点（不建议）`**：
+
+  * `elasticsearch.yml`
+
+    ```yaml
+    node.master: true
+    node.data: true
+    ```
+
+  * 主要功能：综合上述三个节点的功能。
+
+  * 配置要点：大内存，最好是独占的机器。
+
+  * ==特别说明：不建议这种配置，节点容易挂掉。==
+
+*注：上述未对单个服务器的磁盘大小进行要求，但是整体ES集群的总磁盘大小要保证足够*
+
+假定共计`20`台机器，则可以按照如下配置：
+
+| 节点类型 | 机器数量 | 内存大小 | 其他         |
+| -------- | -------- | -------- | ------------ |
+| master   | 3        | 16GB     | 机器必须稳定 |
+| data     | 12       | 32GB     | 无           |
+| client   | 5        | 32GB     | 无           |
+
+## 3.2 Windows 集群
+
+### 3.2.1 部署集群
 
 * **创建 elasticsearch-cluster 文件夹，在内部复制三个 elasticsearch 服务**
 
@@ -2701,7 +2772,7 @@ http.cors.enabled: true
 http.cors.allow-origin: "*"
 ```
 
-### **3.2.2** **启动集群**
+### 3.2.2 启动集群
 
 * 启动前先删除**每个节点**中的 data 目录中所有内容（如果存在）
 
@@ -2711,7 +2782,7 @@ http.cors.allow-origin: "*"
 
 ![image-20221212134759457](../../images/image-20221212134759457.png)
 
-### **3.2.3** **测试集群**
+### 3.2.3 测试集群
 
 **查看集群状态**
 
@@ -2775,9 +2846,9 @@ GET http://127.0.0.1:1002/user
 }
 ```
 
-## 3.3 **Linux** **集群**
+## 3.3 Linux 集群
 
-### 3.3.1 **安装软件**
+### 3.3.1 安装软件
 
 ```perl
 # 解压缩
@@ -2792,7 +2863,7 @@ userdel -r es #如果错了，可以删除再加
 chown -R es:es /opt/module/es-cluster #文件夹所有者
 ```
 
-### 3.3.2 **修改配置文件**
+### 3.3.2 修改配置文件
 
 * 添加环境变量
 
@@ -2872,7 +2943,7 @@ source /etc/profile
 sysctl -p
 ```
 
-### 3.3.3 **启动软件**
+### 3.3.3 启动软件
 
 分别在不同节点上启动 ES 软件，按顺序启动hadoop102、hadoop103、hadoop104
 
@@ -2884,7 +2955,7 @@ bin/elasticsearch
 bin/elasticsearch -d
 ```
 
-### 3.3.4 **测试集群**
+### 3.3.4 测试集群
 
 ```perl
 curl hadoop102:9200/_cat/nodes
@@ -2892,11 +2963,11 @@ curl hadoop102:9200/_cat/nodes
 
 ![image-20221212211830910](../../images/image-20221212211830910.png)
 
-# 4 **Elasticsearch** **进阶**
+# 4 Elasticsearch 进阶
 
-## **4.1** **核心概念**
+## 4.1 核心概念
 
-### **4.1.1** 索引（Index）
+### 4.1.1 索引（Index）
 
 * 一个索引就是一个拥有几份相似特征的文档的集合。比如说，你可以有一个客户数据的索引，另一个产品目录的索引，还有一个订单数据的索引。
 
@@ -2906,7 +2977,7 @@ curl hadoop102:9200/_cat/nodes
 
 ==Elasticsearch 索引的精髓：一切设计都是为了提高搜索的性能。==
 
-### **4.1.2** 类型（Type）
+### 4.1.2 类型（Type）
 
 在一个索引中，可以定义一种或多种类型。
 
@@ -2966,7 +3037,7 @@ mapping 是处理数据的方式和规则方面做一些限制，如：某个字
 
 将分片分配给某个节点的过程，包括分配主分片或者副本。如果是副本，还包含从主分片复制数据的过程。这个过程是由 master 节点完成的。
 
-## **4.2** **系统架构**
+## 4.2 系统架构
 
 `Lucene Index` ：一种全文搜索引擎
 
@@ -2982,9 +3053,9 @@ mapping 是处理数据的方式和规则方面做一些限制，如：某个字
 * 当一个节点被选举成为主节点时， 它将负责管理集群范围内的所有变更，例如增加、删除索引，或者增加、删除节点等。 而主节点并不需要涉及到文档级别的变更和搜索等操作，所以当集群只拥有一个主节点的情况下，即使流量的增加它也不会成为瓶颈。 任何节点都可以成为主节点。
 * 作为用户，我们可以将请求发送到集群中的任何节点 ，包括主节点。 每个节点都知道任意文档所处的位置，并且能够将我们的请求直接转发到存储我们所需文档的节点。 无论我们将请求发送到哪个节点，它都能负责从各个包含我们所需文档的节点收集回数据，并将最终结果返回给客户端。 
 
-## **4.3** **分布式集群**
+## 4.3 分布式集群
 
-### **4.3.1** **单节点集群**
+### 4.3.1 单节点集群
 
 在包含一个空节点的集群内创建名为 users 的索引，分配 3个主分片和一份副本（每个主分片拥有一个副本分片）
 
@@ -3015,7 +3086,7 @@ Content-Type: application/json
 
 当前集群是正常运行的，但是在硬件故障时有丢失数据的风险。
 
-### **4.3.2** **故障转移**
+### 4.3.2 故障转移
 
 当集群中只有一个节点在运行时，意味着会有一个单点故障问题——没有冗余。只需再启动一个节点即可防止数据丢失。当你在同一台机器上启动了第二个节点时，只要它和第一个节点有同样的 cluster.name 配置，它就会自动发现集群并加入到其中。
 
@@ -3027,7 +3098,7 @@ Content-Type: application/json
 
 ![image-20221215110522848](../../images/image-20221215110522848.png)
 
-### **4.3.3** **水平扩容**
+### 4.3.3 水平扩容
 
 当启动了第三个节点，集群将会拥有三个节点的集群 : 为了分散负载而对分片进行重新分配。
 
@@ -3061,7 +3132,7 @@ users 索引现在拥有 9 个分片：3 个主分片和 6 个副本分片。 �
 
 如果只是在相同节点数目的集群上增加更多的副本分片并不能提高性能，因为每个分片从节点上获得的资源会变少。 需要增加更多的硬件资源来提升吞吐量。但是更多的副本分片数提高了数据冗余量：按照上面的节点配置，可以在失去 2 个节点的情况下不丢失任何数据。
 
-### **4.3.4** **应对故障**
+### 4.3.4 应对故障
 
 关闭第一个节点，这时集群的状态为:关闭了一个节点后的集群。
 
@@ -3088,7 +3159,7 @@ discovery.seed_hosts: ["localhost:9301", "localhost:9302","localhost:9303"]
 
 ![image-20221215133327428](../../images/image-20221215133327428.png)
 
-## **4.4** **路由计算**
+## 4.4 路由计算
 
 ==当索引一个文档的时候，文档会被存储到一个主分片中。具体位置根据下面这个公式决定的：==
 $$
@@ -3102,7 +3173,7 @@ $$
 
 一个自定义的路由参数可以用来确保所有相关的文档——例如所有属于同一个用户的文档——都被存储到同一个分片中。
 
-## **4.5** **分片控制**
+## 4.5 分片控制
 
 我们假设有一个集群由三个节点组成。 它包含一个叫 emps 的索引，有两个主分片，每个主分片有两个副本分片。相同分片的副本不会放在同一节点。
 
@@ -3116,7 +3187,7 @@ $$
 
 **当发送请求的时候， 为了扩展负载，更好的做法是轮询集群中所有的节点**
 
-### **4.5.1** **写流程**
+### 4.5.1 写流程
 
 新建、索引和删除 请求都是 写 操作， 必须在主分片上面完成之后才能被复制到相关的副本分片。
 
@@ -3148,7 +3219,7 @@ $$int( (primary + 3\ replicas) / 2 ) + 1 = 3$$
 
 **<font color=blue>注意：新索引默认有 1 个副本分片，这意味着为满足规定数量应该需要两个活动的分片副本。 但是，这些默认的设置会阻止我们在单一节点上做任何事情。为了避免这个问题，要求只有当 number_of_replicas 大于 1 的时候，规定数量才会执行。</font>**
 
-### **4.5.2** **读流程**
+### 4.5.2 读流程
 
 可以从主分片或者从其它任意副本分片检索文档
 
@@ -3166,7 +3237,7 @@ $$int( (primary + 3\ replicas) / 2 ) + 1 = 3$$
 
 在这种情况下，副本分片可能会报告文档不存在，但是主分片可能成功返回文档。 一旦索引请求成功返回给用户，文档在主分片和副本分片都是可用的。
 
-### **4.5.3** **更新流程**
+### 4.5.3 更新流程
 
 部分更新一个文档结合了先前说明的读取和写入流程：
 
@@ -3181,7 +3252,7 @@ $$int( (primary + 3\ replicas) / 2 ) + 1 = 3$$
 
 **<font color=blue>注意：当主分片把更改转发到副本分片时， 它不会转发更新请求。 相反，它转发完整文档的新版本。请记住，这些更改将会异步转发到副本分片，并且不能保证它们以发送它们相同的顺序到达。 如果 Elasticsearch 仅转发更改请求，则可能以错误的顺序应用更改，导致得到损坏的文档。</font>**
 
-### **4.5.4** **多文档操作流程**
+### 4.5.4 多文档操作流程
 
 mget 和 bulk API 的模式类似于单文档模式。区别在于协调节点知道每个文档存在于哪个分片中。它将整个多文档请求分解成 每个分片 的多文档请求，并且将这些请求并行转发到每个参与节点。
 
@@ -3206,13 +3277,13 @@ bulk API 按如下步骤顺序执行：
 * Node 1 为每个节点创建一个批量请求，并将这些请求并行转发到每个包含主分片的节点主机。
 * 主分片一个接一个按顺序执行每个操作。当每个操作成功时，主分片并行转发新文档（或删除）到副本分片，然后执行下一个操作。 一旦所有的副本分片报告所有操作成功，该节点将向协调节点报告成功，协调节点将这些响应收集整理并返回给客户端。
 
-## **4.6** **分片原理**
+## 4.6 分片原理
 
 分片是 Elasticsearch 最小的工作单元。但是究竟什么是一个分片，它是如何工作的？
 
 传统的数据库每个字段存储单个值，但这对全文检索并不够。文本字段中的每个单词需要被搜索，对数据库意味着需要单个字段有索引多值的能力。最好的支持是一个字段多个值需求的数据结构是<font color=blue>倒排索</font>引。
 
-### **4.6.1** **倒排索引**
+### 4.6.1 倒排索引
 
 Elasticsearch 使用一种称为**<font color=blue>倒排索引</font>**的结构，它适用于快速的全文搜索。
 
@@ -3251,7 +3322,7 @@ ik_smart
 
 两个文档都匹配，但是第一个文档比第二个匹配度更高。如果我们使用仅计算匹配词条数量的简单相似性算法，那么我们可以说，对于我们查询的相关性来讲，第一个文档比第二个文档更佳。
 
-### **4.6.2** **文档搜索**
+### 4.6.2 文档搜索
 
 早期的全文检索会为整个文档集合建立一个很大的倒排索引并将其写入到磁盘。 一旦新的索引就绪，旧的就会被其替换，这样最近的变化便可以被检索到。
 
@@ -3266,7 +3337,7 @@ ik_smart
 
 当然，一个不变的索引也有不好的地方。主要事实是它是不可变的! 你不能修改它。如果你需要让一个新的文档 可被搜索，你需要重建整个索引。这要么对一个索引所能包含的数据量造成了很大的限制，要么对索引可被更新的频率造成了很大的限制。
 
-### **4.6.3** **动态更新索引**
+### 4.6.3 动态更新索引
 
 如何在保留不变性的前提下实现倒排索引的更新？
 
@@ -3302,7 +3373,7 @@ Elasticsearch 基于 Lucene, 这个 java 库引入了**<font color=blue>按段�
 
 文档更新也是类似的操作方式：当一个文档被更新时，旧版本文档被标记删除，文档的新版本被索引到一个新的段中。 可能两个版本的文档都会被一个查询匹配到，但被删除的那个旧版本文档在结果集返回前就已经被移除。
 
-### **4.6.4** **近实时搜索**
+### 4.6.4 近实时搜索
 
 随着按段（per-segment）搜索的发展，一个新的文档从索引到可被搜索的延迟显著降低了。新文档在几分钟之内即可被检索，但这样还是不够快。磁盘在这里成为了瓶颈。提交（Commiting）一个新的段到磁盘需要一个 **fsync** 来确保段被物理性地写入磁盘，这样在断电的时候就不会丢失数据。 但是 **fsync** 操作代价很大; 如果每次索引一个文档都去执行一次的话会造成很大的性能问题。
 
@@ -3347,7 +3418,7 @@ Content-Type: application/json
 { "refresh_interval": "1s" }
 ```
 
-### **4.6.5** **持久化变更**
+### 4.6.5 持久化变更
 
 如果没有用 fsync 把数据从文件系统缓存刷（flush）到硬盘，不能保证数据在断电甚至是程序正常退出之后依然存在。为了保证 Elasticsearch 的可靠性，需要确保数据变化被持久化到磁盘。在动态更新索引，一次完整的提交会将段刷到磁盘，并写入一个包含所有段列表的提交点。Elasticsearch 在启动或重新打开一个索引的过程中使用这个提交点来判断哪些段隶属于当前分片。
 
@@ -3385,7 +3456,7 @@ translog 也被用来提供实时 CRUD 。当你试着通过 ID 查询、更新�
 
 执行一个提交并且截断 translog 的行为在 Elasticsearch 被称作一次 flush分片每 30 分钟被自动刷新（flush），或者在 translog 太大的时候也会刷新
 
-### **4.6.6** **段合并**
+### 4.6.6 段合并
 
 由于自动刷新流程每秒会创建一个新的段 ，这样会导致短时间内的段数量暴增。而段数目太多会带来较大的麻烦。 每一个段都会消耗文件句柄、内存和 cpu 运行周期。更重要的是，每个搜索请求都必须轮流检查每个段；所以段越多，搜索也就越慢。Elasticsearch 通过在后台进行段合并来解决这个问题。小的段被合并到大的段，然后这些大的段再被合并到更大的段。
 
@@ -3412,5 +3483,433 @@ translog 也被用来提供实时 CRUD 。当你试着通过 ID 查询、更新�
 
 ![image-20221216110740482](../../images/image-20221216110740482.png)
 
-## **4.7** **文档分析**
+## 4.7 文档分析
 
+分析器执行：
+
+* 将一块文本分成适合于倒排索引的独立的词条
+
+* 将这些词条统一化为标准格式以提高它们的“可搜索性”，或者 recall
+
+分析器包含三个组件：
+
+* 字符过滤器
+  * 首先，字符串按顺序通过每个字符过滤器 。在分词前整理字符串。一个字符过滤器可以用来去掉 HTML标签，或者将 & 转化成 and。
+
+* 分词器
+  * 其次，字符串被分词器分为单个的词条。一个简单的分词器遇到空格和标点的时候，可能会将文本拆分成词条。
+
+* Token 过滤器
+  * 最后，词条按顺序通过每个 token 过滤器 。这个过程可能会改变词条（例如，小写化Quick ），删除词条（例如， 像 a， and， the 等无用词），或者增加词条（例如，像 jump 和 leap 这种同义词）。
+
+### 4.7.1 内置分析器
+
+Elasticsearch 附带了可以直接使用的预包装的分析器。以下列出最重要的分析器。
+
+原始字符串：*"Set the shape to semi-transparent by calling set_trans(5)"*
+
+* 标准分析器
+  Elasticsearch 默认分析器。删除绝大部分标点，将词条小写。
+  *set, the, shape, to, semi, transparent, by, calling, set_trans, 5*
+* 简单分析器
+  在任何不是字母的地方分隔文本，将词条小写。
+  *set, the, shape, to, semi, transparent, by, calling, set, trans*
+* 空格分析器
+  在空格的地方划分文本。
+  *Set, the, shape, to, semi-transparent, by, calling, set_trans(5)*
+* 语言分析器
+  可用于很多语言。它们可以考虑指定语言的特点。例如， 英语分析器附带了一组英语无用词（常用单词，例如 and 或者 the ，它们对相关性没有多少影响），它们会被删除。 由于理解英语语法的规则，这个分词器可以提取英语单词的词干 。
+  *set, shape, semi, transpar, call, set_tran, 5*
+   transparent、 calling 和 set_trans 已经变为词根格式
+
+### 4.7.2 分析器使用场景
+
+**搜索时索引的分析器应和创建时一致**
+
+索引一个文档，它的全文域被分析成词条以用来创建倒排索引。 
+
+在全文域搜索的时，需要将查询字符串通过相同的分析过程 ，以保证搜索的词条格式与索引中的词条格式一致。
+
+* 查询一个全文域时，会对查询字符串应用相同的分析器，以产生正确的搜索词条列表。
+
+* 查询一个精确值域时，不会分析查询字符串，而是搜索你指定的精确值。
+
+### 4.7.3 测试分析器
+
+**在请求体指定`分析器`和要分析的`文本`**
+
+```perl
+### 测试分析器
+GET http://localhost:9200/_analyze
+Content-Type: application/json
+
+{
+ "analyzer": "standard",
+ "text": "Text to analyze"
+}
+```
+
+结果中每个元素代表一个单独的词条：
+
+```json
+{
+  "tokens": [
+    {
+      "token": "text",
+      "start_offset": 0,
+      "end_offset": 4,
+      "type": "<ALPHANUM>",
+      "position": 0
+    },
+    {
+      "token": "to",
+      "start_offset": 5,
+      "end_offset": 7,
+      "type": "<ALPHANUM>",
+      "position": 1
+    },
+    {
+      "token": "analyze",
+      "start_offset": 8,
+      "end_offset": 15,
+      "type": "<ALPHANUM>",
+      "position": 2
+    }
+  ]
+}
+```
+
+`token` 是实际存储到索引中的词条。
+
+`position` 指明词条在原始文本中出现的位置。
+
+`start_offset` 和 `end_offset` 指明字符在原始字符串中的位置。
+
+### 4.7.4 指定分析器
+
+使用场景：想要使用字符串域（不使用分析），直接索引精确值，例如用户 ID 或者一个内部的状态域或标签。
+
+### 4.7.5 IK 分词器
+
+ES 的默认分词器无法识别中文中测试、单词这样的词汇，而是简单的将每个字拆完分为一个词
+
+下载 ES 对应版本的中文分词器：https://github.com/medcl/elasticsearch-analysis-ik/releases/tag/v7.8.0
+
+将解压后的后的文件夹放入 ES 根目录下的 plugins 目录下，重启 ES 即可使用。
+
+更改分词器*"analyzer":"ik_max_word"*
+
+```perl
+### 中文分词器
+GET http://localhost:9200/_analyze
+Content-Type: application/json
+
+{
+"text":"测试单词",
+"analyzer":"ik_max_word"
+}
+```
+
+* `ik_max_word`：会将文本做最细粒度的拆分
+
+* `ik_smart`：会将文本做最粗粒度的拆分
+
+**扩展ES词汇**
+
+*拓展前*
+
+```perl
+### 拓展词汇
+GET http://localhost:9200/_analyze
+Content-Type: application/json
+
+{
+"text":"米卡娅",
+"analyzer":"ik_max_word"
+}
+```
+
+```json
+{
+  "tokens": [
+    {
+      "token": "米",
+      "start_offset": 0,
+      "end_offset": 1,
+      "type": "CN_CHAR",
+      "position": 0
+    },
+    {
+      "token": "卡",
+      "start_offset": 1,
+      "end_offset": 2,
+      "type": "CN_CHAR",
+      "position": 1
+    },
+    {
+      "token": "娅",
+      "start_offset": 2,
+      "end_offset": 3,
+      "type": "CN_CHAR",
+      "position": 2
+    }
+  ]
+}
+```
+
+新增词汇：米卡娅
+
+进入 ES 根目录中的 plugins 文件夹下的 ik 文件夹，进入 config 目录，创建mikaya.dic文件，写入词汇。同时打开 IKAnalyzer.cfg.xml 文件，将新建的 mikaya.dic 配置其中
+
+![image-20230128141525645](../../images/image-20230128141525645.png)
+
+重启 ES 服务器。
+
+*拓展后*
+
+```perl
+### 拓展词汇
+GET http://localhost:9200/_analyze
+Content-Type: application/json
+
+{
+"text":"米卡娅",
+"analyzer":"ik_max_word"
+}
+```
+
+```json
+{
+  "tokens": [
+    {
+      "token": "米卡娅",
+      "start_offset": 0,
+      "end_offset": 3,
+      "type": "CN_WORD",
+      "position": 0
+    }
+  ]
+}
+```
+
+### 4.7.6 自定义分析器
+
+一个分析器包含：字符过滤器、分词器、词汇单元过滤器，三者按顺序执行。
+
+* **字符过滤器**
+
+  字符过滤器用来处理一个尚未被分词的字符串。一个分析器可能有 0 个或者多个字符过滤器。
+
+* **分词器**
+
+  一个分析器必须有一个唯一的分词器。 分词器根据规则把字符串分解成单个词条或者词汇单元。 
+
+* **词单元过滤器**
+
+  经过分词后，作为结果的词单元流会按照指定的顺序通过指定的词单元过滤器 。词单元过滤器可以修改、添加或者移除词单元。
+
+  * 词干过滤器：把单词遏制为词干。 
+  * ascii_folding 过滤器：移除变音符，把一个像 "très" 这样的词转换为 "tres" 。
+  * ngram 和 edge_ngram 词单元过滤器 可以产生适合用于部分匹配或者自动补全的词单元。
+
+**创建自定义分析器**
+
+```perl
+### 自定义分析器
+PUT http://localhost:9200/my_index
+Content-Type: application/json
+
+{
+  "settings": {
+    "analysis": {
+      "char_filter": {
+        "&_to_and": {
+          "type": "mapping",
+          "mappings": [
+            "&=> and "
+          ]
+        }
+      },
+      "filter": {
+        "my_stopwords": {
+          "type": "stop",
+          "stopwords": [
+            "the",
+            "a"
+          ]
+        }
+      },
+      "analyzer": {
+        "my_analyzer": {
+          "type": "custom",
+          "char_filter": [
+            "html_strip",
+            "&_to_and"
+          ],
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "my_stopwords"
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+使用 analyze API 测试自定义分析器
+
+```perl
+### 测试自定义分析器
+GET http://localhost:9200/my_index/_analyze
+Content-Type: application/json
+
+{
+ "text":"The quick & brown fox",
+ "analyzer": "my_analyzer"
+}
+```
+
+```json
+{
+  "tokens": [
+    {
+      "token": "quick",
+      "start_offset": 4,
+      "end_offset": 9,
+      "type": "<ALPHANUM>",
+      "position": 1
+    },
+    {
+      "token": "and",
+      "start_offset": 10,
+      "end_offset": 11,
+      "type": "<ALPHANUM>",
+      "position": 2
+    },
+    {
+      "token": "brown",
+      "start_offset": 12,
+      "end_offset": 17,
+      "type": "<ALPHANUM>",
+      "position": 3
+    },
+    {
+      "token": "fox",
+      "start_offset": 18,
+      "end_offset": 21,
+      "type": "<ALPHANUM>",
+      "position": 4
+    }
+  ]
+}
+```
+
+## 4.8 文档处理
+
+### 4.8.1 文档冲突
+
+等同于数据库的锁
+
+*悲观并发控制*	性能低
+
+*乐观并发控制*	新增`version字段`进行校验
+
+### 4.8.2 乐观并发控制
+
+**内部版本控制**
+
+老版本 es 使用 `version`，新版本的用 `if_seq_no`和 `if_primary_term`控制
+
+```perl
+### 修改文档
+POST http://127.0.0.1:9200/shopping/_doc/1?if_seq_no=10&if_primary_term=6
+Content-Type: application/json
+
+{
+  "title": "华为手机",
+  "category": "华为",
+  "images": "https://github.com/yukiasumi/Study/blob/master/images/aniya.png",
+  "price": 4996.00
+}
+```
+
+![image-20230128163632031](../../images/image-20230128163632031.png)
+
+### 4.8.3 外部系统版本控制
+
+使用其它数据库作为主要的数据存储，使用 Elasticsearch 做数据检索时，数据库定义版本号或存在作为版本号的字段值比如 timestamp，可通过增加 `version_type=external` 到查询字符串的方式重用这些相同的版本号， 版本号必须是大于零的整数， 且小于 9.2E+18 （一个 Java 中 long 类型的正值）。
+
+外部版本号的处理方式和内部版本号的处理方式不同，Elasticsearch 不是检查当前 \_version 和请求中指定的版本号是否相同， 而是检查当前\_version 是否小于指定的版本号。 如果请求成功，外部的版本号作为文档的新_version 进行存储。
+
+**使用方式**
+
+```perl
+### 外部版本号
+POST http://127.0.0.1:9200/shopping/_doc/1?version=6&version_type=external
+Content-Type: application/json
+
+{
+  "title": "华为手机",
+  "category": "华为",
+  "images": "https://github.com/yukiasumi/Study/blob/master/images/aniya.png",
+  "price": 4998.00
+}
+```
+
+![image-20230128165030556](../../images/image-20230128165030556.png)
+
+## 4.9 Kibana
+
+Kibana 是一个免费且开放的用户界面，能够对 Elasticsearch 数据进行可视化，并在 Elastic Stack 中进行导航。可以进行各种操作，从跟踪查询负载，到理解请求如何流经你的整个应用，都能轻松完成。
+
+下载地址：https://artifacts.elastic.co/downloads/kibana/kibana-7.8.0-windows-x86_64.zip
+
+* 解压缩下载的 zip 文件
+
+* 修改 config/kibana.yml 文件
+
+```yaml
+# 默认端口
+server.port: 5601
+# ES 服务器的地址
+elasticsearch.hosts: ["http://localhost:9200"]
+# 索引名
+kibana.index: ".kibana"
+# 支持中文
+i18n.locale: "zh-CN"
+```
+
+* Windows 环境下执行 bin/kibana.bat 文件
+
+* 通过浏览器访问 : http://localhost:5601
+
+![image-20230128165846860](../../images/image-20230128165846860.png)
+
+![image-20230128170049731](../../images/image-20230128170049731.png)
+
+# 5 Elasticsearch 集成
+
+## 5.1 Spring Data 框架集成
+
+https://spring.io/projects/spring-data
+
+Spring Data Elasticsearch 基于 spring data API 简化 Elasticsearch 操作，将原始操作Elasticsearch 的客户端 API 进行封装 。Spring Data 为 Elasticsearch 项目提供集成搜索引擎。
+
+Spring Data Elasticsearch POJO 的关键功能区域为中心的模型与 Elastichsearch 交互文档和轻松地编写一个存储索引库数据访问层。
+
+**版本对应关系**
+
+|                  Spring Data Release Train                   |                  Spring Data Elasticsearch                   | Elasticsearch | Spring Framework | Spring Boot |
+| :----------------------------------------------------------: | :----------------------------------------------------------: | :-----------: | :--------------: | :---------: |
+|                       2022.0 (Turing)                        |                            5.0.x                             |     8.5.3     |      6.0.x       |    3.0.x    |
+|                         2021.2 (Raj)                         |                            4.4.x                             |    7.17.3     |      5.3.x       |    2.7.x    |
+|                          2021.1 (Q)                          |                            4.3.x                             |    7.15.2     |      5.3.x       |    2.6.x    |
+|                       2021.0 (Pascal)                        | 4.2.x[[1](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#_footnotedef_1)] |    7.12.0     |      5.3.x       |    2.5.x    |
+| 2020.0 (Ockham)[[1](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#_footnotedef_1)] | 4.1.x[[1](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#_footnotedef_1)] |     7.9.3     |      5.3.2       |    2.4.x    |
+| Neumann[[1](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#_footnotedef_1)] | 4.0.x[[1](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#_footnotedef_1)] |     7.6.2     |      5.2.12      |    2.3.x    |
+| Moore[[1](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#_footnotedef_1)] | 3.2.x[[1](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#_footnotedef_1)] |    6.8.12     |      5.2.12      |    2.2.x    |
+| Lovelace[[1](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#_footnotedef_1)] | 3.1.x[[1](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#_footnotedef_1)] |     6.2.2     |      5.1.19      |    2.1.x    |
+| Kay[[1](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#_footnotedef_1)] | 3.0.x[[1](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#_footnotedef_1)] |     5.5.0     |      5.0.13      |    2.0.x    |
+| Ingalls[[1](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#_footnotedef_1)] | 2.1.x[[1](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#_footnotedef_1)] |     2.4.0     |      4.3.25      |    1.5.x    |
