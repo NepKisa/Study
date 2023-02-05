@@ -1,3 +1,41 @@
+## k8s
+
+### k8s dashboard无法访问
+
+重启全部节点
+
+## chrome
+
+> chrome浏览器打开报错
+>
+> 您的连接不是私密连接
+> 攻击者可能会试图从 x.x.x.x 窃取您的信息（例如：密码、通讯内容或信用卡信息）。了解详情
+
+```perl
+解决：就是在当前页面用键盘输入  thisisunsafe  ，不是在地址栏输入，就直接敲键盘就行了，页面即会自动刷新进入网页。
+```
+
+## Word
+
+> 页面布局设置上下左右1.5cm，采用A4纸张
+>
+> 三个减号---代表分割线
+>
+> 选中文字，点击无框线可去除横线
+>
+> ![image-20230202012352504](images/image-20230202012352504.png)
+>
+> 
+
+## Typora代码块背景
+
+```perl
+github.css文件的
+.md-fences标签里
+	#FFE4E1
+	你这不行
+```
+
 ## Typora无法支持mermaid新语法
 
 现象：显示空白页
@@ -1058,9 +1096,7 @@ rm -rf /tmp/kafka-logs
 
 ```
 kafka.common.InconsistentClusterIdException: The Cluster ID kVSgfurUQFGGpHMTBqBPiw doesn't match stored clusterId Some(0Qftv9yBTAmf2iDPSlIk7g) in meta.properties. The broker is trying to join the wrong cluster. Configured zookeeper.connect may be wrong.
-————————————————
-版权声明：本文为CSDN博主「道阻且长-行则将至-行而不辍-未来可期」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
-原文链接：https://blog.csdn.net/m0_59252007/article/details/119533700
+
 1、在server.properties 找到  log.dirs 配置的路径，
 2、进入配置的 log.dirs=/tmp-9092/kafka-logs  路径下面
 3、meta.properties，修改里面的cluster.id即可，
@@ -1068,9 +1104,22 @@ kafka.common.InconsistentClusterIdException: The Cluster ID kVSgfurUQFGGpHMTBqBP
 重新启动运行startup.sh 就会出现启动成功的日志刷出来：
 ```
 
-更改
-
 ## Linux
+
+### ping 百度出现：www.baidu.com: Name or service not known
+
+/etc/resolv.conf文件新增
+
+```perl
+nameserver 8.8.8.8
+nameserver 114.114.114.114
+```
+
+重启网络
+
+```perl
+systemctl restart network
+```
 
 ### curl返回格式化
 

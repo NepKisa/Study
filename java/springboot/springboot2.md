@@ -1,4 +1,6 @@
-1 环境
+[toc]
+
+# 1 环境
 
 * Windows11
 * IDEA 2022.2.3
@@ -1978,8 +1980,9 @@ spring:
 
 #### 5.2.4.3 欢迎页的处理规则
 
+`HandlerMapping`：处理器映射。保存了每一个Handler能处理哪些请求。	
+
 ```java
-	HandlerMapping：处理器映射。保存了每一个Handler能处理哪些请求。	
 		@Bean
 		public WelcomePageHandlerMapping welcomePageHandlerMapping(ApplicationContext applicationContext,
 				FormattingConversionService mvcConversionService, ResourceUrlProvider mvcResourceUrlProvider) {

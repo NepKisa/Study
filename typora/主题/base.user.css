@@ -1,0 +1,716 @@
+:root {
+    /*定义全局变量*/
+    /*这个文件是自已建立用来修改所有主题的基本样式*/
+    /*一级标题居中，二级标题带下划线分割 配色为wind10黑色*/
+    /*代码块黑色背景，csdn的配色*/
+
+    /* implicit border color in export menu of setting */
+    --border-color: var(--menu-divider-color);
+    --title-color: #32423F;
+    --font-sans-serif: 'Ubuntu', 'Source Sans Pro', sans-serif !important;
+    /* light color for text and icon*/
+    /* default color */
+    --text-color1: hsl(220, 6%, 71%);
+    /* for text on panel */
+    --text-color2: rgb(220, 220, 220);
+    /* for checkbox and radio */
+    --text-color3: hsl(192, 6%, 40%);
+    /* for tips */
+    --text-color4: white;
+    /* for focus mode */
+    --text-color5: rgba(170, 178, 180, 0.5);
+    /* link color */
+    --link-color: rgb(197, 202, 210);
+    /* hover color */
+    /* default hover background color */
+    --hover-bg-color1: rgb(32, 192, 213);
+    /* for input item */
+    --hover-bg-color2: hsl(220, 9%, 14%);
+    /* for button on toc and table edit panel */
+    --hover-bg-color3: rgba(62, 66, 73, 0.8);
+    /* default hover text color */
+    --hover-text-color: white;
+    /* active color */
+    --active-color: var(--hover-bg-color1);
+    /* input color */
+    --input-color: rgb(29, 31, 35);
+    /* menu divider color */
+    /*   --menu-divider-color: rgb(95, 97, 101); */
+    --menu-divider-color: hsl(220, 5%, 40%);
+    /* scrollbar color */
+    --scrollbar-thumb-color: var(--menu-divider-color);
+    --scrollbar-track-color: rgba(95, 97, 101, 0.3);
+    /* theme select color */
+    --theme-select-color: rgba(255, 255, 255, 0.5);
+    --button-color: rgb(62, 66, 73);
+    --select-color: rgb(33, 37, 43);
+    /* focus color */
+    --focus-color: rgba(100, 100, 100, 0.8);
+    --focus-ring-color: var(--focus-color);
+    /* codeblock color */
+    --code-red-color: hsl(355, 65%, 65%);
+    --code-yellow-color: hsl(39, 67%, 69%);
+    --code-cyan-color: hsl(187, 47%, 55%);
+    --code-blue-color: hsl(207, 82%, 66%);
+    --code-purple-color: hsl(286, 60%, 67%);
+    --code-orange-color: hsl(29, 54%, 61%);
+    --code-green-color: hsl(95, 38%, 62%);
+    --code-grey-color: hsl(220, 9%, 55%);
+
+    --code-select-bg-color: rgb(59, 68, 84);
+    --code-cursor-color: hsl(220, 100%, 66%);
+}
+
+
+
+/*标题自动添加序号
+.sidebar-content {
+    counter-reset: h1
+}
+ 
+.outline-h1 {
+    counter-reset: h2
+}
+ 
+.outline-h2 {
+    counter-reset: h3
+}
+ 
+.outline-h3 {
+    counter-reset: h4
+}
+ 
+.outline-h4 {
+    counter-reset: h5
+}
+ 
+.outline-h5 {
+    counter-reset: h6
+}
+ 
+.outline-h1>.outline-item>.outline-label:before {
+    counter-increment: h1;
+    content: counter(h1) " "
+}
+ 
+.outline-h2>.outline-item>.outline-label:before {
+    counter-increment: h2;
+    content: counter(h1) "."counter(h2) " "
+}
+ 
+.outline-h3>.outline-item>.outline-label:before {
+    counter-increment: h3;
+    content: counter(h1) "."counter(h2) "."counter(h3) " "
+}
+ 
+.outline-h4>.outline-item>.outline-label:before {
+    counter-increment: h4;
+    content: counter(h1) "."counter(h2) "."counter(h3) "."counter(h4) " "
+}
+ 
+.outline-h5>.outline-item>.outline-label:before {
+    counter-increment: h5;
+    content: counter(h1) "."counter(h2) "."counter(h3) "."counter(h4) "."counter(h5) " "
+}
+ 
+.outline-h6>.outline-item>.outline-label:before {
+    counter-increment: h6;
+    content: counter(h1) "."counter(h2) "."counter(h3) "."counter(h4) "."counter(h5) "."counter(h6) " "
+}
+ 
+#write {
+    counter-reset: h1
+}
+ 
+h1 {
+    counter-reset: h2
+}
+ 
+h2 {
+    counter-reset: h3
+}
+ 
+h3 {
+    counter-reset: h4
+}
+ 
+h4 {
+    counter-reset: h5
+}
+ 
+h5 {
+    counter-reset: h6
+}
+ 
+#write h1:before {
+    counter-increment: h1;
+    content: counter(h1) " "
+}
+ 
+#write h2:before {
+    counter-increment: h2;
+    content: counter(h1) "."counter(h2) " "
+}
+ 
+#write h3:before,
+h3.md-focus.md-heading:before
+ 
+    {
+    counter-increment: h3;
+    content: counter(h1) "."counter(h2) "."counter(h3) " "
+}
+ 
+#write h4:before,
+h4.md-focus.md-heading:before {
+    counter-increment: h4;
+    content: counter(h1) "."counter(h2) "."counter(h3) "."counter(h4) " "
+}
+ 
+#write h5:before,
+h5.md-focus.md-heading:before {
+    counter-increment: h5;
+    content: counter(h1) "."counter(h2) "."counter(h3) "."counter(h4) "."counter(h5) " "
+}
+ 
+#write h6:before,
+h6.md-focus.md-heading:before {
+    counter-increment: h6;
+    content: counter(h1) "."counter(h2) "."counter(h3) "."counter(h4) "."counter(h5) "."counter(h6) " "
+}
+ 
+#write>h3.md-focus:before,
+#write>h4.md-focus:before,
+#write>h5.md-focus:before,
+#write>h6.md-focus:before,
+h3.md-focus:before,
+h4.md-focus:before,
+h5.md-focus:before,
+h6.md-focus:before {
+    color: inherit;
+    border: inherit;
+    border-radius: inherit;
+    position: inherit;
+    left: initial;
+    float: none;
+    top: initial;
+    font-size: inherit;
+    padding-left: inherit;
+    padding-right: inherit;
+    vertical-align: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+}
+*/
+
+/*标题*/
+/*一级标题居中，二级标题带下划线分割 配色为wind10黑色*/
+
+/* h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    position: relative;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem; */
+/* font-weight: bold; */
+/* font-weight: 500 !important;
+    line-height: 1.4;
+    cursor: text;
+    color: var(--title-color);
+    font-family: var(--font-sans-serif);
+}
+
+h1:hover a.anchor,
+h2:hover a.anchor,
+h3:hover a.anchor,
+h4:hover a.anchor,
+h5:hover a.anchor,
+h6:hover a.anchor {
+    text-decoration: none;
+}
+
+h1 tt,
+h1 code {
+    font-size: inherit !important;
+}
+h2 tt,
+h2 code {
+    font-size: inherit !important;
+}
+h3 tt,
+h3 code {
+    font-size: inherit !important;
+}
+h4 tt,
+h4 code {
+    font-size: inherit !important;
+}
+h5 tt,
+h5 code {
+    font-size: inherit !important;
+}
+h6 tt,
+h6 code {
+    font-size: inherit !important;
+}
+
+
+h1 {
+    padding-bottom: .4rem;
+    font-size: 2.2rem;
+    line-height: 1.3;
+}
+h1 {
+    text-align: center;
+    padding-bottom: 0.3em;
+    font-size: 2.2em;
+    line-height: 1.2;
+    margin: 2.4em auto 1.2em;
+}
+h1:after {
+    content: '';
+    display: block;
+    margin: 0.2em auto 0;
+    width: 100px;
+    height: 2px;
+    border-bottom: 2px solid var(--title-color);
+}
+
+h2 {
+    margin: 1.6em auto 0.5em;
+    padding-left: 10px;
+    line-height: 1.4;
+    font-size: 1.8em;
+    border-left: 9px solid var(--title-color);
+    border-bottom: 1px solid var(--title-color);
+}
+h3 {
+    font-size: 1.5rem;
+    margin: 1.2em auto 0.5em;
+}
+h4 {
+    font-size: 1.3rem;
+}
+h5 {
+    font-size: 1.2rem;
+}
+h6 {
+    font-size: 1.1rem;
+} */
+
+
+
+
+
+
+/*因为不同主题的代码块部分不一样，code部分统一*/
+.CodeMirror-lines {
+    padding-left: 4px;
+}
+
+.code-tooltip {
+    box-shadow: 0 1px 1px 0 rgba(0, 28, 36, .3);
+    border-top: 1px solid #eef2f2;
+}
+
+.md-fences,
+code,
+tt {
+    background-color: #f8f8f8;
+    border-radius: 3px;
+    padding: 0;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+    font-size: 0.9em;
+}
+
+code {
+    background-color: #f3f4f4;
+    padding: 0 2px 0 2px;
+}
+
+.md-fences {
+    margin-bottom: 15px;
+    margin-top: 15px;
+    padding-top: 8px;
+    padding-bottom: 6px;
+}
+
+
+.md-task-list-item>input {
+    margin-left: -1.3em;
+}
+
+@media print {
+    html {
+        font-size: 13px;
+    }
+
+    table,
+    pre {
+        page-break-inside: avoid;
+    }
+
+    pre {
+        word-wrap: break-word;
+    }
+}
+
+.md-fences {
+    background-color: #f8f8f8;
+}
+
+#write pre.md-meta-block {
+    padding: 1rem;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: #f7f7f7;
+    border: 0;
+    border-radius: 3px;
+    color: #777777;
+    margin-top: 0 !important;
+}
+
+.mathjax-block>.code-tooltip {
+    bottom: .375rem;
+}
+
+
+
+/*深色背景*/
+
+#write .md-fences:not([mermaid-type]) {
+    padding-top: 7px;
+    border-radius: 10px;
+    background-color: #282C34;
+    /*代码块背景*/
+    color: #ABB2BF;
+}
+
+.code-tooltip .ty-input,
+.code-tooltip input {
+    color: #C5C5C5;
+    /*语言标签颜色*/
+}
+
+/*修改代码块字体*/
+#write .CodeMirror-wrap .CodeMirror-code pre {
+    font-family: JetBrains Mono;
+}
+
+/*MAC的三个图标*/
+
+/*
+.CodeMirror-wrap .CodeMirror-scroll {
+    padding-top: 20px;
+}
+ 
+#write .md-fences:before {
+    content: "";
+    z-index: 4;
+    display: block;
+    position: absolute;
+    top: 7px;
+    left: 13px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    float: left;
+    background-color: #fa3534;
+}
+ 
+#write .CodeMirror-scroll:before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0px;
+    left: 29px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    float: left;
+    z-index: 999;
+    background-color: #ff9900;
+}
+#write .md-fences::after {
+    content: "";
+    z-index: 4;
+    display: block;
+    position: absolute;
+    top: 7px;
+    left: 53px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    float: left;
+    background-color: #19be6b;
+}
+ 
+/* codeblock */
+.md-fences,
+.md-fences:active {
+    background-color: var(--bg-color5);
+    border-radius: 6px;
+    padding: 8px 4px 8px 4px !important;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.md-fences .code-tooltip {
+    display: block !important;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.3s;
+    background-color: var(--bg-color3);
+}
+
+.md-fences.md-focus .code-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.CodeMirror-lines {
+    padding-left: 4px;
+}
+
+/* selected text and cursor */
+.CodeMirror-selected,
+.CodeMirror-selectedtext {
+    background: var(--code-select-bg-color) !important;
+}
+
+.CodeMirror div.CodeMirror-cursor {
+    border-left: 2px solid var(--code-cursor-color);
+    z-index: 3;
+}
+
+.CodeMirror.cm-s-typora-default div.CodeMirror-cursor {
+    border-left: 3px solid var(--code-cursor-color);
+}
+
+/* highlight */
+.cm-s-inner .cm-property {
+    color: var(--code-blue-color) !important;
+}
+
+.cm-s-inner .cm-operator {
+    color: var(--code-cyan-color) !important;
+}
+
+.cm-s-inner .cm-keyword {
+    color: var(--code-purple-color) !important;
+}
+
+.cm-s-inner .cm-tag {
+    color: var(--code-red-color) !important;
+}
+
+.cm-s-inner .cm-attribute {
+    color: var(--code-orange-color) !important;
+}
+
+.cm-s-inner .cm-string {
+    color: var(--code-green-color) !important;
+}
+
+.cm-s-inner .cm-comment,
+.cm-s-inner.cm-comment {
+    /*     color: var(--code-orange-color) !important; */
+    color: var(--code-grey-color) !important;
+    font-style: italic;
+}
+
+.cm-s-inner .cm-header,
+.cm-s-inner .cm-def,
+.cm-s-inner.cm-header,
+.cm-s-inner.cm-def {
+    /*     color: var(--code-red-color) !important; */
+    color: var(--code-blue-color) !important;
+}
+
+.cm-s-inner .cm-meta,
+.cm-s-inner .cm-qualifier {
+    color: var(--code-red-color) !important;
+}
+
+.cm-s-inner .cm-builtin {
+    /*     color: var(--code-blue-color) !important; */
+    color: var(--code-cyan-color) !important;
+}
+
+.cm-s-inner .cm-bracket {
+    color: var(--text-color1) !important;
+}
+
+.cm-s-inner .cm-number {
+    color: var(--code-orange-color) !important;
+}
+
+.cm-s-inner .cm-variable {
+    color: var(--text-color1) !important;
+}
+
+.cm-s-inner .cm-variable-2 {
+    /*     color: var(--code-blue-color) !important; */
+    color: var(--code-yellow-color) !important;
+}
+
+.cm-s-typora-default .cm-header,
+.cm-s-typora-default .cm-property {
+    color: var(--code-red-color) !important;
+}
+
+.cm-s-typora-default .cm-string {
+    /*     color: var(--code-blue-color); */
+    color: var(--code-purple-color);
+}
+
+.cm-s-typora-default .cm-atom {
+    color: var(--code-grey-color);
+    font-style: italic;
+}
+
+.cm-s-typora-default .cm-number {
+    color: var(--code-orange-color);
+    font-style: normal !important;
+}
+
+.cm-s-typora-default .cm-link {
+    color: var(--code-blue-color);
+}
+
+.cm-s-typora-default .CodeMirror-activeline-background {
+    background: var(--hover-bg-color1);
+}
+
+.cm-s-typora-default .cm-comment,
+.cm-s-typora-default .cm-code {
+    color: var(--code-purple-color);
+}
+
+.cm-s-typora-default .cm-tag {
+    /*     color: var(--code-red-color); */
+    color: var(--code-blue-color);
+}
+
+.cm-s-typora-default .cm-strong,
+.cm-s-typora-default .cm-em,
+.cm-s-typora-default .cm-del {
+    /*     color: var(--code-green-color); */
+    color: var(--code-orange-color);
+}
+
+.cm-s-typora-default .cm-block-start.cm-variable-2 {
+    /*     color: var(--code-orange-color); */
+    color: var(--code-red-color);
+}
+
+.cm-formatting-task .cm-formatting-task {
+    color: var(--code-red-color);
+}
+
+/* math formula tag */
+.cm-s-inner .cm-atom,
+.cm-s-inner.cm-atom {
+    color: var(--code-blue-color);
+}
+
+/* inline codeblock in source mode */
+.cm-s-typora-default .cm-comment {
+    color: var(--code-green-color);
+}
+
+/* horizontal divider when language is markdown */
+.cm-s-inner .cm-hr {
+    color: var(--text-color1);
+}
+
+/* variable type when language is c/cpp */
+.cm-s-inner .cm-variable-3 {
+    color: var(--code-purple-color);
+}
+
+/* in pie chart and flowchart */
+.cm-s-inner .cm-quote,
+.cm-s-inner.cm-quote {
+    color: var(--code-green-color);
+}
+
+/* unknown highlight keyword */
+.cm-s-inner .cm-link {
+    color: var(--code-blue-color);
+}
+
+.cm-s-inner .cm-negative {
+    color: #d95050;
+}
+
+.cm-s-inner .cm-positive {
+    color: #50e650;
+}
+
+.cm-s-inner .cm-string-2 {
+    color: #f50;
+}
+
+.CodeMirror-gutters {
+    border-right: none;
+}
+
+/* focus mode */
+.on-focus-mode .md-end-block:not(.md-focus) .md-toc-item {
+    opacity: 0.5;
+}
+
+.on-focus-mode #write h1:not(.md-focus):before {
+    opacity: 0.5;
+}
+
+.on-focus-mode #write h2:not(.md-focus):before {
+    opacity: 0.5;
+}
+
+.on-focus-mode #write h1:not(.md-focus) {
+    border-color: var(--text-color5);
+}
+
+.on-focus-mode #write h2:not(.md-focus) {
+    border-color: var(--text-color5);
+}
+
+.on-focus-mode #write h3:not(.md-focus) {
+    border-color: var(--text-color5);
+}
+
+/* YAML block */
+pre.md-meta-block,
+pre.md-meta-block:active {
+    background-color: var(--bg-color5);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* switch between different mode */
+#typora-source {
+    display: block !important;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.typora-sourceview-on #typora-source {
+    visibility: visible;
+    opacity: 1;
+}
+
+#typora-source .CodeMirror-lines {
+    max-width: 1200px;
+    padding-left: 70px;
+    padding-right: 70px;
+}

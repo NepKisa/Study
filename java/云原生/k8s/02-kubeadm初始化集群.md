@@ -1,3 +1,5 @@
+[toc]
+
 # 02-kubeadm初始化集群
 
 # 1.0 kubeadm介绍
@@ -43,11 +45,7 @@
 | kubelet | 1.15.2  |
 | kubectl | 1.15.2  |
 
-
-
 **说明：下面初始化环境工作master节点和node节点都需要执行**
-
-
 
 ### 1）关闭防火墙
 
@@ -87,11 +85,7 @@ ntpdate 0.rhel.pool.ntp.org
 
 ## 2.3 安装docker
 
-
-
 **master节点和所有node节点都需要执行**
-
-
 
 ### 1）配置`docker`的`yum`仓库（这里使用阿里云仓库）
 
@@ -167,8 +161,6 @@ systemctl enable kubelet
 ```
 
 ## 2.5 初始化Master
-
-
 
 **注意：在master节点执行**
 

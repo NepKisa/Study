@@ -33,8 +33,6 @@ ELK：提供K8S集群日志统一分析介入平台
 
 ```
 
-# 
-
 ## 1.1 Kubernetes特点
 
 - **便携性**：支持公有云、私有云、混合云、多重云(multi-cloud)
@@ -235,8 +233,6 @@ kubectl是和Kubernetes API交互的命令行程序。现在介绍一些核心�
 - 如果Pod是短暂的，那么我怎么才能持久化容器数据使其能够跨重启而存在呢？ 是的，Kubernetes支持[卷](http://kubernetes.io/v1.1/docs/user-guide/volumes.html)的概念，因此可以使用持久化的卷类型。
 - 是否手动创建Pod，如果想要创建同一个容器的多份拷贝，需要一个个分别创建出来么？可以手动创建单个Pod，但是也可以使用Replication Controller使用Pod模板创建出多份拷贝，下文会详细介绍。
 - 如果Pod是短暂的，那么重启时IP地址可能会改变，那么怎么才能从前端容器正确可靠地指向后台容器呢？这时可以使用Service，下文会详细介绍。
-
-
 
 ### Lable
 
