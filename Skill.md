@@ -1,8 +1,107 @@
-## k8s
+### Nginx配置域名访问
 
-### k8s dashboard无法访问
+#### 原理
 
-重启全部节点
+```mermaid
+flowchart LR
+客户端 --配置nginx主机hosts-->服务器
+subgraph 服务器
+direction LR
+nginx --转发--> 服务端
+end
+
+```
+
+*nginx.conf*
+
+```properties
+    server {
+        listen        80;
+        server_name   neptune.portainer.com;
+
+        location / {
+        proxy_pass http://192.168.10.130:19000;
+        }
+}
+
+```
+
+**windows主机配置hosts**
+
+```powershell
+192.168.10.130 neptune.portainer.com
+```
+
+![image-20230224214950124](images/image-20230224214950124.png)
+
+# centos7搭建shadowsocks实现vpn翻墙
+
+- [安装](https://songxiaofang.com/post/centos7-shadowsocks-vpn.html#toc-e65)
+- [成功提示](https://songxiaofang.com/post/centos7-shadowsocks-vpn.html#toc-3a6)
+- [配置文件](https://songxiaofang.com/post/centos7-shadowsocks-vpn.html#toc-15c)
+- [客户端下载](https://songxiaofang.com/post/centos7-shadowsocks-vpn.html#toc-155)
+- [常用命令](https://songxiaofang.com/post/centos7-shadowsocks-vpn.html#toc-0df)
+- [常见问题](https://songxiaofang.com/post/centos7-shadowsocks-vpn.html#toc-50d)
+
+#### 安装
+
+```vim
+下载：wget --no-check-certificate -O shadowsocks.sh https://cyh.abcdocker.com/vpn/shadowsocks.sh权限：chmod +x shadowsocks.sh执行./shadowsocks.sh 2>&1 | tee shadowsocks.log
+```
+
+#### 成功提示
+
+```oxygene
+Congratulations, Shadowsocks-python server install completed!Your Server IP        :your_server_ipYour Server Port      :your_server_portYour Password         :your_passwordYour Encryption Method:your_encryption_methodWelcome to visit:https://teddysun.com/342.htmlEnjoy it!oxygene
+```
+
+#### 配置文件
+
+```gradle
+位置：/etc/shadowsocks.json单用户配置参考：{    "server":"0.0.0.0",    "server_port":16888,    "local_address":"127.0.0.1",    "local_port":1080,    "password":"123456",    "timeout":300,    "method":"aec-256-gcm",    "fast_open": false}多用户配置参考：{    "server":"0.0.0.0",    "local_address":"127.0.0.1",    "local_port":1080,    "port_password":{         "8989":"password0",         "9001":"password1",         "9002":"password2",         "9003":"password3",         "9004":"password4"    },    "timeout":300,    "method":"your_encryption_method",    "fast_open": false}gradle
+```
+
+#### 客户端下载
+
+```groovy
+windows：https://github.com/shadowsocks/shadowsocks-windows/releasesandorid：https://github.com/shadowsocks/shadowsocks-android/releasesmac：https://github.com/shadowsocks/ShadowsocksX-NG/releases其他：https://github.com/shadowsocksgroovy
+```
+
+#### 常用命令
+
+```jboss-cli
+启动：/etc/init.d/shadowsocks start停止：/etc/init.d/shadowsocks stop重启：/etc/init.d/shadowsocks restart状态：/etc/init.d/shadowsocks status卸载：./shadowsocks.sh uninstall防火墙开放端口：firewall-cmd --zone=public --add-port=8989/tcp --permanentfirewall-cmd --zone=public --add-port=9001/udp --permanent重新载入防火墙规则：firewall-cmd --reload查看防火墙放行的所有端口firewall-cmd --zone=public --list-portsjboss
+```
+
+#### 常见问题
+
+```armasm
+服务端已启动，客户端已正确配置但是不能翻a、检查服务器安全组是否放行对应端口b、检查服务器防火墙是否放行端口服务端已启动，客户端已正确配置，端口也放行但是不能翻a、检测端口是否被墙b、查询ip是否被墙被墙一般分为三种情况a、ping不通，ssh无法登录，完全被墙b、能ping通，ssh无法登录，TCP阻断，部分被墙c、能ping通，ssh正常登录，但无法代理翻墙，TCP阻断，部分被墙(尝试更换端口解决问题)
+```
+
+## MindManager
+
+### 快捷键
+
+`Enter`：添加同级主题
+
+`Ctrl+Enter/Insert`：添加子主题
+
+`Ctrl+K`：添加链接，两个主题相互链接可通过拖动一个到另一个主题上，再插入链接
+
+`Ctrl+Shift+R`：添加主题间的关系连线
+
+`空格（末尾），Shift+空格（开头）`
+
+`Ctrl+Shift+1~9`：添加优先级图标，可拖动复制
+
+`Ctrl+T`：添加便笺、再次Ctrl+T可关闭
+
+`Alt+Shift+1~9`：显示主题1~9层级
+
+`F4`：选择子主题按F4，可把子主题作为中心，再次按F4会还原，处理复杂导图时使用
+
+`Ctrl+F3`：回到中心主题
 
 ## chrome
 
@@ -34,6 +133,16 @@ github.css文件的
 .md-fences标签里
 	#FFE4E1
 	你这不行
+
+文字块背景
+blockquote {
+    border-left: 4px solid #fde6e0;
+    padding: 0 15px;
+    color: #777777;
+	background-color: #fde6e0;
+}
+表格
+table
 ```
 
 ## Typora无法支持mermaid新语法
@@ -1111,8 +1220,10 @@ kafka.common.InconsistentClusterIdException: The Cluster ID kVSgfurUQFGGpHMTBqBP
 /etc/resolv.conf文件新增
 
 ```perl
+cat >> /etc/resolv.conf <<EOF
 nameserver 8.8.8.8
 nameserver 114.114.114.114
+EOF
 ```
 
 重启网络

@@ -15,7 +15,7 @@ mv $HIVE_HOME/lib/log4j-slf4j-impl-2.10.0.jar $HIVE_HOME/lib/log4j-slf4j-impl-2.
 
 ### 安装Mysql
 
-```perl
+```bash
 rpm -qa|grep mariadb
 sudo rpm -e --nodeps  mariadb-libs0
 tar -xf mysql-5.7.28-1.el7.x86_64.rpm-bundle.tar
@@ -36,6 +36,13 @@ mysql -uroot -p
 set password = password("123456");
 update mysql.user set host='%' where user='root';
 flush privileges; 
+
+配置免密
+vim /etc/my.cnf
+[client]
+user = root
+password = 123456
+port = 3306
 ```
 
 #### 配置Hive

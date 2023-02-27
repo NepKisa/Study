@@ -1,0 +1,15 @@
+<script>
+	const interval = setInterval(() => {
+		console.log('check mermaid...');
+		if (window.editor &&
+			window.editor.diagrams &&
+			window.mermaidAPI) {
+			$.getScript('file:///G:/Typora/resources/app/mermaid.min.js')
+				.then(() => {
+					mermaidAPI = mermaid.mermaidAPI;
+					editor.diagrams.refreshDiagram(editor);
+					clearInterval(interval);
+				});
+		}
+	}, 100);
+</script>

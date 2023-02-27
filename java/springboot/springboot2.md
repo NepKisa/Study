@@ -5622,7 +5622,9 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-featu
 3. 　引用的外部jar包的application.properties和application.yml
 4. 　引用的外部jar包的application-{profile}.properties 和 application-{profile}.yml
 
-### ==9.2.4 指定环境优先，外部优先，后面的可以覆盖前面的同名配置项==
+### ==9.2.4 指定环境优先，外部优先，后面的可以覆盖前面的同名配置项（key）==
+
+**注意：非配置文件覆盖，是配置项覆盖**
 
 ## 9.3 自定义starter
 
