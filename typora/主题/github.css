@@ -1,6 +1,8 @@
 :root {
-    --side-bar-bg-color: #fafafa;
+	/*#fafafa*/
+    --side-bar-bg-color: #c7edcc;
     --control-text-color: #777;
+	--select-text-bg-color: #ffb6c1
 }
 
 @include-when-export url(https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext);
@@ -166,9 +168,10 @@ ol:last-child {
     margin-bottom: 0;
 }
 blockquote {
-    border-left: 4px solid #dfe2e5;
+    border-left: 4px solid #fde6e0;
     padding: 0 15px;
     color: #777777;
+	background-color: #fde6e0;
 }
 blockquote blockquote {
     padding-right: 0;
@@ -177,24 +180,26 @@ table {
     padding: 0;
     word-break: initial;
 }
+
 table tr {
-    border-top: 1px solid #dfe2e5;
+    border-top: 1px solid #FF1493;
     margin: 0;
     padding: 0;
 }
 table tr:nth-child(2n),
 thead {
-    background-color: #f8f8f8;
+    background-color: #87CEFA;
 }
+
 table tr th {
     font-weight: bold;
-    border: 1px solid #dfe2e5;
+    border: 1px solid #FF1493;
     border-bottom: 0;
     margin: 0;
     padding: 6px 13px;
 }
 table tr td {
-    border: 1px solid #dfe2e5;
+    border: 1px solid #FF1493;
     margin: 0;
     padding: 6px 13px;
 }
@@ -381,9 +386,9 @@ mark {
     padding: 0.0px;
     margin: 0 0px;
 }
-/*鼠标选中->>>草绿*/
+/*鼠标选中->>>草绿 #d1ff79*/
 ::selection {
-    background-color: #d1ff79;
+    background-color: #ffb6c1;
 }
 strong {
 	/* Blod 加粗*/
@@ -404,3 +409,9 @@ a {
 	 
     color: #005dad;
 } */
+content{
+	background-color: #c7edcc;
+}
+mark{
+	background-color: #faf9de
+}

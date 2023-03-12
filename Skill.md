@@ -1215,6 +1215,13 @@ kafka.common.InconsistentClusterIdException: The Cluster ID kVSgfurUQFGGpHMTBqBP
 
 ## Linux
 
+```perl
+cd -P	#进入软连接的实际路径
+cd -L	#进入软连接路径，加不加一样
+```
+
+
+
 ### ping 百度出现：www.baidu.com: Name or service not known
 
 /etc/resolv.conf文件新增

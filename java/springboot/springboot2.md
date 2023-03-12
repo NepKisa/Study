@@ -4571,7 +4571,7 @@ public class MybatisPlusConfig {
         mybatisPlusInterceptor.addInnerInterceptor(paginationInnerInterceptor);
 
         return mybatisPlusInterceptor;
-
+    }
 }
 ```
 
