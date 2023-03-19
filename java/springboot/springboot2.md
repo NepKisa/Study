@@ -6142,3 +6142,39 @@ public class MyCommandLineRunner implements CommandLineRunner {
 }
 ```
 
+# 10 应用
+
+## 10.1 swagger引入
+
+*添加swagger依赖*
+
+```xml
+        <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+```
+
+*主启动类添加注解* **@EnableSwagger2**
+
+```java
+@EnableSwagger2
+@SpringBootApplication
+public class MainApplication {
+    public static void main(String[] args) {
+    	SpringApplication.run(MainApplication.class, args);
+    }
+}
+```
+
+启动服务后访问：http://localhost:8888/swagger-ui.html
+
+![image-20230313144058280](../../images/image-20230313144058280.png)

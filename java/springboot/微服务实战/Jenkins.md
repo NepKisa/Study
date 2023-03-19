@@ -225,6 +225,7 @@ neptune/1qaz!QAZ
 
 ```perl
 yum install java-1.8.0-openjdk* -y
+yum install -y java-devel
 ```
 
 ### 获取jenkins安装包
@@ -617,3 +618,211 @@ ssh 192.168.10.202 java -jar /root/service/start-gitlab-0.0.1-SNAPSHOT.jar
 
 ![image-20230312212250894](../../../images/image-20230312212250894.png)
 
+### publish over ssh
+
+安装publish over ssh插件
+
+![image-20230313010308230](../../../images/image-20230313010308230.png)
+
+添加一台目标服务器
+
+Manage Jenkins->Configure System->Publish over SSH
+
+![image-20230313010933421](../../../images/image-20230313010933421.png)
+
+设置目标服务器信息，***远程服务器工作目录需事先创建***
+
+![image-20230313014412873](../../../images/image-20230313014412873.png)
+
+点击高级，设置远程服务器密码
+
+![image-20230313011255389](../../../images/image-20230313011255389.png)
+
+**点击保存，回到任务，进行配置**
+
+![image-20230313011828912](../../../images/image-20230313011828912.png)
+
+![image-20230313011756044](../../../images/image-20230313011756044.png)
+
+修改配置
+
+![image-20230313015543784](../../../images/image-20230313015543784.png)
+
+配置远程操作
+
+![image-20230313011706695](../../../images/image-20230313011706695.png)
+
+==点开高级，将详细输出显示，方便排查问题==
+
+![image-20230313015501310](../../../images/image-20230313015501310.png)
+
+添加源端及目标端配置
+
+![image-20230313020831984](../../../images/image-20230313020831984.png)
+
+控制台输出
+
+![image-20230313020429722](../../../images/image-20230313020429722.png)
+
+***完整配置***
+
+![image-20230313021458416](../../../images/image-20230313021458416.png)
+
+#### 超时机制
+
+输出命令时一定要注意不要让窗口卡主，不然Jenkins会认为认为一直没完成
+
+#### shell的日志输出
+
+```perl
+nohup java -jar /root/xxoo/demo*.jar >mylog.log 2>&1 &
+```
+
+#### 数据流重定向
+
+数据流重定向就是将某个命令执行后应该要出现在屏幕上的数据传输到其他地方
+
+标准输入（stdin）：代码为0，使用<或<<;
+标准输出（stdout）：代码为1，使用>或>>;
+标准错误输出（stderr）：代码为2，使用2>或2>>
+
+\> 覆盖写
+\>> 追加写
+
+#### 运行前清理
+
+配置杀死之前运行的进程
+
+```shell
+#!/bin/bash
+
+#删除历史数据
+rm -rf xxoo
+
+appname=$1
+#获取传入的参数
+echo "arg:$1"
+
+#获取正在运行的jar包pid
+pid=$(ps -ef | grep $1 | grep 'java -jar' | awk '{printf $2}')
+
+echo $pid
+
+#如果pid为空，提示一下，否则，执行kill命令
+if [ -z $pid ]; then #使用-z 做空值判断
+    echo "$appname not started"
+
+else
+    kill -9 $pid
+    echo "$appname stoping...."
+
+    check=$(ps -ef | grep -w $pid | grep java)
+    if [ -z $check ]; then
+        echo "$appname pid:$pid is stop"
+    else
+        echo "$appname stop failed"
+    fi
+fi
+```
+
+### 几种构建方式
+
+- 快照依赖构建/Build whenever a SNAPSHOT dependency is built
+  - 当依赖的快照被构建时执行本job
+- 触发远程构建 (例如,使用脚本)
+  - 远程调用本job的restapi时执行本job
+- job依赖构建/Build after other projects are built
+  - 当依赖的job被构建时执行本job
+- 定时构建/Build periodically
+  - 使用cron表达式定时构建本job
+- 向GitHub提交代码时触发Jenkins自动构建/GitHub hook trigger for GITScm polling
+  - Github-WebHook出发时构建本job
+- 定期检查代码变更/Poll SCM
+  - 使用cron表达式定时检查代码变更，变更后构建本job
+
+#### 触发远程构建/gitlab上改动自动构建
+
+代码改动自动可以使用gitlab的webhook回调钩子调起Jenkins的启动任务接口
+
+在构建触发器中配置接口和token
+
+![image-20220728170250273](../../../images/image-20220728170250273.png)
+
+
+
+#### 定时构建
+
+##### Jenkins cron表达式
+
+标准cron
+
+https://crontab.guru
+
+Jenkins cron不是标准的cron表达式
+
+```
+第一个 * 表示每个小时的第几分钟，取值0~59
+
+H * * * *
+H：每小时执行一次
+
+第二颗 * 表示小时，取值0~23
+
+* 15 * * * 表示每天下午3点
+* 1 * * *  表示每天凌晨1点
+
+第三颗 * 表示一个月的第几天，取值1~31
+* 1 5 * *  表示每月5日凌晨1点
+
+第四颗 * 表示第几月，取值1~12
+* 15 5 1 *  表示每年几月执行
+
+第五颗 * 表示一周中的第几天，取值0~7，其中0和7代表的都是周日
+
+```
+
+**“/”**
+
+表示每隔多长时间，比如 */10 * * * * 表示 每隔10分钟
+
+**“H”**
+
+hash散列值，以job名取值，获取到以job名为入参的唯一值，相同名称值也相同，这个偏移量会和实际时间相加，获得一个真实的运行时间
+
+意义在于：不同的项目在不同的时间运行，即使配置的值是一样的，比如 都是`15 * * * * ` ，表示每个小时的第15分钟开始执行任务，那么会造成同一时间内在Jenkins中启动很多job，换成`H/15 * * * *`,那么在首次启动任务时，会有随机值参与进来，有的会在17分钟启动 有的会在19分钟启动，随后的启动时间也是这个值。这样就能错开相同cron值的任务执行了。
+
+H的值也可以设置范围
+
+
+
+`H * * * *`表示一小时内的任意时间
+
+`*/10 * * * *`每10分钟
+
+`H/10 * * * *`每10分钟,可能是7,17,27，起始时间hash，步长不变
+
+`45 3 * * 1-6 ` 每个周一至周六，凌晨3点45 执行1次
+
+`45 3-5 * * 1-6 ` 每个周一至周六，凌晨3点45 ，凌晨4点45，凌晨5点45 各执行1次
+
+`H(40-48) 3-5 * * 1-6 ` 在40~48之间取值 其他同上
+
+`45 3-5/2 * * 1-6 ` 每个周一至周六，凌晨3点45 ，凌晨5点45 各执行1次
+
+` 45 0-6/2 * * 1-6 * * 1-6 ` 0点开始，每间隔2小时执行一次 0:45、2:45、4:45
+
+#### 源码变更构建
+
+使用Poll SCM 方式与Build periodically一样
+
+会主动定期检查代码托管服务器上是否有变化，一旦发生变化执行job构建
+
+### 测试报告邮件通知
+
+使用163免费邮箱发送邮件时注意密码填认证码，也就是发送手机短信后给的那个，不要用登录邮箱的密码
+
+类似下面。。
+
+```
+KDWJUWDQBWMOYGDC
+```
