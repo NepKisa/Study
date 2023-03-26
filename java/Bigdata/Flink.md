@@ -1,4 +1,4 @@
-1 简介
+# 1 简介
 
 ## 1.1 Flink是什么【快速、灵巧】
 
@@ -7158,9 +7158,10 @@ env.enableCheckpointing(1000);//传入的参数是检查点的间隔时间，单
 
 ### 9.5.2 状态后端（State Backends）
 
-在 Flink 中，状态的存储、访问以及维护，都是由一个可插拔的组件决定的，这个组件就叫作状态后端        （state backend）。状态后端主要负责两件事：一是本地的状态管理，二是将检查
+在 Flink 中，状态的存储、访问以及维护，都是由一个可插拔的组件决定的，这个组件就叫作状态后端        （state backend）。状态后端主要负责两件事：
 
-点（checkpoint）写入远程的持久化存储。
+* 一是本地的状态管理
+* 二是将检查点（checkpoint）写入远程的持久化存储。
 
 检查点的保存：
 
@@ -7245,7 +7246,7 @@ env.setStateBackend(new HashMapStateBackend());
 
 设置 EmbeddedRocksDBStateBackend
 
-```xml
+```java
 StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 //设置 EmbeddedRocksDBStateBackend
 env.setStateBackend(new EmbeddedRocksDBStateBackend());

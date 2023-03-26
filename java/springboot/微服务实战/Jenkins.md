@@ -219,6 +219,13 @@ neptune/1qaz!QAZ
 
 ## 2.3、Jenkins安装
 
+### 配置环境变量
+
+```perl
+#jenkins的.jenkins目录位置，默认位置为/root/.jenkins
+JENKINS_HOME=/data
+```
+
 ### 安装Java环境
 
 安装JDK，Jenkins需要依赖JDK，所以先安装JDK1.8，高版本Jenkins需要java11虽然java8也能用（Warn）
@@ -417,7 +424,7 @@ Jenkins->凭证->系统->全局凭证->添加凭证
 
 ![image-20230312183722526](../../../images/image-20230312183722526.png)
 
-### SSH密钥类型（**失败，暂不使用**）
+### SSH密钥类型
 
 SSH免密登录示意图
 
@@ -442,7 +449,7 @@ B(Jenkins服务器\n存放私钥: id_rsa)--ssh免密登录-->A(Gitlab服务器\n
 
 #### 把生成的公钥放在Gitlab中
 
-Gitlab使用==root==账户登录->点击头像->Settings->SSH Keys 复制刚才id_rsa.pub文件的内容到这里，点击"Add Key"
+Gitlab账户登录->点击头像->Settings->SSH Keys 复制刚才id_rsa.pub文件的内容到这里，点击"Add Key"
 
 ![image-20230312185935437](../../../images/image-20230312185935437.png)
 
@@ -826,3 +833,46 @@ H的值也可以设置范围
 ```
 KDWJUWDQBWMOYGDC
 ```
+
+pipeline
+
+```groovy
+pipeline {
+    agent any
+
+    stages {
+        stage('pull code') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/dev']], extensions: [], userRemoteConfigs: [[credentialsId: '372c9eed-7585-498d-9e1a-b0b4e768cad9', url: 'http://192.168.10.200/nepkisa/star.git']]])            }
+        }
+        stage('package code') {
+            steps {
+                sh 'mvn clean package'
+                sh 'echo 1'
+            }
+        }
+    }
+}
+```
+
+```groovy
+pipeline {
+    agent any
+
+    stages {
+        stage('pull code') {
+            steps {
+                git credentialsId: '372c9eed-7585-498d-9e1a-b0b4e768cad9', url: 'http://192.168.10.200/nepkisa/star.git'
+            }   
+        }
+        stage('package code') {
+            steps {
+                sh 'mvn clean package'
+                sh 'echo 1'
+            }
+        }
+    }
+}
+
+```
+

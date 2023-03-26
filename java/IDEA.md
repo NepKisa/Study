@@ -188,3 +188,20 @@ debug时，选中表达式右键可计算出表达式的值
 移除service管理，右键=>delete
 
 ![image-20230107231540109](../images/image-20230107231540109.png)
+
+# 4 IDEA卡logo界面
+
+查看IDEA日志
+
+```powershell
+日志目录，查看最新日志，过滤ERROR日志
+C:\Users\hakuou\AppData\Local\JetBrains\IntelliJIdea2022.2\log
+```
+
+若无ERROR日志，可能是由于安装了插件导致，删除插件即可
+
+```powershell
+插件目录，删除导致idea卡界面的插件（按时间排序删除最新的）
+C:\Users\hakuou\AppData\Roaming\JetBrains\IntelliJIdea2022.2\plugins
+```
+

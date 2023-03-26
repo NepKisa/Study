@@ -1218,9 +1218,18 @@ kafka.common.InconsistentClusterIdException: The Cluster ID kVSgfurUQFGGpHMTBqBP
 ```perl
 cd -P	#进入软连接的实际路径
 cd -L	#进入软连接路径，加不加一样
+yum provides /bin/bash #查询所需要的命令，需要安装哪个包
 ```
 
+#### SSH连续执行命令
 
+```perl
+ssh 192.68.10.130 <<EOF
+su - cib
+source ~/.bash_profile
+java -jar server.jar
+EOF
+```
 
 ### ping 百度出现：www.baidu.com: Name or service not known
 
@@ -1543,7 +1552,7 @@ cat -v 文件名
 
 #### Linux分盘
 
-```
+```perl
 lsblk -f				查看磁盘
 fdisk /dev/sdb			对磁盘sdb分区
 m n p w					m查看详情，n新建分区，p主分区，w写入
@@ -1581,7 +1590,6 @@ mount /disk信息 /目录
 7、开机启动挂载
 vi /etc/fstab
 /disk信息/目录xfs defaults 0 o
-
 
 
 ======================
