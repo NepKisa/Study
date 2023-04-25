@@ -111,7 +111,7 @@ windows：https://github.com/shadowsocks/shadowsocks-windows/releasesandorid：h
 > 攻击者可能会试图从 x.x.x.x 窃取您的信息（例如：密码、通讯内容或信用卡信息）。了解详情
 
 ```perl
-解决：就是在当前页面用键盘输入  thisisunsafe  ，不是在地址栏输入，就直接敲键盘就行了，页面即会自动刷新进入网页。
+解决：就是在当前页面用键盘输入  thisisunsafe  ，不是在地址栏输入，就直接敲键盘就行了，页面即会自动刷新进入网页。 
 ```
 
 ## Word
