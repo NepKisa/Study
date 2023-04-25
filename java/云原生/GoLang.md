@@ -190,6 +190,33 @@ Docker、Kubernates、Github
 
 ## 4.2 变量的声明
 
+```go
+package main
+
+import "fmt"
+
+// 分解写法声明全局变量
+var (
+  d1 = 4
+  e1 = 5
+)
+
+func main() {
+  //单变量
+    a := 1 //最常用
+    var p int
+  var q = 10
+  var z int = 10
+  fmt.Println(a, p, q, z)
+  //多变量
+    var x, y int
+  var x1, y1 int = 11, 22
+  b, c := 2, "233"
+  fmt.Println(x, y, x1, y1)
+  fmt.Println(a, b, c, d1, e1)
+}
+```
+
 声明变量的一般形式是使用 **var** 关键字
 
 ### 4.2.1 变量声明
@@ -366,6 +393,28 @@ func main() {
 
 ## 4.3 常量
 
+```go
+package main
+
+import "fmt"
+
+// const可定义枚举类型
+const (
+  //下划线可以忽略返回值
+     _    = iota               //iota=0   给下划线赋值会被废弃，此处可用于跳过iota=0
+  a, b = iota + 1, iota + 2 //iota=1   a=1+1=2   b=1+2=3
+  c, d                      //iota=2   c=2+1=3   d=2+2=4
+  e, f = iota * 2, iota * 3 //iota=3   e=3*2=6   f=3*3=9
+  g, h                      //iota=4   g=4*2=8   h=4*3=12
+)
+
+func main() {
+  fmt.Println(a, b, c, d, e, f, g, h)
+  const aa, bb, cc = 1, false, "str" //多重赋值
+    fmt.Println(aa, bb, cc)
+}
+```
+
 常量是一个简单值的标识符，在程序运行时，不会被修改的量。
 
 常量中的数据类型只可以是布尔型、数字型（整数型、浮点型和复数）和字符串型。
@@ -517,7 +566,9 @@ func main() {
 
 ## 4.4 函数
 
-### 4.4.1 多返回值
+==注意:定义函数的时候，‘{’  必须和函数名在同一行，不能另起一行。==
+
+### 4.4.1 函数的声明
 
 ```go
 package main
@@ -526,54 +577,53 @@ import "fmt"
 
 func main() {
 
-	println("foo1：", foo1(1, 3))
+  println("foo1：", foo1(1, 3))
 
-	foo2a, foo2b := foo2(1, false)
-	println("foo2：", foo2a, foo2b)
+  foo2a, foo2b := foo2(1, false)
+  println("foo2：", foo2a, foo2b)
 
-	foo3ra, foo3rb := foo3("666", "777")
-	println("foo3：", foo3ra, foo3rb)
+  foo3ra, foo3rb := foo3("666", "777")
+  println("foo3：", foo3ra, foo3rb)
 
-	foo4rx, foo4ry, foo4ra, foo4rb := foo4("hello", "function", 1, 2)
-	println("foo4：", foo4rx, foo4ry, foo4ra, foo4rb)
+  foo4rx, foo4ry, foo4ra, foo4rb := foo4("hello", "function", 1, 2)
+  println("foo4：", foo4rx, foo4ry, foo4ra, foo4rb)
 }
 
 func foo1(a int, b int) int {
-	return (a + b)
+  return (a + b)
 }
 
 // 多个返回值，返回值形参匿名
 func foo2(a int, b bool) (bool, int) {
-	return !b, a + 1
+  return !b, a + 1
 }
 
 // 多个返回值，返回值形参有名称
 func foo3(a string, b string) (ra int, rb int) {
-	fmt.Println("---- foo3 ----")
-	fmt.Println("a = ", a)
-	fmt.Println("b = ", b)
+  fmt.Println("---- foo3 ----")
+  fmt.Println("a = ", a)
+  fmt.Println("b = ", b)
 
-	//ra rb 属于foo3的形参,初始化默认的值为0
-	//ra rb 作用域空间 是foo3 整个函数体的{}空间
-	fmt.Println("ra = ", ra)
-	fmt.Println("rb = ", rb)
+  //ra rb 属于foo3的形参,初始化默认的值为0
+  //ra rb 作用域空间 是foo3 整个函数体的{}空间
+  fmt.Println("ra = ", ra)
+  fmt.Println("rb = ", rb)
 
-	//给有名称的返回值变量赋值
-	ra = 2333
-	rb = 3332
+  //给有名称的返回值变量赋值
+  ra = 2333
+  rb = 3332
 
-	return
+  return
 }
 
 // 形参类型相同时，可在最后声明类型
 func foo4(x, y string, a, b int) (r4x, r4y string, r4a, r4b int) {
-	r4x, r4y, r4a, r4b = x, y, a, b
-	return
+  r4x, r4y, r4a, r4b = x, y, a, b
+  return
 }
-
 ```
 
-### 4.4.2 init
+### 4.4.2 init函数
 
 首先我们看一个例子：init函数：
 

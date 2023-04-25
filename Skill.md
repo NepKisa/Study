@@ -34,7 +34,7 @@ end
 
 ![image-20230224214950124](images/image-20230224214950124.png)
 
-# centos7搭建shadowsocks实现vpn翻墙
+## centos7搭建shadowsocks实现vpn翻墙
 
 - [安装](https://songxiaofang.com/post/centos7-shadowsocks-vpn.html#toc-e65)
 - [成功提示](https://songxiaofang.com/post/centos7-shadowsocks-vpn.html#toc-3a6)
@@ -1019,7 +1019,97 @@ vim ~/.ssh/authorized_keys
 
 ## java
 
-#### compare
+### 多模块项目
+
+* 对于springboot的多模块项目，相同包名下的类会自动注入
+
+* 使用server模块控制整个项目，将所有模块作为依赖引入
+
+* 打包时由于模块依赖存在，需要使用最外层的父模块打包（会同时打包所有的子模块）
+
+* 最后使用server作为启动jar包，其他模块若有主类依旧可启动
+
+### log4j彩色日志
+
+jvm参数
+
+```perl
+-Dlog4j.skipJansi=false
+```
+
+引入依赖
+
+```xml
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.20.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.20.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.17.1</version>
+        </dependency>
+```
+
+移除项目中的以下依赖
+
+```xml
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+           <version>1.7.21</version>
+        </dependency>
+```
+
+新建配置文件log4j2.xml，log4j 2.x版本中log4j.properties已被弃用
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="ON">
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%highlight{[%p] %-d{yyyy-MM-dd HH:mm:ss} --> %l%n[massage] %m%n}{FATAL=red, ERROR=red, WARN=yellow, INFO=cyan, DEBUG=cyan,TRACE=blue}"/>
+        </Console>
+                <RollingFile name="RollingFile" fileName="logs/app.log"
+                             filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+                    <PatternLayout pattern="%d{yyyy.MM.dd 'at' HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n"/>
+                    <SizeBasedTriggeringPolicy size="5 MB" />
+                </RollingFile>
+    </appenders>
+    <loggers>
+        <root level="DEBUG">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="RollingFile"/>
+        </root>
+    </loggers>
+</configuration>
+```
+
+### maven 安装本地jar包
+
+下载Oracle Instant Client，解压后xstreams.jar
+
+```perl
+mvn install:install-file -Dfile=C:\Users\hakuou\Downloads\instantclient-basic-windows.x64-21.7.0.0.0dbru\instantclient_21_7\xstreams.jar -DgroupId=com.oracle.instantclient -DartifactId=xstreams -Dversion=21.7.0.0.0 -Dpackaging=jar
+```
+
+```xml
+        <dependency>
+            <groupId>com.oracle.instantclient</groupId>
+            <artifactId>xstreams</artifactId>
+            <version>21.7.0.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+```
+
+### compare
 
 ```java
 compare(Object o1, Object o2) {
@@ -1042,8 +1132,6 @@ compare(Person p1, Person p2) {
 }
 
 ```
-
-
 
 ### javaweb
 

@@ -30,7 +30,6 @@ INGRESS CONTROLLER：官方只能实现四层代理。INGRESS可以实现七层�
 FEDERATION：提供一个可以跨集群中心多K8S统一管理功能
 PROMETHEUS：提供K8S集群的监控能力
 ELK：提供K8S集群日志统一分析介入平台
-
 ```
 
 ## 1.1 Kubernetes特点

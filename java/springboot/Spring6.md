@@ -8839,7 +8839,7 @@ public class UserService{
 
 切入点表达式语法格式：
 
-```plain
+```perl
 execution([访问控制权限修饰符] 返回值类型 [全限定类名]方法名(形式参数列表) [异常])
 ```
 

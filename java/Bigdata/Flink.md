@@ -14,8 +14,10 @@
 - Flink的运行时本身也支持迭代算法的执行
 - **有界或无界数据流进行状态计算**
 
-- - Flink可以对流执行任意数量的变换，这些流可以被编排为有向无环数据流图，允许应用程序分支和合并数据流
+  * Flink可以对流执行任意数量的变换，这些流可以被编排为有向无环数据流图，允许应用程序分支和合并数据流
+
   - Flink的数据流API支持有界或无界数据流上的转换（如过滤器、聚合和窗口函数），包含了20多种不同类型的转换，可以在Java和Scala中使用。
+
 
 
 
@@ -30,8 +32,8 @@
 传统的数据架构是基于有限数据集的
 
 - 批量处理，隔一段时间数据攒齐了再计算
+  * Spark Streaming就是这样，需要设置批处理时间间隔几百毫秒到几秒
 
-- - Spark Streaming就是这样，需要设置批处理时间间隔几百毫秒到几秒
 
 
 
@@ -39,17 +41,20 @@
 
 - 低延迟
 
-- - 想要做到毫秒级别延迟
+  * 想要做到毫秒级别延迟
 
 - 高吞吐
 
-- - 分区处理，然后再合并
+  * 分区处理，然后再合并
+
   - 内存，扩容代价
 
 - 结果的准确性和良好的容错性
 
-- - 乱序问题
+  * 乱序问题
+
   - 一个节点挂了，回滚到最近的一个状态，然后继续处理
+
 
 
 
@@ -59,7 +64,8 @@
 
 - 数据报表
 
-- - 要求今晚12点前的数据出一个报表
+  * 要求今晚12点前的数据出一个报表
+
   - 数据叠加计算，直接输出一个结果
 
 - 广告投放
@@ -74,18 +80,17 @@
 电信业
 
 - 基站流量调配
+  * 救援
 
-- - 救援
 
 银行和金融业
 
 - 实时结算和通知推送
 
-- - 银行的E+决策计算引擎，就是FlinkSQL
+  * 银行的E+决策计算引擎，就是FlinkSQL
+    * 每一笔都做计算
 
-- - - 每一笔都做计算
-
-- - 盘点核算
+  * 盘点核算
 
 - 实时检测异常行为
 
@@ -100,7 +105,8 @@
 - 事务处理瓶颈~关联查询
 - 解决：
 
-- - 数据放内存里，保存成本地状态，替代关系型数据库的表；
+  * 数据放内存里，保存成本地状态，替代关系型数据库的表；
+
   - 同时扩展使用集群
   - 内存~存盘，恢复机制（周期性检查点）
 
@@ -130,7 +136,7 @@
 
 ### 1.3.5 Flink流处理
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/524492/1619403279152-43c36f8f-d3b1-4987-9f6a-64eb5cb3e797.png)
+![img](../../images/image-1680009787698.png)
 
 ## 1.4 Flink的主要特点
 
@@ -174,23 +180,23 @@
 - 流处理 VS 微批处理
 - 数据模型
 
-- - spark采用RDD模型，spark streaming的 DStream 实际上也就是一组组小批数据RDD的集合
+  * spark采用RDD模型，spark streaming的 DStream 实际上也就是一组组小批数据RDD的集合
+
   - flink 基本数据模型是数据流，以及事件(Event)序列
 
 - 运行时架构
 
-- - spark 是批计算，将DAG划分为不同的stage，一个完成后才可以计算下一个
+  * spark 是批计算，将DAG划分为不同的stage，一个完成后才可以计算下一个
+    * 转换算子和行动算子
+    * 假如当前的分布式处理不同的分区、不同的节点处理有先后，那我当前节点处理完了，但是别的分区没处理完，那就得等，等到当前Stage结束，因为还得做Shuffle等调整
 
-- - - 转换算子和行动算子
-    - 假如当前的分布式处理不同的分区、不同的节点处理有先后，那我当前节点处理完了，但是别的分区没处理完，那就得等，等到当前Stage结束，因为还得做Shuffle等调整
+  * flink 是标准的流执行模式，一个事件在一个节点处理完后可以直接发往下一个节点进行处理
+    * 没有等待的过程，当前节点处理完毕，立马到下一节点处理
 
-- - flink 是标准的流执行模式，一个事件在一个节点处理完后可以直接发往下一个节点进行处理
 
-- - - 没有等待的过程，当前节点处理完毕，立马到下一节点处理
+![img](../../images/image-1680009767810.png)
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/524492/1619404337044-2edfa97f-4637-494e-9b59-db9b2f31a8bf.png)
-
-![img](https://cdn.nlark.com/yuque/0/2021/png/524492/1619405392576-edf9f5aa-a83c-4ba2-8491-b04883dc36f8.png)
+![img](../../images/image-1680009838912.png)
 
 # 2 快速上手
 
@@ -261,8 +267,6 @@ log4j.appender.stdout=org.apache.log4j.ConsoleAppender
 log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
 log4j.appender.stdout.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
 ```
-
-
 
 批处理
 
@@ -599,7 +603,7 @@ jps
 
 插件配置完毕后（刷新maven依赖），可以使用 IDEA 的 Maven 工具执行 package 命令
 
-打 包 完 成 后 ， 在 target 目 录 下 有FlinkTutorial-1.0-SNAPSHOT.jar 和 FlinkTutorial-1.0-SNAPSHOT-jar-with-dependencies.jar，集群中已经具备任务运行所需的所有依赖，所以建议使用 FlinkTutorial-1.0-SNAPSHOT.jar。
+打包完成后 ， 在 target目录下有FlinkTutorial-1.0-SNAPSHOT.jar 和 FlinkTutorial-1.0-SNAPSHOT-jar-with-dependencies.jar，集群中已经具备任务运行所需的所有依赖，所以建议使用 FlinkTutorial-1.0-SNAPSHOT.jar。
 
 ##### 3.2.1.4.1 页面提交
 
@@ -1469,7 +1473,7 @@ source→ flatMap合并为一个算子
 
 
 
-**输出是写入文件，不希望并行写入多个文件，讲 sink 算子的并行度设置为 1。**
+**输出是写入文件，不希望并行写入多个文件，将 sink 算子的并行度设置为 1。**
 
 ![image-20221115233417755](../../images/image-20221115233417755.png)
 
@@ -2562,11 +2566,19 @@ public class SinkToFile {
 
 ### 5.4.2 输出到 Kafka
 
-1. 添加 Kafka 连接器依赖
+* 添加 Kafka 连接器依赖
 
-2. 启动 Kafka 集群
+```xml
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-kafka_${scala.binary.version}</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+```
 
-3. 编写输出到 Kafka 的示例代码
+* 启动 Kafka 集群
+
+* 编写输出到 Kafka 的示例代码
 
 ```java
 package org.neptune.datastreamapi;
@@ -7158,7 +7170,7 @@ env.enableCheckpointing(1000);//传入的参数是检查点的间隔时间，单
 
 ### 9.5.2 状态后端（State Backends）
 
-在 Flink 中，状态的存储、访问以及维护，都是由一个可插拔的组件决定的，这个组件就叫作状态后端        （state backend）。状态后端主要负责两件事：
+在 Flink 中，状态的存储、访问以及维护，都是由一个可插拔的组件决定的，这个组件就叫作状态后端（state backend）。状态后端主要负责两件事：
 
 * 一是本地的状态管理
 * 二是将检查点（checkpoint）写入远程的持久化存储。

@@ -383,6 +383,40 @@ GRANT SELECT ON V_$ARCHIVED_LOG TO cdcuser;
 GRANT SELECT ON V_$ARCHIVE_DEST_STATUS TO cdcuser;
 ```
 
+
+
+```sql
+declare
+    i integer;
+begin
+    i := 1;
+    loop
+        insert into NEPTUNE.USERX values(
+             i,
+             'username',
+             16,
+             sysdate,
+             '研发中心');
+        i := i + 1;
+        exit when i > ${count};
+    end loop;
+    commit;
+end;
+/
+exit;
+
+
+#!/bin/bash
+sed 's/${count}/'$1'/g' user.sql > student.sql
+./exe.sh student.sql
+
+#!/bin/bash
+sqlplus / as sysdba @$1
+
+```
+
+
+
 #### docker debezium
 
 ```shell
@@ -624,5 +658,34 @@ case $1 in
 esac
 
 
+```
+
+#### 存储过程
+
+```sql
+declare
+    v_start varchar2(20);
+    v_stop varchar2(20);
+    i integer;
+begin
+    v_start:=to_char(sysdate,'yyyy-mm-dd hh24:mi:ss');
+    i := 1;
+    loop
+        insert into NEPTUNE.USERX values(
+             i,
+             'username',
+             16,
+             sysdate,
+             '研发中心');
+        i := i + 1;
+        exit when i > ${count};
+    end loop;
+    commit;
+    v_stop:=to_char(sysdate,'yyyy-mm-dd hh24:mi:ss');
+    dbms_output.put_line('start: '||v_start);
+    dbms_output.put_line('stop: '||v_stop);
+end;
+/
+exit;
 ```
 

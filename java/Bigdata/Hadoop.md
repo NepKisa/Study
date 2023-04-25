@@ -1,6 +1,6 @@
-## hadoop完全分布式
+# Hadoop集群搭建
 
-### hadoop伪分布式
+## hadoop伪分布式
 
 ```shell
 /etc/profile
@@ -123,7 +123,7 @@ myhadoop.sh stop  关闭Hadoop
 浏览器访问192.168.10.130:8088 -----yarn
 ```
 
-### hadoop完全分布式
+## hadoop完全分布式
 
 ==先配置免密==
 
@@ -134,7 +134,7 @@ myhadoop.sh stop  关闭Hadoop
 | HDFS | NameNodeDataNode | DataNode                   | SecondaryNameNodeDataNode |
 | YARN | NodeManager      | ResourceManagerNodeManager | NodeManager               |
 
-#### xsync分发脚本
+### xsync分发脚本
 
 （a）在/home/atguigu/bin目录下创建xsync文件
 
@@ -207,9 +207,9 @@ done
 ==注意：如果用了sudo，那么xsync一定要给它的路径补全。==
 
 
-#### 配置集群
+### 配置集群
 
-##### core-site.xml
+#### core-site.xml
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -242,7 +242,7 @@ done
 
 ```
 
-##### hdfs.xml
+#### hdfs.xml
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -263,7 +263,7 @@ done
 
 ```
 
-##### yarn-site.xml
+#### yarn-site.xml
 
 ```xml
 <?xml version="1.0"?>
@@ -319,7 +319,7 @@ done
 
 ```
 
-##### mapred-site.xml
+#### mapred-site.xml
 
 ```xml
 <?xml version="1.0"?>
