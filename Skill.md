@@ -46,7 +46,7 @@ end
 #### 安装
 
 ```vim
-下载：wget --no-check-certificate -O shadowsocks.sh https://cyh.abcdocker.com/vpn/shadowsocks.sh权限：chmod +x shadowsocks.sh执行./shadowsocks.sh 2>&1 | tee shadowsocks.log
+下载：wget --no-check-certificate -O shadowsocks.sh https://cyh.abcdocker.com/vpn/shadowsocks.sh权限：chmod +x shadowsocks.sh执行./shadowsocks.sh 2>&1 | tee shadowsocks.log 
 ```
 
 #### 成功提示
