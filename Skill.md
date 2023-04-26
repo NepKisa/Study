@@ -1,6 +1,6 @@
-### Nginx配置域名访问
+## Nginx配置域名访问
 
-#### 原理
+### 原理
 
 ```mermaid
 flowchart LR
@@ -362,6 +362,8 @@ taskkill /f /im explorer.exe & start explorer.exe
 使用office Word打开pdf文件另存为即可
 ```
 
+### Win11切换Win10
+
 
 ```bash
 Win11切换旧版右键菜单，把下面的代码保存为bat文件运行：
@@ -375,6 +377,12 @@ Win11恢复回新右键菜单，把下面的代码保存为bat文件运行：
 
 reg delete "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}" /f
 taskkill /f /im explorer.exe & start explorer.exe
+```
+
+### 便笺备份
+
+```perl
+将%LocalAppData%\Packages\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\LocalState下的内容全部复制到新的系统
 ```
 
 ## DataGrip无法下载驱动
