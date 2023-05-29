@@ -7,7 +7,7 @@
 vim /usr/lib/systemd/system/docker.service
 
 #2、修改ExecStart属性，在后面添加-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock
-ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock
+ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock -H tcp://0.0.0.0:2333 -H unix:///var/run/docker.sock
 
 #3、刷新配置，重启服务
 systemctl daemon-reload

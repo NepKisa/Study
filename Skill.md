@@ -1,4 +1,4 @@
-## Nginx配置域名访问
+## Nginx配置域名访问 
 
 ### 原理
 
@@ -1311,13 +1311,35 @@ kafka.common.InconsistentClusterIdException: The Cluster ID kVSgfurUQFGGpHMTBqBP
 
 ## Linux
 
+### CentOS 7（NAT模式）telnet 不通22端口
+
+现象：
+
+- 虚拟机能ping通百度
+- 虚拟机能ping通本机的IP地址
+- 宿主机能ping通虚拟机的IP地址
+
+查看虚拟机IP
+
+### ![image-20230428191145140](images/image-20230428191145140.png)
+
+
+
+ ![image-20230428191427606](images/image-20230428191427606.png)
+
+ ![image-20230428191404718](images/image-20230428191404718.png)
+
+==这两个IP不能相同，修改为不同就可以了==
+
+### ![image-20230428191731526](images/image-20230428191731526.png)
+
 ```perl
 cd -P	#进入软连接的实际路径
 cd -L	#进入软连接路径，加不加一样
 yum provides /bin/bash #查询所需要的命令，需要安装哪个包
 ```
 
-#### SSH连续执行命令
+### SSH连续执行命令
 
 ```perl
 ssh 192.68.10.130 <<EOF
