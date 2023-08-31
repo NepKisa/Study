@@ -521,6 +521,10 @@ cmd的字符集是gbk，datagrip的字符集是utf8，会根据连接属性自�
 
 ## oracle
 
+### java.lang.Error: Incompatible version of libocijdbc[Jdbc:193000, Jdbc-OCI:219000
+
+**修改pom.xml依赖版本至21.9.0.0**
+
 #### ORA-01012: not logged on
 
 ```perl

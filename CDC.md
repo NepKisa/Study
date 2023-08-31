@@ -1,4 +1,5 @@
 #### zookeeper
+
 ```shell
 wget https://archive.apache.org/dist/zookeeper/zookeeper-3.4.11/zookeeper-3.4.11.tar.gz 
 tar -zxvf zookeeper-3.4.11.tar.gz		//解压
@@ -470,8 +471,8 @@ show parameters ENABLE_GOLDENGATE_REPLICATION;
 alter system set ENABLE_GOLDENGATE_REPLICATION=true;
 
 创建xstrmadmin用户
-CREATE TABLESPACE xstream_TBS DATAFILE '/oradata/NEP/xstream_tbs.dbf' SIZE 500M;
-CREATE USER xstrmadmin IDENTIFIED BY 123456 DEFAULT TABLESPACE xstream_TBS QUOTA UNLIMITED ON CDCUSER_TBS;
+CREATE TABLESPACE xstream_TBS DATAFILE '/oradata/NEP/xstream_tbs.dbf' SIZE 50M;
+CREATE USER xstrmadmin IDENTIFIED BY 123456 DEFAULT TABLESPACE xstream_TBS QUOTA UNLIMITED ON xstream_TBS;
 
 xstrmadmin授权
 GRANT CREATE SESSION TO xstrmadmin;
@@ -492,7 +493,7 @@ END;
 
 创建队列表
 SQL> conn xstrmadmin/123456;
-sQL> BEGIN
+SQL> BEGIN
 	DBMS_XSTREAM_ADM.SET_UP_QUEUE(
 	queue_table => 'xstrmadmin.xstream_queue_table',
 	queue_name => 'xstrmadmin.xstream_queue');
