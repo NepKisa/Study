@@ -947,6 +947,16 @@ execute function syscdcv1:informix.cdc_set_fullrowlogging( '库名:用户名.表
 
 ## IDEA
 
+下载数据库驱动失败时，可设置代理
+
+![image-20230905211518980](images/image-20230905211518980.png)
+
+对应
+
+![image-20230905211619302](images/image-20230905211619302.png)
+
+
+
 #### 找不到主类
 
 ```
