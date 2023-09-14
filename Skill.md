@@ -1335,9 +1335,7 @@ kafka.common.InconsistentClusterIdException: The Cluster ID kVSgfurUQFGGpHMTBqBP
 
 查看虚拟机IP
 
-### ![image-20230428191145140](images/image-20230428191145140.png)
-
-
+![image-20230428191145140](images/image-20230428191145140.png)
 
  ![image-20230428191427606](images/image-20230428191427606.png)
 
@@ -1345,7 +1343,7 @@ kafka.common.InconsistentClusterIdException: The Cluster ID kVSgfurUQFGGpHMTBqBP
 
 ==这两个IP不能相同，修改为不同就可以了==
 
-### ![image-20230428191731526](images/image-20230428191731526.png)
+ ![image-20230428191731526](images/image-20230428191731526.png)
 
 ```perl
 cd -P	#进入软连接的实际路径
@@ -1361,6 +1359,12 @@ su - cib
 source ~/.bash_profile
 java -jar server.jar
 EOF
+```
+
+### 批量免密命令
+
+```perl
+sshpass -p 【密码】 ssh-copy-id 192.168.10.131
 ```
 
 ### ping 百度出现：www.baidu.com: Name or service not known
