@@ -5,13 +5,21 @@
 官网：
 
 - https://flink.apache.org/
+
 - https://flink.apache.org/zh/usecases.html
 
+- http://flink.apache.org/downloads.html
+
 - Apache Flink是由Apache软件基金会开发的**开源**流处理**框架**
+
 - 其核心是用Java和Scala编写的**分布式**流数据流引擎
+
 - Flink以**数据并行**和**流水线**方式执行任意流数据程序
+
 - Flink的流水线运行时系统可以执行**批处理和流处理**程序
+
 - Flink的运行时本身也支持迭代算法的执行
+
 - **有界或无界数据流进行状态计算**
 
   * Flink可以对流执行任意数量的变换，这些流可以被编排为有向无环数据流图，允许应用程序分支和合并数据流
@@ -444,6 +452,8 @@ cd flink-1.13.0/
 bin/start-cluster.sh
 
 访问 http://hadoop102:8081 对 flink 集群和任务进行监控管理
+若无法访问可修改配置文件的rest.bind-address配置项localhost为0.0.0.0
+rest.bind-address: 0.0.0.0
 
 #关闭应用
 bin/stop-cluster.sh

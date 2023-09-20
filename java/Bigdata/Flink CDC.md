@@ -24,7 +24,7 @@ Flink 社区开发了 flink-cdc-connectors 组件，这是一个可以直接从 
 
 # 2、Flink CDC案例实操
 
-## 2.1 DataStream 方式的应用 
+## 2.1 DataStream 方式的应用
 
 ### 2.1.1 导入依赖
 
