@@ -162,7 +162,7 @@ net.core.wmem_max = 1048576
 vi /home/oracle/.bash_profile
 
 export ORACLE_SID=neptune
-export ORACLE_BASH=/oracle
+export ORACLE_BASE=/oracle
 export ORACLE_HOME=/oracle/product/19.0.0/dbhome_1
 export LD_LIBRARY_PATH=/oracle/product/19.0.0/dbhome_1/lib
 export NLS_DATE_FORMAT="YYYY-MM-DD HH24:MI:SS"
