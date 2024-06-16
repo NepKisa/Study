@@ -1,4 +1,4 @@
-## Nginx配置域名访问 
+## Nginx配置域名访问
 
 ### 原理
 
@@ -105,6 +105,10 @@ windows：https://github.com/shadowsocks/shadowsocks-windows/releasesandorid：h
 
 ## chrome
 
+自定义搜索引擎
+
+![image-20240308210235975](images/image-20240308210235975.png)
+
 > chrome浏览器打开报错
 >
 > 您的连接不是私密连接
@@ -206,6 +210,12 @@ info
 查看Mermaid的版本，也可以看到已经成功替换成了最新版：
 
 ![image-20230129165306143](images/image-20230129165306143.png)
+
+## typora侧边栏宽度调整
+
+修改C:\Users\pc\AppData\Roaming\Typora\themes的参数#write
+
+## Typora关闭即使渲染，否则标题会变小
 
 ## 通过对win10注册表修改来关闭睿频（高性能/已禁用来回切换）
 
@@ -385,7 +395,83 @@ taskkill /f /im explorer.exe & start explorer.exe
 将%LocalAppData%\Packages\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\LocalState下的内容全部复制到新的系统
 ```
 
-## DataGrip无法下载驱动
+### G HUB 宏在某些游戏中不起作用
+
+在 G HUB 版本 2022.3.242300 中，我们更新了执行宏的方式，以提高多人游戏中的游戏完整性。我们测试了超过 100 款游戏，确保宏仍然按预期运行。 
+
+2022.3.242300 发布后，少数游戏不允许 G HUB 正常执行宏。我们正在为这些受影响的游戏制定解决方案。 
+
+与此同时，我们已经推出了一个解决方法。如果宏在游戏中不再起作用，请确保 G HUB 和游戏以相同的权限级别运行。如果游戏以更高权限运行，则需要以管理员身份运行 G HUB。如果游戏在没有更高权限的情况下运行，您只需正常运行 G HUB。
+
+注意：这可能无法解决所有游戏或应用程序的问题。
+
+ 
+
+#### **如何验证您的游戏是否以更高权限运行**
+
+1.启动游戏并返回 Windows 主屏幕
+
+2.右键点击任务栏，然后点击**任务管理器**
+
+![XX](images/5299965548055-faq-images.png)
+
+ 
+
+3.在**任务管理器**中，点击**详细信息**选项卡
+
+![XX](images/5299965548055-faq-images-1717246431841.png)
+
+ 
+
+4.在**详细信息**中，右键点击顶行，然后点击**选择列**
+
+![XX](images/5299965548055-faq-images-1717246434370.png)
+
+ 
+
+5.向下滚动并选中**特权**，然后点击**确定**
+
+![XX](images/5299965548055-faq-images-1717246436046.png)
+
+ 
+
+6.找到游戏并查看其在**特权**中显示**是**还是**否**
+
+![XX](images/5299965548055-faq-images-1717246438487.png)
+
+ 
+
+如果游戏显示**是**，G HUB 需要以管理员身份运行才能拥有更高的权限。如果游戏显示**否**，正常启动 G HUB 即可。
+
+ 
+
+#### **如何以管理员身份运行 Logitech G HUB**
+
+1. 1. 1. 右键点击任务栏并点击**任务管理器**，确认 G HUB 未运行
+
+        2. 在**任务管理器中**，检查**进程**选项卡下是否有以下进程正在运行：
+
+        3. 1. Logitech G HUB
+            2. LGHUB 代理
+            3. LGHUB
+
+        4. 如果其中任何一个正在运行，请右键点击它们并点击**结束任务**
+
+        5. 按下键盘的 **Windows 徽标**键打开**开始**菜单
+
+        6. 在**开始**菜单中找到 **Logitech G HUB** 并右键点击它
+
+        7. 将鼠标悬停在**更多**上，然后点击**以管理员身份运行**
+
+G HUB 和游戏在相同的权限级别上运行时，您就可以使用宏。
+
+ 
+
+#### **宏仍然无法用在 Logitech G HUB 和在相同权限级别运行的游戏中**
+
+如果您按照上述步骤操作但宏仍然无效，请提交支持工单，注明游戏名称和运行游戏的权限级别。我们将与游戏开发商合作，尝试为这些游戏找到解决方案。## 
+
+DataGrip无法下载驱动
 
 设置自动代理
 
@@ -1393,7 +1479,7 @@ curl 192.168.10.130:8083/connectors -s | python -m json.tool
 python -m json.tool 格式化json
 ```
 
-#### 网卡失效，无法ssh连接且ping不通百度
+### 网卡失效，无法ssh连接且ping不通百度
 
 ```perl
 systemctl stop NetworkManager
@@ -1402,13 +1488,13 @@ systemctl disable NetworkManager
 systemctl start network.service
 ```
 
-#### 文件大小排序
+### 文件大小排序
 
 ```perl
 du -b * | sort -n 大小单位为b，排序，降序-nr
 ```
 
-#### 配置多网卡
+### 配置多网卡
 
 ```perl
 第一种方法:
@@ -1431,13 +1517,13 @@ vi /etc/sysconfig/network-scripts/ifcfg-eth1
 保存退出并重启网络就ok了
 ```
 
-#### 去除空白行
+### 去除空白行
 
 URL=${URL%$'\r'}-----去掉字符串中看不出的\r
 
 :nohl     取消高亮
 
-#### 引号嵌套
+### 引号嵌套
 
 **双引号里双引号需转义，单引号里单引号需转义**
 
@@ -1455,7 +1541,7 @@ docker exec -it mysql bash -c "mysql -uroot -proot -e "\"" show variables like '
 docker exec -it mysql-slave bash -c "mysql -uroot -proot -e "\"" show variables like '"log_%"'; "\"""
 ```
 
-#### 配置免密
+### 配置免密
 
 SSH提供了另外一种可以免去输入密码过程的登录方式：公钥登录。流程如下：
 
@@ -1465,7 +1551,7 @@ ssh-copy-id 将公钥复制到目标服务器
 
 ![image-20221111091543075](images/image-20221111091543075.png)
 
-#### << EOF
+### << EOF
 
 EOF是END Of File的缩写,表示自定义终止符.既然自定义,那么EOF就不是固定的,可以随意设置别名,在linux按ctrl-d就代表EOF
 
@@ -1547,8 +1633,7 @@ Hello,world!
 
 
 
-
-#### &>/dev/null 2>&1
+### &>/dev/null 2>&1
 
 ```perl
 在Linux/Unix中，一般在屏幕上面看到的信息是从stdout (standard output) 或者 stderr (standard error output) 来的。许多人会问，output 就是 output，送到屏幕上不就得了，为什麼还要分成stdout 和 stderr 呢？那是因为通常在 server 的工作环境下，几乎所有的程序都是 run 在 background 的，所以呢，为了方便 debug，一般在设计程序时，就把stdout 送到/存到一个档案，把错误的信息 stderr 存到不同的档案。
@@ -1595,7 +1680,7 @@ shell中可能经常能看到：>/dev/null 2>&1
 
 
 
-#### 无法ping通外网
+### 无法ping通外网
 
 ```perl
 在linux中ping www.baidu.com 无法ping通，可能原因是DNS没配置好
@@ -1662,9 +1747,9 @@ any net default gw 192.168.129.2
 
 
 
-#### 扩容Linux
+### 扩容Linux
 
-```
+```perl
 fdisk -l
 fdisk /dev/vda
 m n p w
@@ -1680,13 +1765,13 @@ xfs_growfs /dev/mapper/centos-root
 df -h查看已增加成功
 ```
 
-#### 字符问题
+### 字符问题
 
 ```
 cat -v 文件名
 ```
 
-#### Linux分盘
+### Linux分盘
 
 ```perl
 lsblk -f				查看磁盘
@@ -1706,7 +1791,7 @@ getent group 相当于 cat /etc/group
 
 mkdir roles/{httpd , mysq1, memcache} -pv
 ```
-#### Linux挂载盘
+### Linux挂载盘
 
 ```perl
 1、df -Th
@@ -1738,13 +1823,13 @@ cat << EOF >> /etc/fstab
 EOF
 ```
 
-#### 去除字符串中的空格
+### 去除字符串中的空格
 
 ```
 URL=${URL%$'\r'} 去掉字符串中看不出的\r
 ```
 
-#### 批量复制和批量删除
+### 批量复制和批量删除
 
 ```
 xargs
@@ -1763,13 +1848,13 @@ find . -name "*log"|xargs rm -rf
 
 
 
-#### shell获取主机ip
+### shell获取主机ip
 
 ```
 ip=$(ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:")
 ```
 
-#### shell读取配置文件
+### shell读取配置文件
 
 ```shell
 #config.txt 文件内容
@@ -1779,7 +1864,7 @@ FIZE_SIZE=15
 
 ```
 
-##### 1.source导入
+#### 1.source导入
 
 sh不可运行，需要使用bash运行
 
@@ -1796,7 +1881,7 @@ echo $FILE_PATH
 echo $FIZE_SIZE
 ```
 
-##### 2.readline获取
+#### 2.readline获取
 
 ```shell
 #!/bin/bash
@@ -1810,16 +1895,19 @@ echo $FILE_PATH
 echo $FIZE_SIZE
 ```
 
-#### 命令打出后按两次Tab会出现提示
+### 命令打出后按两次Tab会出现提示
+
 ```
 ansible [Tab Tab] 
 ```
-#### 预览压缩包
+### 预览压缩包
+
 ```
 tar -tvf 文件
 ```
 
-#### vi模式显示颜色
+### vi模式显示颜色
+
 ```
 echo export EDITOR=vim >> /etc/profile.d/env.sh
 cat /etc/profile.d/env.sh

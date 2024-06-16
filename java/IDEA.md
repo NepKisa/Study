@@ -205,3 +205,6 @@ C:\Users\hakuou\AppData\Local\JetBrains\IntelliJIdea2022.2\log
 C:\Users\hakuou\AppData\Roaming\JetBrains\IntelliJIdea2022.2\plugins
 ```
 
+# 5 IDEA 的Project list名字
+
+名字修改在.idea文件夹的.name文件
