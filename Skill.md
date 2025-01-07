@@ -34,50 +34,15 @@ end
 
 ![image-20230224214950124](images/image-20230224214950124.png)
 
-## centos7搭建shadowsocks实现vpn翻墙
+## centos7使用shadowsocks实现访问Google
 
-- [安装](https://songxiaofang.com/post/centos7-shadowsocks-vpn.html#toc-e65)
-- [成功提示](https://songxiaofang.com/post/centos7-shadowsocks-vpn.html#toc-3a6)
-- [配置文件](https://songxiaofang.com/post/centos7-shadowsocks-vpn.html#toc-15c)
-- [客户端下载](https://songxiaofang.com/post/centos7-shadowsocks-vpn.html#toc-155)
-- [常用命令](https://songxiaofang.com/post/centos7-shadowsocks-vpn.html#toc-0df)
-- [常见问题](https://songxiaofang.com/post/centos7-shadowsocks-vpn.html#toc-50d)
+将SSR的局域网代理设置打开后，直接使用windows的IP:端口即可使用代理
 
-#### 安装
+![image-20241223210431605](images/image-20241223210431605.png)
 
-```vim
-下载：wget --no-check-certificate -O shadowsocks.sh https://cyh.abcdocker.com/vpn/shadowsocks.sh权限：chmod +x shadowsocks.sh执行./shadowsocks.sh 2>&1 | tee shadowsocks.log 
-```
+![image-20241223210807502](images/image-20241223210807502.png)
 
-#### 成功提示
-
-```oxygene
-Congratulations, Shadowsocks-python server install completed!Your Server IP        :your_server_ipYour Server Port      :your_server_portYour Password         :your_passwordYour Encryption Method:your_encryption_methodWelcome to visit:https://teddysun.com/342.htmlEnjoy it!oxygene
-```
-
-#### 配置文件
-
-```gradle
-位置：/etc/shadowsocks.json单用户配置参考：{    "server":"0.0.0.0",    "server_port":16888,    "local_address":"127.0.0.1",    "local_port":1080,    "password":"123456",    "timeout":300,    "method":"aec-256-gcm",    "fast_open": false}多用户配置参考：{    "server":"0.0.0.0",    "local_address":"127.0.0.1",    "local_port":1080,    "port_password":{         "8989":"password0",         "9001":"password1",         "9002":"password2",         "9003":"password3",         "9004":"password4"    },    "timeout":300,    "method":"your_encryption_method",    "fast_open": false}gradle
-```
-
-#### 客户端下载
-
-```groovy
-windows：https://github.com/shadowsocks/shadowsocks-windows/releasesandorid：https://github.com/shadowsocks/shadowsocks-android/releasesmac：https://github.com/shadowsocks/ShadowsocksX-NG/releases其他：https://github.com/shadowsocksgroovy
-```
-
-#### 常用命令
-
-```jboss-cli
-启动：/etc/init.d/shadowsocks start停止：/etc/init.d/shadowsocks stop重启：/etc/init.d/shadowsocks restart状态：/etc/init.d/shadowsocks status卸载：./shadowsocks.sh uninstall防火墙开放端口：firewall-cmd --zone=public --add-port=8989/tcp --permanentfirewall-cmd --zone=public --add-port=9001/udp --permanent重新载入防火墙规则：firewall-cmd --reload查看防火墙放行的所有端口firewall-cmd --zone=public --list-portsjboss
-```
-
-#### 常见问题
-
-```armasm
-服务端已启动，客户端已正确配置但是不能翻a、检查服务器安全组是否放行对应端口b、检查服务器防火墙是否放行端口服务端已启动，客户端已正确配置，端口也放行但是不能翻a、检测端口是否被墙b、查询ip是否被墙被墙一般分为三种情况a、ping不通，ssh无法登录，完全被墙b、能ping通，ssh无法登录，TCP阻断，部分被墙c、能ping通，ssh正常登录，但无法代理翻墙，TCP阻断，部分被墙(尝试更换端口解决问题)
-```
+![image-20241223210735233](images/image-20241223210735233.png)
 
 ## MindManager
 
@@ -1470,6 +1435,13 @@ EOF
 systemctl restart network
 ```
 
+重启失败的情况可以禁用NetworkManager
+
+```perl
+systemctl stop NetworkManager
+systemctl disable NetworkManager
+```
+
 ### curl返回格式化
 
 ```perl
@@ -1486,7 +1458,12 @@ systemctl stop NetworkManager
 systemctl disable NetworkManager
 #重启network
 systemctl start network.service
+
+请注意DNS服务器 /etc/resolv.conf里的地址需要ping通，53端口要通
+若不通可以使用windows的DNS的服务器
 ```
+
+![image-20241223210304218](images/image-20241223210304218.png)
 
 ### 文件大小排序
 
@@ -2548,5 +2525,19 @@ mode参数 : 指定文件拷贝到远程主机后的权限，如果你想将权�
 hive.CTLGS.LOCATION_URI，
 hive.DBS.DB_LOCATION_URI，
 hive.SDS.LOCATION字段的hdfs路径，修改为与core-site.xml，hdfs-site.xml一致
+```
+
+# K8s
+
+批量删除异常pod
+
+```perl
+kubectl get pods -A | grep Error | awk '{print "kubectl delete pod -n " $1 " " $2}' | bash
+```
+
+或
+
+```perl
+kubectl get pods -A | grep Error | awk '{print $1 " " $2}' | xargs -n 2 -t -I {} kubectl delete pod -n {}
 ```
 

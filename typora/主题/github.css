@@ -157,7 +157,7 @@ li p.first {
 }
 ul,
 ol {
-    padding-left: 30px;
+    padding-left: 20px;
 }
 ul:first-child,
 ol:first-child {
@@ -392,7 +392,7 @@ mark {
 }
 strong {
 	/* Blod 加粗*/
-    color: #00bfff;
+    color: #cd2990;
 }
 em {
     /* Italian 斜体字 */

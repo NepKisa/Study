@@ -63,6 +63,8 @@ go build main.go
 
 ## 单变量常用写法
 
+==:对变量声明时 至少有一个变量是新的==
+
 ```go
 //函数体内定义
 a: = "hello world"
@@ -129,6 +131,84 @@ func main() {
 	j, k := "hello", 7
 	_, v := 8, 9                                       // _的值无法被读出，不可作为变量，当不需要某个值时可以用_接收
 	fmt.Println(x, y, m, n, p, q, s, t, z, w, j, k, v) //0 0 0 false 99 true 4 5 6 2333 hello 7 9
+}
+```
+
+## new函数
+
+==返回指针类型==
+
+另一个创建变量的方法是调用内建的new函数。表达式new(T)将创建一个T类型的匿名变量，初始化为T类型的零值，然后返回变量地址，返回的指针类型为`*T`。
+
+```Go
+p := new(int)   // p, *int 类型, 指向匿名的 int 变量
+fmt.Println(*p) // "0"
+*p = 2          // 设置 int 匿名变量的值为 2
+fmt.Println(*p) // "2"
+```
+
+用new创建变量和普通变量声明语句方式创建变量没有什么区别，除了不需要声明一个临时变量的名字外，我们还可以在表达式中使用new(T)。换言之，new函数类似是一种语法糖，而不是一个新的基础概念。
+
+下面的两个newInt函数有着相同的行为：
+
+```Go
+func newInt() *int {
+    return new(int)
+}
+
+func newInt() *int {
+    var dummy int
+    return &dummy
+}
+```
+
+每次调用new函数都是返回一个新的变量的地址，因此下面两个地址是不同的：
+
+```Go
+p := new(int)
+q := new(int)
+fmt.Println(p == q) // "false"
+```
+
+## 注意
+
+这种写法x指向了全局变量，f调用后无法被垃圾回收清理，会占用更多的内存，g调用后y可以被立即回收
+
+```go
+var global *int
+
+func f() {
+    var x int
+    x = 1
+    global = &x
+}
+
+func g() {
+    y := new(int)
+    *y = 1
+}
+```
+
+虽然cwd在外部已经声明过，但是`:=`语句还是将cwd和err重新声明为新的局部变量。因为内部声明的cwd将屏蔽外部的声明，因此上面的代码并不会正确更新包级声明的cwd变量。最直接的方法是通过单独声明err变量，来避免使用`:=`的简短声明方式
+
+```go
+var cwd string
+
+func init() {
+    cwd, err := os.Getwd() // NOTE: wrong!
+    if err != nil {
+        log.Fatalf("os.Getwd failed: %v", err)
+    }
+    log.Printf("Working directory = %s", cwd)
+}
+
+//修改后
+func init() {
+    var err error
+    cwd, err = os.Getwd()
+    if err != nil {
+        log.Fatalf("os.Getwd failed: %v", err)
+    }
 }
 ```
 
@@ -386,3 +466,545 @@ pp = &p
 
 # defer（常用）
 
+# slice
+
+定义
+
+```Go
+Q2 := months[4:7]
+summer := months[6:9]
+fmt.Println(Q2)     // ["April" "May" "June"]
+fmt.Println(summer) // ["June" "July" "August"]
+```
+
+内置的make函数创建一个指定元素类型、长度和容量的slice。容量部分可以省略，在这种情况下，容量将等于长度。
+
+```Go
+make([]T, len)
+make([]T, len, cap) // same as make([]T, cap)[:len]
+```
+
+添加元素
+
+```Go
+var runes []rune
+for _, r := range "Hello, 世界" {
+    runes = append(runes, r)
+}
+fmt.Printf("%q\n", runes) // "['H' 'e' 'l' 'l' 'o' ',' ' ' '世' '界']"
+```
+
+append可添加多个元素，甚至可以直接添加一个slice
+
+```Go
+var x []int
+x = append(x, 1)
+x = append(x, 2, 3)
+x = append(x, 4, 5, 6)
+x = append(x, x...) // append the slice x
+fmt.Println(x)      // "[1 2 3 4 5 6 1 2 3 4 5 6]"
+```
+
+# map
+
+内置的make函数可以创建一个map：
+
+```Go
+ages := make(map[string]int) // mapping from strings to ints
+```
+
+我们也可以用map字面值的语法创建map，同时还可以指定一些最初的key/value：
+
+```Go
+ages := map[string]int{
+    "alice":   31,
+    "charlie": 34,
+}
+```
+
+因此，另一种创建空的map的表达式是`map[string]int{}`。
+
+Map中的元素通过key对应的下标语法访问：
+
+```Go
+ages["alice"] = 32
+fmt.Println(ages["alice"]) // "32"
+```
+
+使用内置的delete函数可以删除元素：
+
+```Go
+delete(ages, "alice") // remove element ages["alice"]
+```
+
+所有这些操作是安全的，即使这些元素不在map中也没有关系；==如果一个查找失败将返回value类型对应的零值==，例如，即使map中不存在“bob”下面的代码也可以正常工作，因为ages["bob"]失败时将返回0。
+
+```Go
+ages["bob"] = ages["bob"] + 1 // happy birthday!
+```
+
+而且`x += y`和`x++`等简短赋值语法也可以用在map上，所以上面的代码可以改写成
+
+```Go
+ages["bob"]++
+```
+
+但是map中的元素并不是一个变量，因此我们不能对map的元素进行取址操作：
+
+```Go
+_ = &ages["bob"] // compile error: cannot take address of map element
+```
+
+禁止对map元素取址的原因是map可能随着元素数量的增长而重新分配更大的内存空间，从而可能导致之前的地址无效。
+
+要想遍历map中全部的key/value对的话，可以使用range风格的for循环实现，和之前的slice遍历语法类似。下面的迭代语句将在每次迭代时设置name和age变量，它们对应下一个键/值对：
+
+```Go
+for name, age := range ages {
+    fmt.Printf("%s\t%d\n", name, age)
+}
+```
+
+==Map的迭代顺序是不确定的==，并且不同的哈希函数实现可能导致不同的遍历顺序。在实践中，遍历的顺序是随机的，每一次遍历的顺序都不相同。这是故意的，每次都使用随机的遍历顺序可以强制要求程序不会依赖具体的哈希函数实现。如果要按顺序遍历key/value对，我们必须显式地对key进行排序，可以使用sort包的Strings函数对字符串slice进行排序。下面是常见的处理方式：
+
+```Go
+import "sort"
+
+var names []string
+for name := range ages {
+    names = append(names, name)
+}
+sort.Strings(names)
+for _, name := range names {
+    fmt.Printf("%s\t%d\n", name, ages[name])
+}
+```
+
+在向map存数据前必须先创建map。类似于Java的new
+
+map的下标语法将产生两个值；第二个是一个布尔值，用于报告元素是否真的存在。布尔变量一般命名为ok，特别适合马上用于if条件判断部分。
+
+```Go
+if age, ok := ages["bob"]; !ok { /* ... */ }
+
+//等同于
+
+age, ok := ages["bob"]
+if !ok { /* "bob" is not a key in this map; age == 0. */ }
+```
+
+和slice一样，map之间也不能进行相等比较；唯一的例外是和nil进行比较。要判断两个map是否包含相同的key和value，我们必须通过一个循环实现：
+
+```Go
+func equal(x, y map[string]int) bool {
+    if len(x) != len(y) {
+        return false
+    }
+    for k, xv := range x {
+        if yv, ok := y[k]; !ok || yv != xv {
+            return false
+        }
+    }
+    return true
+}
+```
+
+从例子中可以看到如何用!ok来区分元素不存在，与元素存在但为0的。我们不能简单地用xv != y[k]判断，那样会导致在判断下面两个map时产生错误的结果：
+
+因为 ==map里如果一个查找失败将返回value类型对应的零值==
+
+```Go
+// True if equal is written incorrectly.
+equal(map[string]int{"A": 0}, map[string]int{"B": 42})
+```
+
+value也可以是map类型，其中addEdge函数惰性初始化map是一个惯用方式，也就是说在每个值首次作为key时才初始化。addEdge函数显示了如何让map的零值也能正常工作；即使from到to的边不存在，graph[from][to]依然可以返回一个有意义的结果。
+
+```Go
+var graph = make(map[string]map[string]bool)
+
+func addEdge(from, to string) {
+    edges := graph[from]
+    if edges == nil {
+        edges = make(map[string]bool)
+        graph[from] = edges
+    }
+    edges[to] = true
+}
+
+func hasEdge(from, to string) bool {
+    return graph[from][to]
+}
+```
+
+Go语言中并没有提供一个set类型，但是map中的key也是不相同的，可以用map实现类似set的功能。通过value用bool类型来控制
+
+```Go
+func main() {
+    seen := make(map[string]bool) // a set of strings
+    input := bufio.NewScanner(os.Stdin)
+    for input.Scan() {
+        line := input.Text()
+        if !seen[line] {
+            seen[line] = true
+            fmt.Println(line)
+        }
+    }
+
+    if err := input.Err(); err != nil {
+        fmt.Fprintf(os.Stderr, "dedup: %v\n", err)
+        os.Exit(1)
+    }
+}
+```
+
+# 结构体
+
+```Go
+type Employee struct {
+    ID        int
+    Name      string
+    Address   string
+    DoB       time.Time
+    Position  string
+    Salary    int
+    ManagerID int
+}
+
+var dilbert Employee
+```
+
+dilbert结构体变量的成员可以通过点操作符访问，比如dilbert.Name和dilbert.DoB。因为dilbert是一个变量，它所有的成员也同样是变量，我们可以直接对每个成员赋值：
+
+```Go
+dilbert.Salary -= 5000 // demoted, for writing too few lines of code
+```
+
+或者是对成员取地址，然后通过指针访问：
+
+```Go
+position := &dilbert.Position
+*position = "Senior " + *position // promoted, for outsourcing to Elbonia
+```
+
+点操作符也可以和指向结构体的指针一起工作：
+
+```Go
+var employeeOfTheMonth *Employee = &dilbert
+employeeOfTheMonth.Position += " (proactive team player)"
+```
+
+相当于下面语句
+
+```Go
+(*employeeOfTheMonth).Position += " (proactive team player)"
+```
+
+下面的EmployeeByID函数将根据给定的员工ID返回对应的员工信息结构体的指针。我们可以使用点操作符来访问它里面的成员：
+
+```Go
+func EmployeeByID(id int) *Employee { /* ... */ }
+
+fmt.Println(EmployeeByID(dilbert.ManagerID).Position) // "Pointy-haired boss"
+
+id := dilbert.ID
+EmployeeByID(id).Salary = 0 // fired for... no real reason
+```
+
+后面的语句通过EmployeeByID返回的结构体指针更新了Employee结构体的成员。如果将EmployeeByID函数的返回值从`*Employee`指针类型改为Employee值类型，那么更新语句将不能编译通过，因为在赋值语句的左边并不确定是一个变量（译注：==调用函数返回的是值，并不是一个可取地址的变量==）。
+
+**注意**：
+
+* 如果结构体成员名字是以大写字母开头的，那么该成员就是导出的；这是Go语言导出规则决定的。一个结构体可能同时包含导出和未导出的成员。
+* 一个命名为S的结构体类型将不能再包含S类型的成员：因为一个聚合的值不能包含它自身。（该限制同样适用于数组。）但是S类型的结构体可以包含`*S`指针类型的成员，这可以让我们创建递归的数据结构，比如链表和树结构等。
+
+### 结构体字面值
+
+结构体值也可以用结构体字面值表示，结构体字面值可以指定每个成员的值。
+
+```Go
+type Point struct{ X, Y int }
+
+//有顺序要求，不常用
+p := Point{1, 2}
+```
+
+其实更==常用==的是第二种写法，以成员名字和相应的值来初始化，可以包含部分或全部的成员，成员被忽略的话将默认用零值：
+
+```Go
+anim := gif.GIF{LoopCount: nframes}
+```
+
+两种不同形式的写法不能混合使用。而且，你不能企图在外部包中用第一种顺序赋值的技巧来偷偷地初始化结构体中未导出的成员。
+
+```Go
+package p
+type T struct{ a, b int } // a and b are not exported
+
+package q
+import "p"
+var _ = p.T{a: 1, b: 2} // compile error: can't reference a, b
+var _ = p.T{1, 2}       // compile error: can't reference a, b
+//虽然上面最后一行代码的编译错误信息中并没有显式提到未导出的成员，但是这样企图隐式使用未导出成员的行为也是不允许的。
+```
+
+结构体可以作为函数的参数和返回值。例如，这个Scale函数将Point类型的值缩放后返回：
+
+```Go
+func Scale(p Point, factor int) Point {
+    return Point{p.X * factor, p.Y * factor}
+}
+
+fmt.Println(Scale(Point{1, 2}, 5)) // "{5 10}"
+```
+
+如果考虑效率的话，较大的结构体通常会用指针的方式传入和返回，
+
+```Go
+func Bonus(e *Employee, percent int) int {
+    return e.Salary * percent / 100
+}
+```
+
+如果要在函数内部修改结构体成员的话，用指针传入是必须的；因为在Go语言中，所有的函数参数都是值拷贝传入的，函数参数将不再是函数调用时的原始变量。
+
+```Go
+func AwardAnnualRaise(e *Employee) {
+    e.Salary = e.Salary * 105 / 100
+}
+```
+
+因为结构体通常通过指针处理，可以用下面的写法来创建并初始化一个结构体变量，并返回结构体的地址：
+
+```Go
+pp := &Point{1, 2}
+```
+
+它和下面的语句是等价的
+
+```Go
+pp := new(Point)
+*pp = Point{1, 2}
+```
+
+不过&Point{1, 2}写法可以直接在表达式中使用，比如一个函数调用。
+
+### 结构体比较
+
+如果结构体的全部成员都是可以比较的，那么结构体也是可以比较的，那样的话两个结构体将可以使用\==或!=运算符进行比较。相等比较运算符==将比较两个结构体的每个成员，因此下面两个比较的表达式是等价的：
+
+```Go
+type Point struct{ X, Y int }
+
+p := Point{1, 2}
+q := Point{2, 1}
+fmt.Println(p.X == q.X && p.Y == q.Y) // "false"
+fmt.Println(p == q)                   // "false"
+```
+
+可比较的结构体类型和其他可比较的类型一样，可以用于map的key类型。
+
+```Go
+type address struct {
+    hostname string
+    port     int
+}
+
+hits := make(map[address]int)
+hits[address{"golang.org", 443}]++
+```
+
+### 结构体嵌入和匿名成员
+
+```Go
+type Point struct {
+    X, Y int
+}
+
+type Circle struct {
+    Center //匿名
+    Radius int
+}
+
+type Wheel struct {
+    Circle //匿名
+    Spokes int
+}
+```
+
+我们可以直接访问叶子属性而不需要给出完整的路径，此时变量名和类型名相同
+
+```Go
+var w Wheel
+w.X = 8            // equivalent to w.Circle.Point.X = 8
+w.Y = 8            // equivalent to w.Circle.Point.Y = 8
+w.Radius = 5       // equivalent to w.Circle.Radius = 5
+w.Spokes = 20
+```
+
+但是结构体字面值必须遵循形状类型声明时的结构，所以我们只能用下面的两种语法，它们彼此是等价的：
+
+```Go
+w = Wheel{Circle{Point{8, 8}, 5}, 20}
+
+w = Wheel{
+    Circle: Circle{
+        Point:  Point{X: 8, Y: 8},
+        Radius: 5,
+    },
+    Spokes: 20, // NOTE: trailing comma necessary here (and at Radius)
+}
+
+fmt.Printf("%#v\n", w)
+// Output:
+// Wheel{Circle:Circle{Point:Point{X:8, Y:8}, Radius:5}, Spokes:20}
+
+w.X = 42
+
+fmt.Printf("%#v\n", w)
+// Output:
+// Wheel{Circle:Circle{Point:Point{X:42, Y:8}, Radius:5}, Spokes:20}
+```
+
+为什么要嵌入一个没有任何子成员类型的匿名成员类型呢？
+
+==外层的结构体不仅仅是获得了匿名成员类型的所有成员，而且也获得了该类型导出的全部的方法==。这个机制可以用于将一些有简单行为的对象组合成有复杂行为的对象。
+
+# JSON
+
+### 将结构体转为json格式的slice
+
+`json.MarshalIndent`
+
+```Go
+type Movie struct {
+    Title  string
+    Year   int  `json:"released"`
+    Color  bool `json:"color,omitempty"`
+    Actors []string
+}
+
+var movies = []Movie{
+    {Title: "Casablanca", Year: 1942, Color: false,
+        Actors: []string{"Humphrey Bogart", "Ingrid Bergman"}},
+    {Title: "Cool Hand Luke", Year: 1967, Color: true,
+        Actors: []string{"Paul Newman"}},
+    {Title: "Bullitt", Year: 1968, Color: true,
+        Actors: []string{"Steve McQueen", "Jacqueline Bisset"}},
+    // ...
+}
+
+data, err := json.MarshalIndent(movies, "", "    ")
+if err != nil {
+    log.Fatalf("JSON marshaling failed: %s", err)
+}
+fmt.Printf("%s\n", data)
+```
+
+### 将json字符串转换为结构体
+
+```Go
+var titles []struct{ Title string }
+if err := json.Unmarshal(data, &titles); err != nil {
+    log.Fatalf("JSON unmarshaling failed: %s", err)
+}
+fmt.Println(titles) // "[{Casablanca} {Cool Hand Luke} {Bullitt}]"
+```
+
+### 案例
+
+`json.Decoder`，它可以从一个输入流解码JSON数据
+
+还有一个针对输出流的`json.Encoder`编码对象
+
+```Go
+package github
+
+import (
+    "encoding/json"
+    "fmt"
+    "net/http"
+    "net/url"
+    "strings"
+)
+
+// SearchIssues queries the GitHub issue tracker.
+func SearchIssues(terms []string) (*IssuesSearchResult, error) {
+    q := url.QueryEscape(strings.Join(terms, " "))
+    resp, err := http.Get(IssuesURL + "?q=" + q)
+    if err != nil {
+        return nil, err
+    }
+
+    // We must close resp.Body on all execution paths.
+    // (Chapter 5 presents 'defer', which makes this simpler.)
+    if resp.StatusCode != http.StatusOK {
+        resp.Body.Close()
+        return nil, fmt.Errorf("search query failed: %s", resp.Status)
+    }
+
+    var result IssuesSearchResult
+    if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+        resp.Body.Close()
+        return nil, err
+    }
+    resp.Body.Close()
+    return &result, nil
+}
+```
+
+# 方法
+
+## 方法声明
+
+假设有两个方法，一个方法的接收者是指针类型，一个方法的接收者是值类型，那么：
+
+- 对于值类型的变量和指针类型的变量，这两个方法有什么区别？
+- 如果这两个方法是为了实现一个接口，那么这两个方法都可以调用吗？
+- 如果方法是嵌入到其他结构体中的，那么上面两种情况又是怎样的？
+
+```go
+package main
+
+
+import "fmt"
+
+
+//定义一个结构体
+type T struct {
+    name string
+}
+
+
+func (t T) method1() {
+    t.name = "new name1"
+}
+
+
+func (t *T) method2() {
+    t.name = "new name2"
+}
+
+
+func main() {
+
+
+    t := T{"old name"}
+
+
+    fmt.Println("method1 调用前 ", t.name)
+    t.method1()
+    fmt.Println("method1 调用后 ", t.name)
+
+
+    fmt.Println("method2 调用前 ", t.name)
+    t.method2()
+    fmt.Println("method2 调用后 ", t.name)
+}
+```
+
+当调用`t.method1()`时相当于`method1(t)`，实参和行参都是类型 T，可以接受。此时在`method1`()中的t只是参数t的值拷贝，所以`method1`()的修改影响不到main中的t变量。
+
+当调用`t.method2()`=>`method2(t)`，这是将 T 类型传给了 *T 类型，go可能会取 t 的地址传进去：`method2(&t)`。所以 `method1`() 的修改可以影响 t。
+
+T 类型的变量这两个方法都是拥有的。
