@@ -1,5 +1,3 @@
-
-
 # ELK介绍
 
 由于logstash是Java开发，运行时候会占用较大的资源（内存、CPU等），假如每台服务器都安装运行一个logstash，对业务影响太大，实际应用中，logstash仅发挥它的日志过滤功能，日志收集将交给filebeat。
