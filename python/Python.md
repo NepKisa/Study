@@ -688,4 +688,4 @@ class 类(父类1，父类2…)
 - setattr(obj, name, value): 动态给某个obj对象设置某个属性或方法，值为value
 - delator(obj, name): 从obj对象中删除某个属性，慎用！！！
 
-## 并发x
+## 并发
