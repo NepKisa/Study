@@ -689,3 +689,285 @@ class 类(父类1，父类2…)
 - delator(obj, name): 从obj对象中删除某个属性，慎用！！！
 
 ## 并发
+
+**Python存在GIL(Global Interrupt Lock), 同一时间只有一个线程执行Python字节吗，多线程本质为单线程，遇到IO操作会切换线程（类似协程），虚假的多线程**
+
+多进程可以实现资源隔离，如内存、CPU、每个进程都会创建一个解释器环境，**真正的多线程**
+
+线程：执行单位，CPU调度的最小单位【**自动切换IO**】
+
+进程：资源单位，每一个进程至少都有一个线程，可以通过Thread创建多线程
+
+协程：【**手动切换IO**】在单线程逻辑下，当某个任务进入阻塞状态（CPU没法为你工作）时，自动切换到其他任务上的逻辑
+
+什么时候用多线程，什么时候用多进程？
+
+> 多线程：多个任务的逻辑完全一样，IO密集型
+>
+> 多进程：任务之间要隔离，没什么相似项，很少有关联，CPU密集型
+>
+> 协程：高并发IO，IO超密集型，不依赖同步库
+
+### 线程
+
+创建多线程的办法
+
+```python
+from threading import Thread
+
+#方法一
+t=Thread(target=线程执行的任务, args=(任务需要的参数,))
+t.start()#报告CPU 线程进入就绪状态
+
+#方法二
+class MyThread(Thread):
+    def run(self):
+        任务逻辑
+
+t=MyThread()
+t.start()
+
+#主线程等待子线程的结束，等待的过程中，其他线程也是在运行的
+#当多个线程对象同时启动时，join()一定要在所有线程启动完毕之后
+t.join()
+```
+
+### 进程
+
+使用方式和多线程一样，除了导包不同，其余完全相同
+
+```python
+from multiprocessing import Process
+```
+
+### 线程池
+
+```python
+from concurrent.futures import ThreadPoolExecutor
+
+#方法一
+with ThreadPoolExecutor(数量) as t:
+    t.submit(任务,任务所需参数) #每submit一次，就会加入一个任务（开启一个线程）
+    
+#方法二
+t=ThreadPoolExecutor(数量)
+t.submit(任务,任务的参数)
+t.shutdown() #join()
+```
+
+### 进程池
+
+```python
+import multiprocessing
+
+#方法一
+with multiprocessing.Pool(数量)  as p:
+    #mao: 阻塞执行任务。如果任务不需要参数, args应为列表，表示调用次数
+    p.map(task,args)
+    #类似于map，但适用于需要多个参数的任务，列表中的每个元组对应一次任务调用的参数
+    p.starmap(task,[(arg1,arg2),...])
+    #异步提交任务，用于将任务提交到进程池，不阻塞当前线程
+    p.apply_async(task,args)
+    r.wait()
+    print(r.get())
+```
+
+### 协程
+
+程序需要非常耗时的非计算类操作（IO），CPU时不会工作的
+
+- 文件读写
+- 网络数据传输
+
+协程的两个概念：
+
+- 事件循环：观察每一个被挂起任务的状态，如果阻塞就继续挂起，如果不阻塞了，就进入就绪状态
+- 挂起：当程序需要了阻塞，遇到了IO，需要我们手动把任务挂起
+
+python3.5之后，官方给出了asyncio模块，提供async和await关键字
+
+```python
+import asyncio
+
+async def send(url):
+    print(f'{url} is sending start')
+    await asyncio.sleep(3) #不使用time.sleep()
+    #等上面的阻塞被解除类，就开始运行
+    print(f'{url} is sending finally')
+
+async def startx():
+    listx=['www.aaa.com','www.bbb.com','www.zzz.com']
+    tasks=[]
+    for url in listx:
+        task=asyncio.create_task(send(url))
+        tasks.append(task)
+    await asyncio.wait(tasks)#集体等待所有任务结束
+    print('all tasks completed')
+
+if __name__ == '__main__':
+    #此时不是执行send方法，而是创建类协程对象
+    s=send('http://httpbin.org/post')
+
+    #如何运行一个协程函数
+    #1、用asyncio.run(), 会创建一个事件循环并运行任务
+    #asyncio.run(s) #Windows环境下可能会有问题：event loop has closed
+
+    #2、用事件循环
+    #获取当前线程的事件循环
+    event_loop = asyncio.get_event_loop()
+    #使用事件循环来运行协程
+    event_loop.run_until_complete(s)
+
+    #3、多任务异步操作
+    #不可以循环调用asyncio.run()启动任务，会为每个任务创建一个事件循环，这会导致每个任务独立运行
+    #必须把所有任务放在一个事件循环里
+
+    asyncio.run(startx())
+```
+
+# 模块
+
+## time
+
+用于睡眠一定时间或者计算时间差
+
+```python
+import time
+
+#获取当前时间戳
+now=time.time()
+#暂停执行
+time.sleep()
+end=time.time()
+#获取程序执行时间，并保留两位小数
+print(f'执行时间为{end-now:.2f}')
+```
+
+## datetime
+
+datetime包下有datetime和date
+
+必须掌握：
+
+- now( ): 系统时间
+- datetime( ): 创建时间
+- strftime(‘%Y-%m-%d %H:%M:%S’): 时间转字符串
+- strptime(str,‘%Y-%m-%d %H:%M:%S’): 字符串转时间
+- date.today( ): 获取今天的日期【2025-04-28】
+
+## random
+
+- **random.randint(3,7): 随机整数，[3,7]**
+- random.uniform(2,6): 随机小数
+- random.random(): (0,1)
+- random.choice(lst): 随机返回列表一个元素
+- random.sample(lst,数量): 随机返回列表指定数量的元素列表
+- random.shuffle(lst): 打乱一个列表，返回空，此时列表的值已改变
+
+## os
+
+- 文件相关
+  - os.makedirs(‘dirname1/dirname2’,exist_ok=True): 递归生成多个目录，【exist_ok】文件夹存在不会抛出异常
+  - os.listdir(‘dirname’): 列出所有目录及文件，包括隐藏文件
+  - os.remove(‘filename’)：删除文件
+  - os.path.abspath(‘path’)：获取绝对路径
+  - os.path.split(‘path’)：将路径分割成文件夹+文件名的二元组返回，index 0是dirname, index 1是basename
+  - os.path.exists(‘path’)：判断路径是否存在
+  - os.path.isdir()：判断是否是文件夹
+  - os.path.isfile()：判断是否是文件
+  - os.path.join()：路径拼接，主要是将文件夹和文件拼接成一个路径
+- 系统相关
+  - os.system(‘bash command’)：运行shell命令，直接显示
+  - os.popen(‘bash command’)：read()运行shell命令，获取执行结果
+  - os.getcwd()：获取当前工作目录
+  - os.chdir(‘dirname’)：改变当前脚步工作目录，相当于 cd 路径
+  - os.getenv(‘KEY’)：获取环境变量
+
+## sys
+
+```perl
+#命令行运行python代码
+python3 -c 'import sys; print(sys.path)'
+```
+
+- sys.path
+  - python在import模块时，解释器时根据sys.path中的路径查找的
+  - 注意：导入模块的路径可能是pycharm自动添加的，在Linux环境运行会报错，只要把sys.path路径补全即可
+- sys.argv：命令行参数列表，第一个参数是程序本身路径，相当于shell的$0
+- sys.exit(n)：退出程序，退出码为n
+- sys.platform：获取系统平台名称
+- sys.version：获取python解释器版本信息
+
+## pickle
+
+把变量（对象）打散成字节进行传输和存储
+
+- pickle.dumps(变量)：返回字节对象，序列化
+- pickle.loads(字节对象)：返回原始变量，反序列化
+- pickle.dump(变量，文件)：直接处理文件
+- picke.load(文件)：直接处理文件
+
+## json
+
+把变量（对象）转化成json字符串，进行传输和存储
+
+- json.dumps(变量)：返回json字符串，序列化
+- json.loads(json字符串)：将json字符串还原成python字典，反序列化
+- json.dump(变量，文件)：直接处理文件
+- json.load(文件)：直接处理文件
+
+## logging
+
+记录日志的模块，一般用于记录异常堆栈
+
+```python
+import logging,traceback
+
+logging.basicConfig(level=20,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(module)s - %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:',
+                    filename='app.log')
+
+logging.debug('this is a debug message')
+logging.info('this is a info message')
+logging.warning('this is a warning message')
+logging.error('this is a error message')
+logging.critical('this is a critical message')
+
+try:
+    a=1/0
+except ZeroDivisionError as e:
+    logging.error(traceback.format_exc())
+```
+
+```bash
+2025-04-28 20:02: - root - INFO - loggingx - this is a info message
+2025-04-28 20:02: - root - WARNING - loggingx - this is a warning message
+2025-04-28 20:02: - root - ERROR - loggingx - this is a error message
+2025-04-28 20:02: - root - CRITICAL - loggingx - this is a critical message
+2025-04-28 20:02: - root - ERROR - loggingx - Traceback (most recent call last):
+  File "/Users/yukiasumi/Code/Python/YukiAsumi/pythonProject/grammar/loggingx.py", line 15, in <module>
+    a=1/0
+      ~^~
+ZeroDivisionError: division by zero
+
+
+```
+
+## re
+
+python的正则表达式
+
+- re.findall(正则，字符串)：从字符串中提取符合正则的内容，将所有内容放入列表中返回
+- re.search(正则，字符串)：全文检索，返回第一个
+- re.sub(正则，要替换的内容，源字符串)
+
+## http.server
+
+在指定目录启动一个http服务器，监听8000端口。你可以通过浏览器访问http://localhost:8000来查看文件列表或直接访问/下载文件
+
+```perl
+python -m http.server 8000 --directory /opt/ansible
+```
+
+## subprocess
