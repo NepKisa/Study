@@ -65,7 +65,7 @@ export KAFKA_HEAP_OPTS="-Xmx512M -Xms512M -Djava.security.auth.login.config=../c
 
 可以从官网 [Apache ZooKeeper](https://link.segmentfault.com/?enc=9xdL3Qu6IPzhKVV4ERwkVA%3D%3D.7lYxBmch1K1WHPCEjGCq3UTKbVyv0sMb0MIffopKgu5kogbT1SJSNi5sW76A6CjF3vY8%2FivGWcFvd95WlMyPgQ%3D%3D) 下载对应版本的 ZooKeeper 并解压；
 
-添加 `JAAS` 配置，在 confi 目录下创建 `zk_client_jaas.conf` 文件：
+添加 `JAAS` 配置，在 config 目录下创建 `zk_client_jaas.conf` 文件：
 
 ```perl
 Client{
