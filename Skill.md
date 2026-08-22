@@ -2541,3 +2541,69 @@ kubectl get pods -A | grep Error | awk '{print "kubectl delete pod -n " $1 " " $
 kubectl get pods -A | grep Error | awk '{print $1 " " $2}' | xargs -n 2 -t -I {} kubectl delete pod -n {}
 ```
 
+# 远程桌面
+
+开始 -> 设置 -> 系统信息 （确认windows版本为专业版）
+
+![image-20260809095126679](Skill.assets/image-20260809095126679.png)
+
+进入“控制面板”->“凭据管理器”->“添加Windows凭据”->输入 要登录的服务器的IP地址、用户名、密码，点确定退出。
+
+![image-20260809095357502](Skill.assets/image-20260809095357502.png)
+
+在“开始”窗口运行gpedit.msc，进入计算机配置->管理模板->系统->凭据分配->允许分配保存的凭据用于仅NTLM服务器身份验证 ，双击打开，选择“已启用”->单击“显示”输入“TERMSRV/*”，点确定后退出。
+
+![image-20260809100108124](Skill.assets/image-20260809100108124.png)
+
+![image-20260809100119382](Skill.assets/image-20260809100119382.png)
+
+![image-20260809100126306](Skill.assets/image-20260809100126306.png)
+
+开始–>运行->gpedit.msc->计算机配置->Windows设置->安全设置->本地策略->安全选项->网络访问:本地帐户的共享和安全模型。修改为使用经典模式
+
+![image-20260809100011603](Skill.assets/image-20260809100011603.png)
+
+开始–>运行->gpedit.msc->计算机配置-> 管理模板 -> Windows组件 -> 远程桌面服务 -> 选择远程桌面会话主机 -> 选择：安全 -> 选择：远程(RDP)连接要求使用指定的安全层。把未配置改为启用，并且安全层选择RDP。
+
+![image-20260809095459134](Skill.assets/image-20260809095459134.png)
+
+![image-20260809095544672](Skill.assets/image-20260809095544672.png)
+
+强烈不推荐：`Win` + `R` → 输入 `secpol.msc` → 回车。导航到以下路径：安全设置 → 本地策略 → 安全选项 → 账户: 使用空密码的本地帐户只允许进行控制台登录。修改为 已禁用。
+
+![image-20260809100725108](Skill.assets/image-20260809100725108.png)
+
+
+
+设置完成后cmd打开控制台执行更新策略
+
+```powershell
+gpupdate/force
+
+#修改账户设置
+netplwiz
+```
+
+Windows找不到文件‘mstsc‘，需要安装
+
+https://learn.microsoft.com/zh-cn/windows-server/remote/remote-desktop-services/remotepc/uninstall-remote-desktop-connection?tabs=gui
+
+![image-20260809095633528](Skill.assets/image-20260809095633528.png)
+
+设置里找到远程桌面->选择可远程访问的用户
+
+
+
+![image-20260809102805358](Skill.assets/image-20260809102805358.png)
+
+点击 添加 -> 高级 ->立即查找 选择用户 ->确定
+
+![image-20260809103013579](Skill.assets/image-20260809103013579.png)
+
+
+
+win+R 输入 mstsc，点击显示选项，可以将信息保存为文件
+
+![image-20260809095756144](Skill.assets/image-20260809095756144.png)
+
+![image-20260809095836551](Skill.assets/image-20260809095836551.png)
